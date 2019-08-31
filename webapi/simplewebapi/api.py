@@ -21,6 +21,6 @@ def load_data(product_id):
         return data[str_id]
 
 
-@bp.route('/product/<int:product_id>')
+@bp.route('/products/<int:product_id>')
 def get_product(product_id):
     return jsonify(load_data(product_id))
