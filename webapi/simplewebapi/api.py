@@ -3,7 +3,6 @@ import json
 from flask import Blueprint
 from flask import current_app
 from flask import jsonify
-from werkzeug.exceptions import abort
 
 bp = Blueprint('api', __name__)
 
