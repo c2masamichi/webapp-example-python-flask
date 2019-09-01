@@ -11,6 +11,16 @@ bp = Blueprint('api', __name__)
 def index():
     return 'top'
 
+
+def load_all_data():
+    with open(current_app.config['JSON_PATH'], encoding='utf-8') as f:
+        data = json.load(f)
+        resp = {
+            'result': data
+        }
+        return resp
+
+
 def load_data(product_id):
     with open(current_app.config['JSON_PATH'], encoding='utf-8') as f:
         data = json.load(f)
@@ -25,6 +35,11 @@ def load_data(product_id):
                 'error': 'Not Found'
             }
             return error, 404
+
+
+@bp.route('/products')
+def get_products():
+    return jsonify(load_all_data())
 
 
 @bp.route('/products/<int:product_id>')
