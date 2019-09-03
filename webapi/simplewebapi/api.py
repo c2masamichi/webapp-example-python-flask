@@ -4,6 +4,8 @@ from flask import Blueprint
 from flask import current_app
 from flask import jsonify
 
+from simplewebapi.db import get_db
+
 bp = Blueprint('api', __name__)
 
 
@@ -13,12 +15,21 @@ def index():
 
 
 def load_all_data():
-    with open(current_app.config['JSON_PATH'], encoding='utf-8') as f:
-        data = json.load(f)
-        resp = {
-            'result': data
+    db = get_db()
+    data = db.execute(
+        'SELECT * FROM product'
+    ).fetchall()
+    result = [
+        {
+            'id': row['id'],
+            'name': row['name'],
+            'price': row['price'],
         }
-        return resp
+        for row in data
+    ]
+    return {
+        'result': result
+    }
 
 
 def load_data(product_id):
