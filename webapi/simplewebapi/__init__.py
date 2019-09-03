@@ -7,11 +7,16 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         JSON_PATH=os.path.join(app.instance_path, 'data.json'),
+        DATABASE=os.path.join(app.instance_path, 'webapi.sqlite'),
     )
 
     @app.route('/test')
     def hello_world():
         return 'app running'
+
+    from simplewebapi import db
+
+    db.init_app(app)
 
     from simplewebapi import api
 
