@@ -24,17 +24,22 @@ def close_db(e=None):
         db.close()
 
 
-def init_db():
+def init_db(datafile):
     db = get_db()
 
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf-8'))
 
+    if datafile is not None:
+        with open(datafile, encoding='utf-8') as f:
+            db.executescript(f.read())
+
 
 @click.command('init-db')
+@click.option('--datafile')
 @with_appcontext
-def init_db_command():
-    init_db()
+def init_db_command(datafile):
+    init_db(datafile)
     click.echo('Initialized the database.')
 
 
