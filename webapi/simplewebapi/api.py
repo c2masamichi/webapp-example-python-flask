@@ -1,5 +1,3 @@
-import json
-
 from flask import Blueprint
 from flask import current_app
 from flask import jsonify
@@ -19,33 +17,41 @@ def load_all_data():
     data = db.execute(
         'SELECT * FROM product'
     ).fetchall()
-    result = [
-        {
+    result = {
+        'result': [
+            {
+                'id': row['id'],
+                'name': row['name'],
+                'price': row['price'],
+            }
+            for row in data
+        ]
+    }
+    return result
+
+
+def load_data(product_id):
+    db = get_db()
+    row = db.execute(
+        'SELECT * FROM product p'
+        ' WHERE p.id = :id',
+        {'id': product_id},
+    ).fetchone()
+
+    if row is None:
+        error = {
+            'error': 'Not Found'
+        }
+        return error, 404
+
+    result =  {
+        'result': {
             'id': row['id'],
             'name': row['name'],
             'price': row['price'],
         }
-        for row in data
-    ]
-    return {
-        'result': result
     }
-
-
-def load_data(product_id):
-    with open(current_app.config['JSON_PATH'], encoding='utf-8') as f:
-        data = json.load(f)
-        str_id = str(product_id)
-        if str_id in data:
-            resp = {
-                'result': data[str_id]
-            }
-            return resp, 200
-        else:
-            error = {
-                'error': 'Not Found'
-            }
-            return error, 404
+    return result, 200
 
 
 @bp.route('/products')
