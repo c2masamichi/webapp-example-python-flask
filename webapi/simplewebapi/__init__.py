@@ -1,6 +1,25 @@
-from flask import Flask
-app = Flask(__name__)
+import os
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
+from flask import Flask
+
+
+def create_app():
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        DATABASE=os.path.join(app.instance_path, 'webapi.sqlite'),
+    )
+
+    @app.route('/test')
+    def hello_world():
+        return 'app running'
+
+    from simplewebapi import db
+
+    db.init_app(app)
+
+    from simplewebapi import api
+
+    app.register_blueprint(api.bp)
+    app.add_url_rule('/', endpoint='index')
+
+    return app
