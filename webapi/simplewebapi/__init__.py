@@ -9,8 +9,8 @@ def create_app():
         DATABASE=os.path.join(app.instance_path, 'webapi.sqlite'),
     )
 
-    @app.route('/test')
-    def hello_world():
+    @app.route('/healthcheck')
+    def healthcheck():
         return 'app running'
 
     from simplewebapi import db
