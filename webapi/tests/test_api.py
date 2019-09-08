@@ -16,3 +16,17 @@ def test_get_products(client):
     assert 'result' in data
     result = data['result']
     assert len(result) == 2
+
+
+def test_get_product(client):
+    response = client.get('/products/1')
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert 'result' in data
+    result = data['result']
+    assert result['id'] == 1
+    assert result['name'] == 'book'
+    assert result['price'] == 600
+
+    response = client.get('/products/3')
+    assert response.status_code == 404
