@@ -42,6 +42,8 @@ def test_post_product(client, app):
         content_type='application/json'
     )
     assert response.status_code == 201
+    data = json.loads(response.data)
+    assert data.get('result') == 'Successfully Created.'
 
     with app.app_context():
         db = get_db()

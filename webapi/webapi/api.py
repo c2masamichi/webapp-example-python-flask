@@ -86,7 +86,10 @@ def post_product():
         {'name': name, 'price': price},
     )
     db.commit()
-    return 'ok', 201
+    result =  {
+        'result': 'Successfully Created.'
+    }
+    return jsonify(result), 201
 
 
 @bp.route('/products/<int:product_id>')
