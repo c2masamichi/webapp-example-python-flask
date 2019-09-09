@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import current_app
 from flask import jsonify
 
-from simplewebapi.db import get_db
+from webapi.db import get_db
 
 bp = Blueprint('api', __name__)
 

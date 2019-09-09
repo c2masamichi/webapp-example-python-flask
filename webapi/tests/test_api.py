@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from simplewebapi.db import get_db
+from webapi.db import get_db
 
 
 def test_index(client):
