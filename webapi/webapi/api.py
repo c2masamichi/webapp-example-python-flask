@@ -43,7 +43,7 @@ def load_data(product_id):
 
     if row is None:
         error = {
-            'error': 'Not Found'
+            'error': 'Not Found.'
         }
         return error, 404
 
