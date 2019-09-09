@@ -30,3 +30,25 @@ def test_get_product(client):
 
     response = client.get('/products/3')
     assert response.status_code == 404
+
+
+def test_post_product(client, app):
+    new_product = json.dumps({
+        'name': 'meat',
+        'price': 1000,
+    })
+    response = client.post(
+        '/products', data=new_product,
+        content_type='application/json'
+    )
+    assert response.status_code == 201
+
+    with app.app_context():
+        db = get_db()
+        count = db.execute('SELECT COUNT(id) FROM product').fetchone()[0]
+        assert count == 3
+
+    response = client.post('/products', data='wrong data')
+    assert response.status_code == 400
+
+

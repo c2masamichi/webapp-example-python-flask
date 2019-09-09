@@ -1,6 +1,9 @@
+import json
+
 from flask import Blueprint
 from flask import current_app
 from flask import jsonify
+from flask import request
 
 from webapi.db import get_db
 
@@ -57,6 +60,33 @@ def load_data(product_id):
 @bp.route('/products')
 def get_products():
     return jsonify(load_all_data())
+
+
+@bp.route('/products', methods=['POST'])
+def post_product():
+    if request.headers.get('Content-Type') != 'application/json':
+        error = {
+            'error': 'Content-Type must be application/json.'
+        }
+        return jsonify(error), 400
+
+    data = json.loads(request.data)
+    name = data.get('name')
+    price = data.get('price')
+    error_msg = ''
+    if name is None or price is None:
+        error = {
+            'error': 'The key "name" and "price" are required.'
+        }
+        return jsonify(error), 400
+
+    db = get_db()
+    db.execute(
+        'INSERT INTO product (name, price) VALUES (:name, :price)',
+        {'name': name, 'price': price},
+    )
+    db.commit()
+    return 'ok', 201
 
 
 @bp.route('/products/<int:product_id>')
