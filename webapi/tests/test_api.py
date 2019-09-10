@@ -53,6 +53,6 @@ def test_post_product(client, app):
         assert count == 3
 
 
-def test_post_product_error(client, app):
+def test_post_product_error(client):
     response = client.post('/products', data='wrong data')
     assert response.status_code == 400
