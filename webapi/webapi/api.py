@@ -112,6 +112,6 @@ def delete_product(product_id):
     db.commit()
 
     result =  {
-        'result': 'Successfully deleted.'
+        'result': 'Successfully Deleted.'
     }
     return jsonify(result)
