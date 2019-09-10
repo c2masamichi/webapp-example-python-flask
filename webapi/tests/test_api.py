@@ -56,3 +56,13 @@ def test_post_product(client, app):
 def test_post_product_error(client):
     response = client.post('/products', data='wrong data')
     assert response.status_code == 400
+
+
+def test_delete_product(client, app):
+    response = client.delete('/products/1')
+    assert response.status_code == 200
+
+
+def test_delete_product(client, app):
+    response = client.delete('/products/3')
+    assert response.status_code == 404

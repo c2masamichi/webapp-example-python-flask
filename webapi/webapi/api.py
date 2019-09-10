@@ -96,3 +96,22 @@ def post_product():
 def get_product(product_id):
     result, code = load_data(product_id)
     return jsonify(result), code
+
+
+@bp.route('/products/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id):
+    result, code = load_data(product_id)
+    if code == 404:
+        return jsonify(result), code
+
+    db = get_db()
+    db.execute(
+        'DELETE FROM product WHERE id = :id',
+        {'id': product_id},
+    )
+    db.commit()
+
+    result =  {
+        'result': 'Successfully deleted.'
+    }
+    return jsonify(result)
