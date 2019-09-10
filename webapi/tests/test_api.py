@@ -28,6 +28,8 @@ def test_get_product(client):
     assert result['name'] == 'book'
     assert result['price'] == 600
 
+
+def test_get_product_error(client):
     response = client.get('/products/3')
     assert response.status_code == 404
 
@@ -50,7 +52,7 @@ def test_post_product(client, app):
         count = db.execute('SELECT COUNT(id) FROM product').fetchone()[0]
         assert count == 3
 
+
+def test_post_product_error(client, app):
     response = client.post('/products', data='wrong data')
     assert response.status_code == 400
-
-
