@@ -1,4 +1,4 @@
-from simplewebapi import create_app
+from webapi import create_app
 
 
 def test_config():

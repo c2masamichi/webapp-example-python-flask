@@ -3,9 +3,9 @@ import tempfile
 
 import pytest
 
-from simplewebapi import create_app
-from simplewebapi.db import get_db
-from simplewebapi.db import init_db
+from webapi import create_app
+from webapi.db import get_db
+from webapi.db import init_db
 
 
 @pytest.fixture

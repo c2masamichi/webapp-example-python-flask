@@ -16,11 +16,11 @@ def create_app(test_config=None):
     def healthcheck():
         return 'app running'
 
-    from simplewebapi import db
+    from webapi import db
 
     db.init_app(app)
 
-    from simplewebapi import api
+    from webapi import api
 
     app.register_blueprint(api.bp)
     app.add_url_rule('/', endpoint='index')
