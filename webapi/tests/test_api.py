@@ -44,13 +44,12 @@ def test_post_product(client, app):
         content_type='application/json'
     )
     assert response.status_code == 201
-    data = json.loads(response.data)
-    assert data.get('result') == 'Successfully Created.'
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM product').fetchone()[0]
-        assert count == 3
+        row = db.execute('SELECT * FROM product WHERE id = 3').fetchone()
+        assert row['name'] == 'meat'
+        assert row['price'] == 1000
 
 
 def test_post_product_error(client):
