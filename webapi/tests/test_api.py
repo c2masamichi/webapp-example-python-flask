@@ -57,6 +57,36 @@ def test_create_product_error(client):
     assert response.status_code == 400
 
 
+def test_update_product(client, app):
+    updated_data = json.dumps({
+        'name': 'rice',
+        'price': 900,
+    })
+    response = client.put(
+        '/products/2', data=updated_data,
+        content_type='application/json'
+    )
+    assert response.status_code == 200
+
+    with app.app_context():
+        db = get_db()
+        row = db.execute('SELECT * FROM product WHERE id = 2').fetchone()
+        assert row['name'] == 'rice'
+        assert row['price'] == 900
+
+
+def test_update_product_error(client):
+    updated_data = json.dumps({
+        'name': 'rice',
+        'price': 900,
+    })
+    response = client.put(
+        '/products/5', data=updated_data,
+        content_type='application/json'
+    )
+    assert response.status_code == 404
+
+
 def test_delete_product(client, app):
     response = client.delete('/products/1')
     assert response.status_code == 200
