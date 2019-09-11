@@ -92,6 +92,6 @@ def test_delete_product(client, app):
     assert response.status_code == 200
 
 
-def test_delete_product(client, app):
+def test_delete_product_error(client, app):
     response = client.delete('/products/3')
     assert response.status_code == 404
