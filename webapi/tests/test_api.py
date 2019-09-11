@@ -34,7 +34,7 @@ def test_get_product_error(client):
     assert response.status_code == 404
 
 
-def test_post_product(client, app):
+def test_create_product(client, app):
     new_product = json.dumps({
         'name': 'meat',
         'price': 1000,
@@ -52,7 +52,7 @@ def test_post_product(client, app):
         assert row['price'] == 1000
 
 
-def test_post_product_error(client):
+def test_create_product_error(client):
     response = client.post('/products', data='wrong data')
     assert response.status_code == 400
 

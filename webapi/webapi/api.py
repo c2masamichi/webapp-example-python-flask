@@ -21,7 +21,7 @@ def get_products():
 
 
 @bp.route('/products', methods=['POST'])
-def post_product():
+def create_product():
     if request.headers.get('Content-Type') != 'application/json':
         error = {
             'error': 'Content-Type must be application/json.'
