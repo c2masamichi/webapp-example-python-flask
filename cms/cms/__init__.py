@@ -16,4 +16,8 @@ def create_app(test_config=None):
     def healthcheck():
         return 'app running'
 
+    from cms import db
+
+    db.init_app(app)
+
     return app
