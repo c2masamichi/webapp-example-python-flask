@@ -14,4 +14,9 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
-    return 'top'
+    db = get_db()
+    posts = db.execute(
+        'SELECT title, body, created FROM article'
+        ' ORDER BY created DESC'
+    ).fetchall()
+    return render_template('blog/index.html', posts=posts)
