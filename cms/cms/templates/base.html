@@ -1,5 +1,9 @@
 <!DOCTYPE html>
+<html>
+<head>
 <title>{% block title %}{% endblock %} - CMS</title>
+</head>
+<body>
 <section class="content">
   <header>
     {% block header %}{% endblock %}
@@ -9,3 +13,5 @@
   {% endfor %}
   {% block content %}{% endblock %}
 </section>
+</body>
+</html>
