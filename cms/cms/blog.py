@@ -20,3 +20,23 @@ def index():
         ' ORDER BY created DESC'
     ).fetchall()
     return render_template('blog/index.html', posts=posts)
+
+
+@bp.route('/blog/<int:post_id>')
+def get_detail(post_id):
+    post = get_post(post_id)
+    return render_template('blog/detail.html', post=post)
+
+
+def get_post(post_id):
+    db = get_db()
+    post = db.execute(
+        'SELECT id, title, body, created FROM post'
+        ' WHERE id = :id',
+        {'id': post_id},
+    ).fetchone()
+
+    if post is None:
+        abort(404)
+
+    return post
