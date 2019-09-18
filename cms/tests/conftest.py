@@ -5,6 +5,7 @@ import pytest
 from cms import create_app
 from cms.db import init_db
 
+
 @pytest.fixture
 def app():
     db_fd, db_path = tempfile.mkstemp()
