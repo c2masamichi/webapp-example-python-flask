@@ -28,6 +28,30 @@ def get_detail(post_id):
     return render_template('blog/detail.html', post=post)
 
 
+@bp.route('/admin/create', methods=['GET', 'POST'])
+def create():
+    if request.method == 'POST':
+        title = request.form['title']
+        body = request.form['body']
+        error = None
+
+        if not title:
+            error = 'Title is required.'
+
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                'INSERT INTO post (title, body) VALUES (:title, :body)',
+                {'title': title, 'body': body},
+            )
+            db.commit()
+            return redirect(url_for('blog.index'))
+
+    return render_template('blog/create.html')
+
+
 def get_post(post_id):
     db = get_db()
     post = db.execute(
