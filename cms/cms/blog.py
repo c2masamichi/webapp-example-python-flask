@@ -52,6 +52,32 @@ def create():
     return render_template('blog/create.html')
 
 
+@bp.route('/admin/update/<int:post_id>', methods=['GET', 'POST'])
+def update(post_id):
+    post = get_post(post_id)
+
+    if request.method == 'POST':
+        title = request.form['title']
+        body = request.form['body']
+        error = None
+
+        if not title:
+            error = 'Title is required.'
+
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                'UPDATE post SET title = :title, body = :body WHERE id = :id',
+                {'title': title, 'body': body, 'id': post_id},
+            )
+            db.commit()
+            return redirect(url_for('blog.index'))
+
+    return render_template('blog/update.html', post=post)
+
+
 def get_post(post_id):
     db = get_db()
     post = db.execute(
