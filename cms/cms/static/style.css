@@ -23,9 +23,15 @@
 
 .content input, .content textarea {
   margin-bottom: 1em;
+  max-width: 40em;
 }
 
 .content textarea {
   min-height: 12em;
   resize: vertical;
+}
+
+input[type=submit] {
+  align-self: start;
+  min-width: 10em;
 }
