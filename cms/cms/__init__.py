@@ -9,7 +9,9 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'cms.sqlite'),
     )
 
-    if test_config is not None:
+    if test_config is None:
+        app.config.from_pyfile('config.py')
+    else:
         app.config.update(test_config)
 
     @app.route('/healthcheck')
