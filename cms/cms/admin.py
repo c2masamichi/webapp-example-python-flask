@@ -15,6 +15,7 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create():
     if request.method == 'POST':
         title = request.form['title']
@@ -39,6 +40,7 @@ def create():
 
 
 @bp.route('/update/<int:post_id>', methods=['GET', 'POST'])
+@login_required
 def update(post_id):
     post = get_post(post_id)
 
@@ -65,6 +67,7 @@ def update(post_id):
 
 
 @bp.route('/delete/<int:post_id>', methods=['POST'])
+@login_required
 def delete(post_id):
     get_post(post_id)
     db = get_db()
