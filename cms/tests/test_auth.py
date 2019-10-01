@@ -22,3 +22,18 @@ def test_register(client, app):
             ).fetchone()
             is not None
         )
+
+
+@pytest.mark.parametrize(
+    ('username', 'password', 'message'),
+    (
+        ('', '', b'Username is required.'),
+        ('aabbccdd', '', b'Password is required.'),
+        ('testuser', 'testpass', b'already registered'),
+    ),
+)
+def test_register_validate_input(client, username, password, message):
+    response = client.post(
+        '/auth/register', data={'username': username, 'password': password}
+    )
+    assert message in response.data
