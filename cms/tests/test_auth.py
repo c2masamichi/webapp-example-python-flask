@@ -37,3 +37,28 @@ def test_register_validate_input(client, username, password, message):
         '/auth/register', data={'username': username, 'password': password}
     )
     assert message in response.data
+
+
+def test_login(client, auth):
+    assert client.get('/auth/login').status_code == 200
+
+    response = auth.login()
+    assert response.headers['Location'] == 'http://localhost/'
+
+    with client:
+        client.get('/')
+        assert session['user_id'] == 1
+        assert g.user['username'] == 'testuser'
+
+
+@pytest.mark.parametrize(
+    ('username', 'password'),
+    (
+        ('aaaa', 'testpass'), 
+        ('testuser', 'aaaa')
+    ),
+)
+def test_login_validate_input(auth, username, password):
+    response = auth.login(username, password)
+    message = b'Incorrect username or password.'
+    assert message in response.data
