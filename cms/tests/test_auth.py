@@ -54,7 +54,7 @@ def test_login(client, auth):
 @pytest.mark.parametrize(
     ('username', 'password'),
     (
-        ('aaaa', 'testpass'), 
+        ('aaaa', 'testpass'),
         ('testuser', 'aaaa')
     ),
 )
