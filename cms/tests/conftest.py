@@ -9,7 +9,13 @@ from cms.db import init_db
 @pytest.fixture
 def app():
     db_fd, db_path = tempfile.mkstemp()
-    app = create_app({'TESTING': True, 'SECRET_KEY': 'test', 'DATABASE': db_path})
+    app = create_app(
+        {
+            'TESTING': True,
+            'SECRET_KEY': 'test',
+            'DATABASE': db_path
+        }
+    )
 
     with app.app_context():
         file_path = os.path.join(os.path.dirname(__file__), 'data.sql')
@@ -24,6 +30,7 @@ def app():
 @pytest.fixture
 def client(app):
     return app.test_client()
+
 
 @pytest.fixture
 def runner(app):
