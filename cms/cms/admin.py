@@ -77,7 +77,7 @@ def delete(post_id):
         {'id': post_id},
     )
     db.commit()
-    return redirect(url_for("blog.index"))
+    return redirect(url_for('blog.index'))
 
 
 @bp.route('/register', methods=['GET', 'POST'])
@@ -125,7 +125,7 @@ def delete_user(user_id):
         {'id': user_id},
     )
     db.commit()
-    return redirect(url_for("blog.index"))
+    return redirect(url_for('blog.index'))
 
 
 def get_user(user_id):
