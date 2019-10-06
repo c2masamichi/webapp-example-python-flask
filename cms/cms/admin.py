@@ -113,3 +113,17 @@ def register():
         flash(error)
 
     return render_template('admin/register.html')
+
+
+def get_user(user_id):
+    db = get_db()
+    user = db.execute(
+        'SELECT id, username FROM user'
+        ' WHERE id = :id',
+        {'id': user_id},
+    ).fetchone()
+
+    if user is None:
+        abort(404)
+
+    return user
