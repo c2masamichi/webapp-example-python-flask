@@ -115,6 +115,19 @@ def register():
     return render_template('admin/register.html')
 
 
+@bp.route('/users/delete/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    get_user(user_id)
+    db = get_db()
+    db.execute(
+        'DELETE FROM user WHERE id = :id',
+        {'id': user_id},
+    )
+    db.commit()
+    return redirect(url_for("blog.index"))
+
+
 def get_user(user_id):
     db = get_db()
     user = db.execute(
