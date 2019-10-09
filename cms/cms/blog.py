@@ -22,8 +22,8 @@ def index():
     return render_template('blog/index.html', posts=posts)
 
 
-@bp.route('/blog/<int:post_id>')
-def get_detail(post_id):
+@bp.route('/entry/<int:post_id>')
+def get_entry(post_id):
     post = get_post(post_id)
     return render_template('blog/detail.html', post=post)
 
