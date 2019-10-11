@@ -115,7 +115,7 @@ def register():
     return render_template('admin/register.html')
 
 
-@bp.route('/users/delete/<int:user_id>', methods=['POST'])
+@bp.route('/user/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
     get_user(user_id)
