@@ -6,7 +6,7 @@ from cms.db import get_db
 @pytest.mark.parametrize(
     'path',
     (
-        '/admin/register',
+        '/user/register',
     )
 )
 def test_login_required(client, path):
@@ -16,10 +16,10 @@ def test_login_required(client, path):
 
 def test_register(client, auth, app):
     auth.login()
-    assert client.get('/admin/register').status_code == 200
+    assert client.get('/user/register').status_code == 200
 
     response = client.post(
-        '/admin/register',
+        '/user/register',
         data={'username': 'addeduser', 'password': 'abcd1234'}
     )
     assert 'http://localhost/auth/login' == response.headers['Location']
@@ -45,6 +45,6 @@ def test_register(client, auth, app):
 def test_register_validate_input(client, auth, username, password, message):
     auth.login()
     response = client.post(
-        '/admin/register', data={'username': username, 'password': password}
+        '/user/register', data={'username': username, 'password': password}
     )
     assert message in response.data

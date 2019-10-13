@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash
 from cms.auth import login_required
 from cms.db import get_db
 
-bp = Blueprint('admin', __name__, url_prefix='/admin')
+bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 @bp.route('/register', methods=['GET', 'POST'])
@@ -46,10 +46,10 @@ def register():
 
         flash(error)
 
-    return render_template('admin/register.html')
+    return render_template('user/register.html')
 
 
-@bp.route('/user/delete/<int:user_id>', methods=['POST'])
+@bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
     get_user(user_id)
