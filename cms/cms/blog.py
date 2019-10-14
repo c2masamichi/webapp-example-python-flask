@@ -29,6 +29,17 @@ def get_entry(post_id):
     return render_template('blog/detail.html', post=post)
 
 
+@bp.route('/edit/')
+@login_required
+def list_for_editors():
+    db = get_db()
+    posts = db.execute(
+        'SELECT title, body, created FROM post'
+        ' ORDER BY created DESC'
+    ).fetchall()
+    return render_template('blog/list.html', posts=posts)
+
+
 @bp.route('/edit/create', methods=['GET', 'POST'])
 @login_required
 def create():

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% for post in posts %}
+    <div class="post">
+      <h1>{{ post['title'] }}</h1>
+      <div class="about">created {{ post['created'].strftime('%Y-%m-%d') }}</div>
+    </div>
+    {% if not loop.last %}
+    <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
