@@ -32,7 +32,7 @@ def test_get_entry_error(client):
         '/edit/delete/1',
     )
 )
-def test_login_required(client, path):
+def test_login_required_post(client, path):
     response = client.post(path)
     assert response.headers['Location'] == 'http://localhost/auth/login'
 
@@ -47,6 +47,9 @@ def test_exists_required(client, auth, path):
 
 
 def test_list_for_editors(client, auth):
+    response = client.get('/edit/')
+    assert response.headers['Location'] == 'http://localhost/auth/login'
+
     auth.login()
     response = client.get('/edit/')
     assert response.status_code == 200
