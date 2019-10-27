@@ -8,7 +8,7 @@ ENV FLASK_RUN_HOST 0.0.0.0
 RUN pip install pipenv
 COPY Pipfile Pipfile
 COPY Pipfile.lock Pipfile.lock
-RUN pipenv install --system
+RUN pipenv install --system --dev
 
 COPY . .
 
