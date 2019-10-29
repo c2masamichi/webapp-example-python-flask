@@ -9,6 +9,8 @@ pytest = "*"
 
 [packages]
 flask = "*"
+sqlalchemy = "*"
+pymysql = "*"
 
 [requires]
 python_version = "3.7"
