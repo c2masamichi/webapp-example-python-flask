@@ -11,7 +11,7 @@ Initialized the database.
 Init DB wth test data
 
 ```
-$ docker-compose run web flask init-db --datafile tests/data.sql
+$ docker-compose run web flask init-db --withdata
 Initialized the database.
 ```
 
