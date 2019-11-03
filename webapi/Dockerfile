@@ -12,5 +12,4 @@ RUN pipenv install --system --dev
 
 COPY . .
 
-RUN flask init-db --datafile tests/data.sql
 CMD ["flask", "run"]
