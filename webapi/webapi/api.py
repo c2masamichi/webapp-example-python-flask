@@ -112,9 +112,10 @@ def delete_product(product_id):
 
 def load_all_data():
     db = get_db()
-    data = db.execute(
-        'SELECT * FROM product'
-    ).fetchall()
+    with db.cursor() as cursor:
+        cursor.execute('SELECT * FROM product')
+        data = cursor.fetchall()
+
     result = {
         'result': [
             {
@@ -130,11 +131,12 @@ def load_all_data():
 
 def load_data(product_id):
     db = get_db()
-    row = db.execute(
-        'SELECT * FROM product p'
-        ' WHERE p.id = :id',
-        {'id': product_id},
-    ).fetchone()
+    with db.cursor() as cursor:
+        cursor.execute(
+            'SELECT * FROM product WHERE id = %s',
+            (product_id,),
+        )
+        row = cursor.fetchone()
 
     if row is None:
         error = {
