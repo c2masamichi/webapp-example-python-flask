@@ -39,10 +39,11 @@ def create_product():
         return jsonify(error), 400
 
     db = get_db()
-    db.execute(
-        'INSERT INTO product (name, price) VALUES (:name, :price)',
-        {'name': name, 'price': price},
-    )
+    with db.cursor() as cursor:
+        cursor.execute(
+            'INSERT INTO product (name, price) VALUES (%s, %s)',
+            (name, price),
+        )
     db.commit()
     result =  {
         'result': 'Successfully Created.'
@@ -79,10 +80,11 @@ def update_product(product_id):
         return jsonify(result), code
 
     db = get_db()
-    db.execute(
-        'UPDATE product SET name = :name, price = :price WHERE id = :id',
-        {'name': name, 'price': price, 'id': product_id},
-    )
+    with db.cursor() as cursor:
+        cursor.execute(
+            'UPDATE product SET name = %s, price = %s WHERE id = %s',
+            (name, price, product_id),
+        )
     db.commit()
 
     result =  {
@@ -98,10 +100,11 @@ def delete_product(product_id):
         return jsonify(result), code
 
     db = get_db()
-    db.execute(
-        'DELETE FROM product WHERE id = :id',
-        {'id': product_id},
-    )
+    with db.cursor() as cursor:
+        cursor.execute(
+            'DELETE FROM product WHERE id = %s',
+            (product_id,),
+        )
     db.commit()
 
     result =  {

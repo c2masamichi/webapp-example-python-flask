@@ -47,7 +47,9 @@ def test_create_product(client, app):
 
     with app.app_context():
         db = get_db()
-        row = db.execute('SELECT * FROM product WHERE id = 3').fetchone()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM product WHERE id = 3')
+            row = cursor.fetchone()
         assert row['name'] == 'meat'
         assert row['price'] == 1000
 
@@ -70,7 +72,9 @@ def test_update_product(client, app):
 
     with app.app_context():
         db = get_db()
-        row = db.execute('SELECT * FROM product WHERE id = 2').fetchone()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM product WHERE id = 2')
+            row = cursor.fetchone()
         assert row['name'] == 'rice'
         assert row['price'] == 900
 
@@ -90,6 +94,13 @@ def test_update_product_error(client):
 def test_delete_product(client, app):
     response = client.delete('/products/1')
     assert response.status_code == 200
+
+    with app.app_context():
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM product WHERE id = 1')
+            row = cursor.fetchone()
+        assert row is None
 
 
 def test_delete_product_error(client, app):
