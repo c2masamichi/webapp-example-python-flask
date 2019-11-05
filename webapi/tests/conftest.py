@@ -1,26 +1,28 @@
-import os
-import tempfile
-
 import pytest
 
 from webapi import create_app
+from webapi.db import close_db
 from webapi.db import get_db
 from webapi.db import init_db
 
 
 @pytest.fixture
 def app():
-    db_fd, db_path = tempfile.mkstemp()
-    app = create_app({'TESTING': True, 'DATABASE': db_path})
+    app = create_app(
+        {
+            'TESTING': True,
+            'DB_HOST': 'db',
+            'DB_PORT': 3306,
+            'DB_USER': 'dev_user',
+            'DB_PASSWORD': 'dev_pass',
+            'DATABASE': 'dev_db',
+        }
+    )
 
     with app.app_context():
-        file_path = os.path.join(os.path.dirname(__file__), 'data.sql')
-        init_db(file_path)
+        init_db(withdata=True)
 
     yield app
-
-    os.close(db_fd)
-    os.unlink(db_path)
 
 
 @pytest.fixture
