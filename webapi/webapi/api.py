@@ -45,7 +45,7 @@ def create_product():
             (name, price),
         )
     db.commit()
-    result =  {
+    result = {
         'result': 'Successfully Created.'
     }
     return jsonify(result), 201
@@ -87,7 +87,7 @@ def update_product(product_id):
         )
     db.commit()
 
-    result =  {
+    result = {
         'result': 'Successfully Updated.'
     }
     return jsonify(result)
@@ -107,7 +107,7 @@ def delete_product(product_id):
         )
     db.commit()
 
-    result =  {
+    result = {
         'result': 'Successfully Deleted.'
     }
     return jsonify(result)
@@ -147,7 +147,7 @@ def load_data(product_id):
         }
         return error, 404
 
-    result =  {
+    result = {
         'result': {
             'id': row['id'],
             'name': row['name'],
