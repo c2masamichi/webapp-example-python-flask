@@ -9,7 +9,6 @@ pytest = "*"
 
 [packages]
 flask = "*"
-sqlalchemy = "*"
 pymysql = "*"
 
 [requires]
