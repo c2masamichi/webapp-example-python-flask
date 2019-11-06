@@ -39,12 +39,13 @@ def create_product():
         return jsonify(error), 400
 
     db = get_db()
-    db.execute(
-        'INSERT INTO product (name, price) VALUES (:name, :price)',
-        {'name': name, 'price': price},
-    )
+    with db.cursor() as cursor:
+        cursor.execute(
+            'INSERT INTO product (name, price) VALUES (%s, %s)',
+            (name, price),
+        )
     db.commit()
-    result =  {
+    result = {
         'result': 'Successfully Created.'
     }
     return jsonify(result), 201
@@ -79,13 +80,14 @@ def update_product(product_id):
         return jsonify(result), code
 
     db = get_db()
-    db.execute(
-        'UPDATE product SET name = :name, price = :price WHERE id = :id',
-        {'name': name, 'price': price, 'id': product_id},
-    )
+    with db.cursor() as cursor:
+        cursor.execute(
+            'UPDATE product SET name = %s, price = %s WHERE id = %s',
+            (name, price, product_id),
+        )
     db.commit()
 
-    result =  {
+    result = {
         'result': 'Successfully Updated.'
     }
     return jsonify(result)
@@ -98,13 +100,14 @@ def delete_product(product_id):
         return jsonify(result), code
 
     db = get_db()
-    db.execute(
-        'DELETE FROM product WHERE id = :id',
-        {'id': product_id},
-    )
+    with db.cursor() as cursor:
+        cursor.execute(
+            'DELETE FROM product WHERE id = %s',
+            (product_id,),
+        )
     db.commit()
 
-    result =  {
+    result = {
         'result': 'Successfully Deleted.'
     }
     return jsonify(result)
@@ -112,9 +115,10 @@ def delete_product(product_id):
 
 def load_all_data():
     db = get_db()
-    data = db.execute(
-        'SELECT * FROM product'
-    ).fetchall()
+    with db.cursor() as cursor:
+        cursor.execute('SELECT * FROM product')
+        data = cursor.fetchall()
+
     result = {
         'result': [
             {
@@ -130,11 +134,12 @@ def load_all_data():
 
 def load_data(product_id):
     db = get_db()
-    row = db.execute(
-        'SELECT * FROM product p'
-        ' WHERE p.id = :id',
-        {'id': product_id},
-    ).fetchone()
+    with db.cursor() as cursor:
+        cursor.execute(
+            'SELECT * FROM product WHERE id = %s',
+            (product_id,),
+        )
+        row = cursor.fetchone()
 
     if row is None:
         error = {
@@ -142,7 +147,7 @@ def load_data(product_id):
         }
         return error, 404
 
-    result =  {
+    result = {
         'result': {
             'id': row['id'],
             'name': row['name'],
