@@ -16,10 +16,13 @@ bp = Blueprint('blog', __name__)
 @bp.route('/')
 def index():
     db = get_db()
-    posts = db.execute(
-        'SELECT title, body, created FROM post'
-        ' ORDER BY created DESC'
-    ).fetchall()
+    with db.cursor() as cursor:
+        cursor.execute(
+            'SELECT title, body, created FROM post'
+            ' ORDER BY created DESC'
+        )
+        posts = cursor.fetchall()
+
     return render_template('blog/index.html', posts=posts)
 
 
@@ -33,10 +36,12 @@ def get_entry(post_id):
 @login_required
 def list_for_editors():
     db = get_db()
-    posts = db.execute(
-        'SELECT title, body, created FROM post'
-        ' ORDER BY created DESC'
-    ).fetchall()
+    with db.cursor() as cursor:
+        cursor.execute(
+            'SELECT title, body, created FROM post'
+            ' ORDER BY created DESC'
+        )
+        posts = cursor.fetchall()
     return render_template('blog/list.html', posts=posts)
 
 
@@ -55,10 +60,11 @@ def create():
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                'INSERT INTO post (title, body) VALUES (:title, :body)',
-                {'title': title, 'body': body},
-            )
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'INSERT INTO post (title, body) VALUES (%s, %s)',
+                    (title, body),
+                )
             db.commit()
             return redirect(url_for('blog.index'))
 
@@ -82,10 +88,11 @@ def update(post_id):
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                'UPDATE post SET title = :title, body = :body WHERE id = :id',
-                {'title': title, 'body': body, 'id': post_id},
-            )
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'UPDATE post SET title = %s, body = %s WHERE id = %s',
+                    (title, body, post_id),
+                )
             db.commit()
             return redirect(url_for('blog.index'))
 
@@ -97,21 +104,23 @@ def update(post_id):
 def delete(post_id):
     get_post(post_id)
     db = get_db()
-    db.execute(
-        'DELETE FROM post WHERE id = :id',
-        {'id': post_id},
-    )
+    with db.cursor() as cursor:
+        cursor.execute(
+            'DELETE FROM post WHERE id = %s',
+            (post_id,),
+        )
     db.commit()
     return redirect(url_for('blog.index'))
 
 
 def get_post(post_id):
     db = get_db()
-    post = db.execute(
-        'SELECT id, title, body, created FROM post'
-        ' WHERE id = :id',
-        {'id': post_id},
-    ).fetchone()
+    with db.cursor() as cursor:
+        cursor.execute(
+            'SELECT id, title, body, created FROM post WHERE id = %s',
+            (post_id,),
+        )
+        post = cursor.fetchone()
 
     if post is None:
         abort(404)
