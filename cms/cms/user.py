@@ -27,20 +27,22 @@ def register():
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
-        elif (
-            db.execute(
-                'SELECT id FROM user WHERE username = ?',
-                (username,)
-            ).fetchone()
-            is not None
-        ):
-            error = 'User {0} is already registered.'.format(username)
+        else:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id FROM user WHERE username = %s',
+                    (username,)
+                )
+                user = cursor.fetchone()
+            if user is not None:
+                error = 'User {0} is already registered.'.format(username)
 
         if error is None:
-            db.execute(
-                'INSERT INTO user (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password)),
-            )
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'INSERT INTO user (username, password) VALUES (%s, %s)',
+                    (username, generate_password_hash(password)),
+                )
             db.commit()
             return redirect(url_for('auth.login'))
 
@@ -54,21 +56,23 @@ def register():
 def delete_user(user_id):
     get_user(user_id)
     db = get_db()
-    db.execute(
-        'DELETE FROM user WHERE id = :id',
-        {'id': user_id},
-    )
+    with db.cursor() as cursor:
+        cursor.execute(
+            'DELETE FROM user WHERE id = %s',
+            (user_id,),
+        )
     db.commit()
     return redirect(url_for('blog.index'))
 
 
 def get_user(user_id):
     db = get_db()
-    user = db.execute(
-        'SELECT id, username FROM user'
-        ' WHERE id = :id',
-        {'id': user_id},
-    ).fetchone()
+    with db.cursor() as cursor:
+        cursor.execute(
+            'SELECT id, username FROM user WHERE id = %s',
+            (user_id,),
+        )
+        user = cursor.fetchone()
 
     if user is None:
         abort(404)
