@@ -22,7 +22,9 @@ def index():
 
 @bp.route('/entry/<int:post_id>')
 def get_entry(post_id):
-    post = get_post(post_id)
+    post = Entry(get_db()).fetch_entry(post_id)
+    if post is None:
+        abort(404)
     return render_template('blog/detail.html', post=post)
 
 
@@ -62,7 +64,9 @@ def create():
 @bp.route('/edit/update/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def update(post_id):
-    post = get_post(post_id)
+    post = Entry(get_db()).fetch_entry(post_id)
+    if post is None:
+        abort(404)
 
     if request.method == 'POST':
         title = request.form['title']
@@ -90,7 +94,8 @@ def update(post_id):
 @bp.route('/edit/delete/<int:post_id>', methods=['POST'])
 @login_required
 def delete(post_id):
-    get_post(post_id)
+    if Entry(get_db()).fetch_entry(post_id) is None:
+        abort(404)
     db = get_db()
     with db.cursor() as cursor:
         cursor.execute(
@@ -99,18 +104,3 @@ def delete(post_id):
         )
     db.commit()
     return redirect(url_for('blog.index'))
-
-
-def get_post(post_id):
-    db = get_db()
-    with db.cursor() as cursor:
-        cursor.execute(
-            'SELECT id, title, body, created FROM post WHERE id = %s',
-            (post_id,),
-        )
-        post = cursor.fetchone()
-
-    if post is None:
-        abort(404)
-
-    return post
