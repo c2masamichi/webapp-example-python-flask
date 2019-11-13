@@ -9,20 +9,14 @@ from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.db import get_db
+from cms.model import Entry
 
 bp = Blueprint('blog', __name__)
 
 
 @bp.route('/')
 def index():
-    db = get_db()
-    with db.cursor() as cursor:
-        cursor.execute(
-            'SELECT title, body, created FROM post'
-            ' ORDER BY created DESC'
-        )
-        posts = cursor.fetchall()
-
+    posts = Entry(get_db()).fetch_all_entries()
     return render_template('blog/index.html', posts=posts)
 
 
@@ -35,13 +29,7 @@ def get_entry(post_id):
 @bp.route('/edit/')
 @login_required
 def list_for_editors():
-    db = get_db()
-    with db.cursor() as cursor:
-        cursor.execute(
-            'SELECT title, body, created FROM post'
-            ' ORDER BY created DESC'
-        )
-        posts = cursor.fetchall()
+    posts = Entry(get_db()).fetch_all_entries()
     return render_template('blog/list.html', posts=posts)
 
 
