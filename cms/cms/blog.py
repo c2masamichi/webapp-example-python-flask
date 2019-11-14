@@ -84,11 +84,5 @@ def update(post_id):
 def delete(post_id):
     if Entry(db=get_db()).fetch(post_id) is None:
         abort(404)
-    db = get_db()
-    with db.cursor() as cursor:
-        cursor.execute(
-            'DELETE FROM post WHERE id = %s',
-            (post_id,),
-        )
-    db.commit()
+    Entry(db=get_db()).delete(post_id)
     return redirect(url_for('blog.index'))

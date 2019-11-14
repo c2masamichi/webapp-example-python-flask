@@ -40,3 +40,12 @@ class Entry(object):
                 (title, body, entry_id),
             )
         db.commit()
+
+    def delete(self, entry_id):
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'DELETE FROM post WHERE id = %s',
+                (entry_id,),
+            )
+        db.commit()
