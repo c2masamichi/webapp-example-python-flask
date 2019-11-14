@@ -31,3 +31,12 @@ class Entry(object):
                 (title, body),
             )
         db.commit()
+
+    def update(self, entry_id, title, body):
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'UPDATE post SET title = %s, body = %s WHERE id = %s',
+                (title, body, entry_id),
+            )
+        db.commit()

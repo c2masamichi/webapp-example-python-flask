@@ -73,13 +73,7 @@ def update(post_id):
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            with db.cursor() as cursor:
-                cursor.execute(
-                    'UPDATE post SET title = %s, body = %s WHERE id = %s',
-                    (title, body, post_id),
-                )
-            db.commit()
+            Entry(db=get_db()).update(post_id, title, body)
             return redirect(url_for('blog.index'))
 
     return render_template('blog/update.html', post=post)
