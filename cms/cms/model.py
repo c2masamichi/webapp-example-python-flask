@@ -22,3 +22,12 @@ class Entry(object):
             entry = cursor.fetchone()
 
         return entry
+
+    def create(self, title, body):
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'INSERT INTO post (title, body) VALUES (%s, %s)',
+                (title, body),
+            )
+        db.commit()

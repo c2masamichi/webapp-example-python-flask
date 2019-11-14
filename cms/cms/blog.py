@@ -49,13 +49,7 @@ def create():
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            with db.cursor() as cursor:
-                cursor.execute(
-                    'INSERT INTO post (title, body) VALUES (%s, %s)',
-                    (title, body),
-                )
-            db.commit()
+            Entry(db=get_db()).create(title, body)
             return redirect(url_for('blog.index'))
 
     return render_template('blog/create.html')
