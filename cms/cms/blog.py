@@ -16,13 +16,13 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
-    posts = Entry(get_db()).fetch_all_entries()
+    posts = Entry(db=get_db()).fetch_all_entries()
     return render_template('blog/index.html', posts=posts)
 
 
 @bp.route('/entry/<int:post_id>')
 def get_entry(post_id):
-    post = Entry(get_db()).fetch_entry(post_id)
+    post = Entry(db=get_db()).fetch_entry(post_id)
     if post is None:
         abort(404)
     return render_template('blog/detail.html', post=post)
@@ -31,7 +31,7 @@ def get_entry(post_id):
 @bp.route('/edit/')
 @login_required
 def list_for_editors():
-    posts = Entry(get_db()).fetch_all_entries()
+    posts = Entry(db=get_db()).fetch_all_entries()
     return render_template('blog/list.html', posts=posts)
 
 
@@ -64,7 +64,7 @@ def create():
 @bp.route('/edit/update/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def update(post_id):
-    post = Entry(get_db()).fetch_entry(post_id)
+    post = Entry(db=get_db()).fetch_entry(post_id)
     if post is None:
         abort(404)
 
@@ -94,7 +94,7 @@ def update(post_id):
 @bp.route('/edit/delete/<int:post_id>', methods=['POST'])
 @login_required
 def delete(post_id):
-    if Entry(get_db()).fetch_entry(post_id) is None:
+    if Entry(db=get_db()).fetch_entry(post_id) is None:
         abort(404)
     db = get_db()
     with db.cursor() as cursor:
