@@ -2,7 +2,7 @@ class Entry(object):
     def __init__(self, db):
         self._db = db
 
-    def fetch_all_entries(self):
+    def fetch_all(self):
         db = self._db
         with db.cursor() as cursor:
             cursor.execute(
@@ -11,7 +11,7 @@ class Entry(object):
             )
             return cursor.fetchall()
 
-    def fetch_entry(self, entry_id):
+    def fetch(self, entry_id):
         entry = None
         db = self._db
         with db.cursor() as cursor:
