@@ -8,7 +8,6 @@ from flask import url_for
 from werkzeug.exceptions import abort
 
 from cms.auth import login_required
-from cms.db import get_db
 from cms.model import Entry
 
 bp = Blueprint('blog', __name__)
@@ -16,13 +15,13 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
-    posts = Entry(db=get_db()).fetch_all()
+    posts = Entry().fetch_all()
     return render_template('blog/index.html', posts=posts)
 
 
 @bp.route('/entry/<int:post_id>')
 def get_entry(post_id):
-    post = Entry(db=get_db()).fetch(post_id)
+    post = Entry().fetch(post_id)
     if post is None:
         abort(404)
     return render_template('blog/detail.html', post=post)
@@ -31,7 +30,7 @@ def get_entry(post_id):
 @bp.route('/edit/')
 @login_required
 def list_for_editors():
-    posts = Entry(db=get_db()).fetch_all()
+    posts = Entry().fetch_all()
     return render_template('blog/list.html', posts=posts)
 
 
@@ -49,7 +48,7 @@ def create():
         if error is not None:
             flash(error)
         else:
-            Entry(db=get_db()).create(title, body)
+            Entry().create(title, body)
             return redirect(url_for('blog.index'))
 
     return render_template('blog/create.html')
@@ -58,7 +57,8 @@ def create():
 @bp.route('/edit/update/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def update(post_id):
-    post = Entry(db=get_db()).fetch(post_id)
+    entry = Entry()
+    post = entry.fetch(post_id)
     if post is None:
         abort(404)
 
@@ -73,7 +73,7 @@ def update(post_id):
         if error is not None:
             flash(error)
         else:
-            Entry(db=get_db()).update(post_id, title, body)
+            entry.update(post_id, title, body)
             return redirect(url_for('blog.index'))
 
     return render_template('blog/update.html', post=post)
@@ -82,7 +82,8 @@ def update(post_id):
 @bp.route('/edit/delete/<int:post_id>', methods=['POST'])
 @login_required
 def delete(post_id):
-    if Entry(db=get_db()).fetch(post_id) is None:
+    entry = Entry()
+    if entry.fetch(post_id) is None:
         abort(404)
-    Entry(db=get_db()).delete(post_id)
+    entry.delete(post_id)
     return redirect(url_for('blog.index'))

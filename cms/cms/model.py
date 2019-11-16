@@ -1,6 +1,9 @@
+from cms.db import get_db
+
+
 class Entry(object):
-    def __init__(self, db):
-        self._db = db
+    def __init__(self):
+        self._db = get_db()
 
     def fetch_all(self):
         db = self._db
