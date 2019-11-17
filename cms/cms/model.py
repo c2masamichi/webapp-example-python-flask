@@ -52,3 +52,21 @@ class Entry(object):
                 (entry_id,),
             )
         db.commit()
+
+
+class User(object):
+    def __init__(self):
+        self._db = get_db()
+
+    def fetch(self, user_id):
+        user = None
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT id, username FROM user WHERE id = %s',
+                (user_id,),
+            )
+            user = cursor.fetchone()
+
+        return user
+

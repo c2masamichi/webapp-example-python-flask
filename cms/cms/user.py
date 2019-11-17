@@ -9,6 +9,7 @@ from werkzeug.exceptions import abort
 from werkzeug.security import generate_password_hash
 
 from cms.auth import login_required
+from cms.model import User
 from cms.db import get_db
 
 bp = Blueprint('user', __name__, url_prefix='/user')
@@ -54,7 +55,9 @@ def register():
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
-    get_user(user_id)
+    user = User()
+    if user.fetch(user_id) is None:
+        abort(404)
     db = get_db()
     with db.cursor() as cursor:
         cursor.execute(
@@ -63,18 +66,3 @@ def delete_user(user_id):
         )
     db.commit()
     return redirect(url_for('blog.index'))
-
-
-def get_user(user_id):
-    db = get_db()
-    with db.cursor() as cursor:
-        cursor.execute(
-            'SELECT id, username FROM user WHERE id = %s',
-            (user_id,),
-        )
-        user = cursor.fetchone()
-
-    if user is None:
-        abort(404)
-
-    return user
