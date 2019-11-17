@@ -55,8 +55,8 @@ def register():
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
-    user = User()
-    if user.fetch(user_id) is None:
+    user_client = User()
+    if user_client.fetch(user_id) is None:
         abort(404)
     db = get_db()
     with db.cursor() as cursor:

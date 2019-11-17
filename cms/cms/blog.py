@@ -57,8 +57,8 @@ def create():
 @bp.route('/edit/update/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def update(post_id):
-    entry = Entry()
-    post = entry.fetch(post_id)
+    entry_client = Entry()
+    post = entry_client.fetch(post_id)
     if post is None:
         abort(404)
 
@@ -73,7 +73,7 @@ def update(post_id):
         if error is not None:
             flash(error)
         else:
-            entry.update(post_id, title, body)
+            entry_client.update(post_id, title, body)
             return redirect(url_for('blog.index'))
 
     return render_template('blog/update.html', post=post)
@@ -82,8 +82,8 @@ def update(post_id):
 @bp.route('/edit/delete/<int:post_id>', methods=['POST'])
 @login_required
 def delete(post_id):
-    entry = Entry()
-    if entry.fetch(post_id) is None:
+    entry_client = Entry()
+    if entry_client.fetch(post_id) is None:
         abort(404)
-    entry.delete(post_id)
+    entry_client.delete(post_id)
     return redirect(url_for('blog.index'))
