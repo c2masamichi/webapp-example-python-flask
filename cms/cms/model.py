@@ -70,3 +70,11 @@ class User(object):
 
         return user
 
+    def delete(self, user_id):
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'DELETE FROM user WHERE id = %s',
+                (user_id,),
+            )
+        db.commit()

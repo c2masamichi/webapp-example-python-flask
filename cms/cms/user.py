@@ -58,11 +58,5 @@ def delete_user(user_id):
     user_client = User()
     if user_client.fetch(user_id) is None:
         abort(404)
-    db = get_db()
-    with db.cursor() as cursor:
-        cursor.execute(
-            'DELETE FROM user WHERE id = %s',
-            (user_id,),
-        )
-    db.commit()
+    user_client.delete(user_id)
     return redirect(url_for('blog.index'))
