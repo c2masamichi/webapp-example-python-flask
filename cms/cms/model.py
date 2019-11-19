@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash
+
 from cms.db import get_db
 
 
@@ -69,6 +71,30 @@ class User(object):
             user = cursor.fetchone()
 
         return user
+
+    def create(self, username, password):
+        db = self._db
+        error = None
+
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT id FROM user WHERE username = %s',
+                (username,)
+            )
+            user = cursor.fetchone()
+        if user is not None:
+            error = 'User {0} is already registered.'.format(username)
+
+        if error is None:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'INSERT INTO user (username, password) VALUES (%s, %s)',
+                    (username, generate_password_hash(password)),
+                )
+            db.commit()
+
+        return error
+
 
     def delete(self, user_id):
         db = self._db
