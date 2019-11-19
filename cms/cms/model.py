@@ -12,7 +12,7 @@ class Entry(object):
         db = self._db
         with db.cursor() as cursor:
             cursor.execute(
-                'SELECT title, body, created FROM post'
+                'SELECT title, body, created FROM entry'
                 ' ORDER BY created DESC'
             )
             return cursor.fetchall()
@@ -22,7 +22,7 @@ class Entry(object):
         db = self._db
         with db.cursor() as cursor:
             cursor.execute(
-                'SELECT id, title, body, created FROM post WHERE id = %s',
+                'SELECT id, title, body, created FROM entry WHERE id = %s',
                 (entry_id,),
             )
             entry = cursor.fetchone()
@@ -33,7 +33,7 @@ class Entry(object):
         db = self._db
         with db.cursor() as cursor:
             cursor.execute(
-                'INSERT INTO post (title, body) VALUES (%s, %s)',
+                'INSERT INTO entry (title, body) VALUES (%s, %s)',
                 (title, body),
             )
         db.commit()
@@ -42,7 +42,7 @@ class Entry(object):
         db = self._db
         with db.cursor() as cursor:
             cursor.execute(
-                'UPDATE post SET title = %s, body = %s WHERE id = %s',
+                'UPDATE entry SET title = %s, body = %s WHERE id = %s',
                 (title, body, entry_id),
             )
         db.commit()
@@ -51,7 +51,7 @@ class Entry(object):
         db = self._db
         with db.cursor() as cursor:
             cursor.execute(
-                'DELETE FROM post WHERE id = %s',
+                'DELETE FROM entry WHERE id = %s',
                 (entry_id,),
             )
         db.commit()

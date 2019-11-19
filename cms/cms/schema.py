@@ -1,6 +1,6 @@
 SCHEMA_STATEMENTS = [
     'DROP TABLE IF EXISTS user',
-    'DROP TABLE IF EXISTS post',
+    'DROP TABLE IF EXISTS entry',
 
     'CREATE TABLE user ('
     ' id INT PRIMARY KEY AUTO_INCREMENT,'
@@ -8,7 +8,7 @@ SCHEMA_STATEMENTS = [
     ' password VARCHAR(200) NOT NULL'
     ')',
 
-    'CREATE TABLE post ('
+    'CREATE TABLE entry ('
     ' id INT PRIMARY KEY AUTO_INCREMENT,'
     ' title VARCHAR(100) NOT NULL,'
     ' body TEXT NOT NULL,'

@@ -67,10 +67,10 @@ def test_create(client, auth, app):
     with app.app_context():
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM post WHERE id = 4')
-            post = cursor.fetchone()
-        assert post['title'] == 'created'
-        assert post['body'] == 'created on test'
+            cursor.execute('SELECT * FROM entry WHERE id = 4')
+            entry = cursor.fetchone()
+        assert entry['title'] == 'created'
+        assert entry['body'] == 'created on test'
 
 
 def test_update(client, auth, app):
@@ -84,10 +84,10 @@ def test_update(client, auth, app):
     with app.app_context():
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM post WHERE id = 1')
-            post = cursor.fetchone()
-        assert post['title'] == 'updated'
-        assert post['body'] == 'updated on test'
+            cursor.execute('SELECT * FROM entry WHERE id = 1')
+            entry = cursor.fetchone()
+        assert entry['title'] == 'updated'
+        assert entry['body'] == 'updated on test'
 
 
 @pytest.mark.parametrize(
@@ -108,6 +108,6 @@ def test_delete(client, auth, app):
     with app.app_context():
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM post WHERE id = 1')
-            post = cursor.fetchone()
-        assert post is None
+            cursor.execute('SELECT * FROM entry WHERE id = 1')
+            entry = cursor.fetchone()
+        assert entry is None
