@@ -1,3 +1,4 @@
+from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
 from cms.db import get_db
@@ -72,6 +73,21 @@ class User(object):
 
         return user
 
+    def auth(self, username, password):
+        db = self._db
+        error = None
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT * FROM user WHERE username = %s', (username,)
+            )
+            user = cursor.fetchone()
+
+        if (user is None or 
+            not check_password_hash(user['password'], password)):
+            error = 'Incorrect username or password.'
+
+        return user, error
+
     def create(self, username, password):
         db = self._db
         error = None
@@ -94,7 +110,6 @@ class User(object):
             db.commit()
 
         return error
-
 
     def delete(self, user_id):
         db = self._db

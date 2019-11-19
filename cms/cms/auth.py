@@ -8,9 +8,8 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
-from werkzeug.security import check_password_hash
 
-from cms.db import get_db
+from cms.model import User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -33,13 +32,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM user WHERE id = %s',
-                (user_id,)
-            )
-            g.user = cursor.fetchone()
+        g.user = User().fetch(user_id)
 
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -47,18 +40,8 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
-        error = None
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM user WHERE username = %s', (username,)
-            )
-            user = cursor.fetchone()
 
-        if (user is None or 
-            not check_password_hash(user['password'], password)):
-            error = 'Incorrect username or password.'
-
+        user, error = User().auth(username, password)
         if error is None:
             session.clear()
             session['user_id'] = user['id']
