@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}{{ post['title'] }}{% endblock %}</h1>
+  <h1>{% block title %}{{ entry['title'] }}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <article class="post">
-    <div class="about">created {{ post['created'].strftime('%Y-%m-%d') }}</div>
-    <div class="body">{{ post['body'] }}</div>
+  <article class="entry">
+    <div class="about">created {{ entry['created'].strftime('%Y-%m-%d') }}</div>
+    <div class="body">{{ entry['body'] }}</div>
   </article>
 {% endblock %}
