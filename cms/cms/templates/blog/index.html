@@ -5,15 +5,15 @@
 {% endblock %}
 
 {% block content %}
-  {% for post in posts %}
-    <article class="post">
+  {% for entry in entries %}
+    <article class="entry">
       <header>
         <div>
-          <h1>{{ post['title'] }}</h1>
-          <div class="about">created {{ post['created'].strftime('%Y-%m-%d') }}</div>
+          <h1>{{ entry['title'] }}</h1>
+          <div class="about">created {{ entry['created'].strftime('%Y-%m-%d') }}</div>
         </div>
       </header>
-      <p class="body">{{ post['body'] }}</p>
+      <p class="body">{{ entry['body'] }}</p>
     </article>
     {% if not loop.last %}
       <hr>

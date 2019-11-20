@@ -6,7 +6,7 @@ from cms.db import get_db
 @pytest.mark.parametrize(
     'path',
     (
-        '/user/register',
+        '/user/create',
     )
 )
 def test_login_required(client, path):
@@ -14,24 +14,25 @@ def test_login_required(client, path):
     assert response.headers['Location'] == 'http://localhost/auth/login'
 
 
-def test_register(client, auth, app):
+def test_create(client, auth, app):
     auth.login()
-    assert client.get('/user/register').status_code == 200
+    assert client.get('/user/create').status_code == 200
 
     response = client.post(
-        '/user/register',
+        '/user/create',
         data={'username': 'addeduser', 'password': 'abcd1234'}
     )
     assert 'http://localhost/auth/login' == response.headers['Location']
 
     with app.app_context():
-        assert (
-            get_db().execute(
-                'select * from user where username = ?',
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute(
+                'select * from user where username = %s',
                 ('addeduser',)
-            ).fetchone()
-            is not None
-        )
+            )
+            user = cursor.fetchone()
+        assert user is not None
 
 
 @pytest.mark.parametrize(
@@ -42,9 +43,9 @@ def test_register(client, auth, app):
         ('testuser', 'testpass', b'already registered'),
     ),
 )
-def test_register_validate_input(client, auth, username, password, message):
+def test_create_validate_input(client, auth, username, password, message):
     auth.login()
     response = client.post(
-        '/user/register', data={'username': username, 'password': password}
+        '/user/create', data={'username': username, 'password': password}
     )
     assert message in response.data

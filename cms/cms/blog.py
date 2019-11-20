@@ -8,36 +8,30 @@ from flask import url_for
 from werkzeug.exceptions import abort
 
 from cms.auth import login_required
-from cms.db import get_db
+from cms.model import Entry
 
 bp = Blueprint('blog', __name__)
 
 
 @bp.route('/')
 def index():
-    db = get_db()
-    posts = db.execute(
-        'SELECT title, body, created FROM post'
-        ' ORDER BY created DESC'
-    ).fetchall()
-    return render_template('blog/index.html', posts=posts)
+    entries = Entry().fetch_all()
+    return render_template('blog/index.html', entries=entries)
 
 
-@bp.route('/entry/<int:post_id>')
-def get_entry(post_id):
-    post = get_post(post_id)
-    return render_template('blog/detail.html', post=post)
+@bp.route('/entry/<int:entry_id>')
+def get_entry(entry_id):
+    entry = Entry().fetch(entry_id)
+    if entry is None:
+        abort(404)
+    return render_template('blog/detail.html', entry=entry)
 
 
 @bp.route('/edit/')
 @login_required
 def list_for_editors():
-    db = get_db()
-    posts = db.execute(
-        'SELECT title, body, created FROM post'
-        ' ORDER BY created DESC'
-    ).fetchall()
-    return render_template('blog/list.html', posts=posts)
+    entries = Entry().fetch_all()
+    return render_template('blog/list.html', entries=entries)
 
 
 @bp.route('/edit/create', methods=['GET', 'POST'])
@@ -54,21 +48,19 @@ def create():
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO post (title, body) VALUES (:title, :body)',
-                {'title': title, 'body': body},
-            )
-            db.commit()
+            Entry().create(title, body)
             return redirect(url_for('blog.index'))
 
     return render_template('blog/create.html')
 
 
-@bp.route('/edit/update/<int:post_id>', methods=['GET', 'POST'])
+@bp.route('/edit/update/<int:entry_id>', methods=['GET', 'POST'])
 @login_required
-def update(post_id):
-    post = get_post(post_id)
+def update(entry_id):
+    entry_client = Entry()
+    entry = entry_client.fetch(entry_id)
+    if entry is None:
+        abort(404)
 
     if request.method == 'POST':
         title = request.form['title']
@@ -81,39 +73,17 @@ def update(post_id):
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            db.execute(
-                'UPDATE post SET title = :title, body = :body WHERE id = :id',
-                {'title': title, 'body': body, 'id': post_id},
-            )
-            db.commit()
+            entry_client.update(entry_id, title, body)
             return redirect(url_for('blog.index'))
 
-    return render_template('blog/update.html', post=post)
+    return render_template('blog/update.html', entry=entry)
 
 
-@bp.route('/edit/delete/<int:post_id>', methods=['POST'])
+@bp.route('/edit/delete/<int:entry_id>', methods=['POST'])
 @login_required
-def delete(post_id):
-    get_post(post_id)
-    db = get_db()
-    db.execute(
-        'DELETE FROM post WHERE id = :id',
-        {'id': post_id},
-    )
-    db.commit()
-    return redirect(url_for('blog.index'))
-
-
-def get_post(post_id):
-    db = get_db()
-    post = db.execute(
-        'SELECT id, title, body, created FROM post'
-        ' WHERE id = :id',
-        {'id': post_id},
-    ).fetchone()
-
-    if post is None:
+def delete(entry_id):
+    entry_client = Entry()
+    if entry_client.fetch(entry_id) is None:
         abort(404)
-
-    return post
+    entry_client.delete(entry_id)
+    return redirect(url_for('blog.index'))

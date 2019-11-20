@@ -1,18 +1,24 @@
-import sqlite3
-
 import click
 from flask import current_app
 from flask import g
 from flask.cli import with_appcontext
+import pymysql
+
+from cms.schema import SCHEMA_STATEMENTS
+from tests.data import TEST_DATA_STATEMENTS
 
 
 def get_db():
     if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
+        g.db = pymysql.connect(
+            host=current_app.config['DB_HOST'],
+            port=current_app.config['DB_PORT'],
+            user=current_app.config['DB_USER'],
+            password=current_app.config['DB_PASSWORD'],
+            db=current_app.config['DATABASE'],
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
         )
-        g.db.row_factory = sqlite3.Row
 
     return g.db
 
@@ -24,22 +30,25 @@ def close_db(e=None):
         db.close()
 
 
-def init_db(datafile):
+def init_db(withdata):
     db = get_db()
+    with db.cursor() as cursor:
+        for statement in SCHEMA_STATEMENTS:
+            cursor.execute(statement)
+    db.commit()
 
-    with current_app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf-8'))
-
-    if datafile is not None:
-        with open(datafile, encoding='utf-8') as f:
-            db.executescript(f.read())
+    if withdata:
+        with db.cursor() as cursor:
+            for statement in TEST_DATA_STATEMENTS:
+                cursor.execute(statement)
+        db.commit()
 
 
 @click.command('init-db')
-@click.option('--datafile')
+@click.option('--withdata', is_flag=True)
 @with_appcontext
-def init_db_command(datafile):
-    init_db(datafile)
+def init_db_command(withdata):
+    init_db(withdata)
     click.echo('Initialized the database.')
 
 

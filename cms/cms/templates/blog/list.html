@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block content %}
-  {% for post in posts %}
-    <div class="post">
-      <h1>{{ post['title'] }}</h1>
-      <div class="about">created {{ post['created'].strftime('%Y-%m-%d') }}</div>
+  {% for entry in entries %}
+    <div class="entry">
+      <h1>{{ entry['title'] }}</h1>
+      <div class="about">created {{ entry['created'].strftime('%Y-%m-%d') }}</div>
     </div>
     {% if not loop.last %}
     <hr>
