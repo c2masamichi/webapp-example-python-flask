@@ -13,9 +13,9 @@ from cms.model import User
 bp = Blueprint('user', __name__, url_prefix='/user')
 
 
-@bp.route('/register', methods=['GET', 'POST'])
+@bp.route('/create', methods=['GET', 'POST'])
 @login_required
-def register():
+def create():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -32,7 +32,7 @@ def register():
         else:
             flash(error)
 
-    return render_template('user/register.html')
+    return render_template('user/create.html')
 
 
 @bp.route('/delete/<int:user_id>', methods=['POST'])
