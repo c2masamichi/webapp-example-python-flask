@@ -18,3 +18,10 @@ def test_fetch(app):
         assert result['id'] == 1
         assert result['name'] == 'book'
         assert result['price'] == 600
+
+
+def test_fetch_not_exists(app):
+    with app.app_context():
+        product_id = 3
+        response = Product().fetch(product_id)
+        assert response is None
