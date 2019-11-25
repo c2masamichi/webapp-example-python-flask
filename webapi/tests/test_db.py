@@ -1,5 +1,3 @@
-import pytest
-
 from webapi.db import get_db
 
 
