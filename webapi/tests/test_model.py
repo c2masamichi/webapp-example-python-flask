@@ -40,3 +40,18 @@ def test_create(app):
             row = cursor.fetchone()
         assert row['name'] == name
         assert row['price'] == price
+
+
+def test_update(app):
+    with app.app_context():
+        product_id = 2
+        name = 'rice'
+        price = 900
+        response = Product().update(product_id, name, price)
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM product WHERE id = 2')
+            row = cursor.fetchone()
+        assert row['name'] == name
+        assert row['price'] == price
