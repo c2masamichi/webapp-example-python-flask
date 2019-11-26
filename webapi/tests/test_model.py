@@ -55,3 +55,15 @@ def test_update(app):
             row = cursor.fetchone()
         assert row['name'] == name
         assert row['price'] == price
+
+
+def test_delete(app):
+    with app.app_context():
+        product_id = 1
+        response = Product().delete(product_id)
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM product WHERE id = 1')
+            row = cursor.fetchone()
+        assert row is None
