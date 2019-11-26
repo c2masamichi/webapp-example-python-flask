@@ -1,3 +1,4 @@
+from webapi.db import get_db
 from webapi.model import Product
 
 
@@ -25,3 +26,17 @@ def test_fetch_not_exists(app):
         product_id = 3
         response = Product().fetch(product_id)
         assert response is None
+
+
+def test_create(app):
+    with app.app_context():
+        name = 'meat'
+        price = 1000
+        response = Product().create(name, price)
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM product WHERE id = 3')
+            row = cursor.fetchone()
+        assert row['name'] == name
+        assert row['price'] == price
