@@ -58,3 +58,14 @@ def test_update(app):
             entry = cursor.fetchone()
         assert entry['title'] == 'updated'
         assert entry['body'] == 'updated on test'
+
+def test_delete(app):
+    with app.app_context():
+        entry_id = 1
+        Entry().delete(entry_id)
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM entry WHERE id = 1')
+            entry = cursor.fetchone()
+        assert entry is None
