@@ -44,3 +44,18 @@ def test_create(app):
             entry = cursor.fetchone()
         assert entry['title'] == 'created'
         assert entry['body'] == 'created on test'
+
+
+def test_update(app):
+    with app.app_context():
+        entry_id = 1
+        title = 'updated'
+        body = 'updated on test'
+        Entry().update(entry_id, title, body)
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM entry WHERE id = 1')
+            entry = cursor.fetchone()
+        assert entry['title'] == 'updated'
+        assert entry['body'] == 'updated on test'
