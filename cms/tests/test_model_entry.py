@@ -23,8 +23,24 @@ def test_fetch(app):
         assert entry['body'] == 'This body is test.'
         assert entry['created'] == datetime(2019, 1, 1, 0, 0)
 
+
 def test_fetch_not_exists(app):
     with app.app_context():
         entry_id = 5
         entry = Entry().fetch(entry_id)
         assert entry is None
+
+
+def test_create(app):
+    with app.app_context():
+        title = 'created'
+        body = 'created on test'
+        Entry().create(title, body)
+
+    with app.app_context():
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM entry WHERE id = 4')
+            entry = cursor.fetchone()
+        assert entry['title'] == 'created'
+        assert entry['body'] == 'created on test'
