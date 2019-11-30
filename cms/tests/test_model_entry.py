@@ -37,7 +37,6 @@ def test_create(app):
         body = 'created on test'
         Entry().create(title, body)
 
-    with app.app_context():
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM entry WHERE id = 4')
