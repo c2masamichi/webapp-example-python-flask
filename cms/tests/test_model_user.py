@@ -59,9 +59,25 @@ def test_create(app):
             user = cursor.fetchone()
         assert user is not None
 
+
 def test_create_error(app):
     with app.app_context():
         username = 'testuser'
         password = 'efgh5678'
         error = User().create(username, password)
         assert 'already registered' in error
+
+
+def test_delete(app):
+    with app.app_context():
+        user_id = 1
+        User().delete(user_id)
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute(
+                'select * from user where id = %s',
+                (user_id,)
+            )
+            user = cursor.fetchone()
+        assert user is None
