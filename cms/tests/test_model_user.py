@@ -41,3 +41,27 @@ def test_auth_error(app, username, password):
         user, error = User().auth(username, password)
         assert error == 'Incorrect username or password.'
         assert user is None
+
+
+def test_create(app):
+    with app.app_context():
+        username = 'addeduser'
+        password = 'abcd1234'
+        error = User().create(username, password)
+        assert error is None
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute(
+                'select * from user where username = %s',
+                (username,)
+            )
+            user = cursor.fetchone()
+        assert user is not None
+
+def test_create_error(app):
+    with app.app_context():
+        username = 'testuser'
+        password = 'efgh5678'
+        error = User().create(username, password)
+        assert 'already registered' in error
