@@ -74,6 +74,7 @@ def update(entry_id):
             flash(error)
         else:
             entry_client.update(entry_id, title, body)
+            flash('Update succeeded!')
             return redirect(url_for('blog.update', entry_id=entry_id))
 
     return render_template('blog/update.html', entry=entry)
