@@ -31,7 +31,7 @@ def get_entry(entry_id):
 @login_required
 def list_for_editors():
     entries = Entry().fetch_all()
-    return render_template('blog/list.html', entries=entries)
+    return render_template('blog/edit_top.html', entries=entries)
 
 
 @bp.route('/edit/create', methods=['GET', 'POST'])
