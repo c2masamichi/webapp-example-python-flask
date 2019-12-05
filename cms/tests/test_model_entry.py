@@ -59,6 +59,7 @@ def test_update(app):
         assert entry['title'] == 'updated'
         assert entry['body'] == 'updated on test'
 
+
 def test_delete(app):
     with app.app_context():
         entry_id = 1
