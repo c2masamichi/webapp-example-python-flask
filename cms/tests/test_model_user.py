@@ -4,6 +4,12 @@ from cms.db import get_db
 from cms.model import User
 
 
+def test_fetch_all(app):
+    with app.app_context():
+        users = User().fetch_all()
+        assert len(users) == 1
+
+
 def test_fetch(app):
     with app.app_context():
         user_id = 1

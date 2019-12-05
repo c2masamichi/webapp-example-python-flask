@@ -61,6 +61,15 @@ class User(object):
     def __init__(self):
         self._db = get_db()
 
+    def fetch_all(self):
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT id, username FROM user'
+                ' ORDER BY username'
+            )
+            return cursor.fetchall()
+
     def fetch(self, user_id):
         user = None
         db = self._db
