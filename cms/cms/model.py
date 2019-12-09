@@ -87,7 +87,8 @@ class User(object):
         error = None
         with db.cursor() as cursor:
             cursor.execute(
-                'SELECT * FROM user WHERE username = %s', (username,)
+                'SELECT id, username, password FROM user WHERE username = %s',
+                (username,)
             )
             user = cursor.fetchone()
 
