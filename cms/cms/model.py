@@ -92,8 +92,8 @@ class User(object):
             )
             user = cursor.fetchone()
 
-        if (user is None or 
-            not check_password_hash(user['password'], password)):
+        if (user is None or
+                not check_password_hash(user['password'], password)):
             error = 'Incorrect username or password.'
             user = None
 
