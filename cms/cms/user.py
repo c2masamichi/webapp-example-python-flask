@@ -13,6 +13,12 @@ from cms.model import User
 bp = Blueprint('user', __name__, url_prefix='/user')
 
 
+@bp.route('/')
+def get_users():
+    users = User().fetch_all()
+    return render_template('user/index.html', users=users)
+
+
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
