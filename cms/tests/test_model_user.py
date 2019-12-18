@@ -104,3 +104,12 @@ def test_change_password(app):
         user, error = User().auth(username, new_password)
         assert error is None
         assert user['id'] == 1
+
+
+def test_change_password_error(app):
+    with app.app_context():
+        user_id = 1
+        old_password = 'aaaa'
+        new_password = 'updated'
+        error = User().change_password(user_id, old_password, new_password)
+        assert error == 'Incorrect password.'
