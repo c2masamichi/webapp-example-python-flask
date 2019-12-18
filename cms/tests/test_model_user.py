@@ -92,7 +92,15 @@ def test_delete(app):
 def test_change_password(app):
     with app.app_context():
         user_id = 1
+        username = 'testuser'
         old_password = 'testpass'
         new_password = 'updated'
         error = User().change_password(user_id, old_password, new_password)
         assert error is None
+
+        user, error = User().auth(username, old_password)
+        assert error is not None
+
+        user, error = User().auth(username, new_password)
+        assert error is None
+        assert user['id'] == 1

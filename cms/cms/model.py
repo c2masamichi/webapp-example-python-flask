@@ -148,7 +148,7 @@ class User(object):
             with db.cursor() as cursor:
                 cursor.execute(
                     'UPDATE user SET password = %s WHERE id = %s',
-                    (new_password, user_id),
+                    (generate_password_hash(new_password), user_id),
                 )
             db.commit()
 
