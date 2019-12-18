@@ -130,3 +130,26 @@ class User(object):
                 (user_id,),
             )
         db.commit()
+
+    def change_password(self, user_id, old_password, new_password):
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT id, password FROM user WHERE id = %s',
+                (user_id,)
+            )
+            user = cursor.fetchone()
+
+        error = None
+        if (user is None or
+                not check_password_hash(user['password'], old_password)):
+            error = 'Incorrect password.'
+        else:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'UPDATE user SET password = %s WHERE id = %s',
+                    (new_password, user_id),
+                )
+            db.commit()
+
+        return error

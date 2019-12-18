@@ -87,3 +87,12 @@ def test_delete(app):
             )
             user = cursor.fetchone()
         assert user is None
+
+
+def test_change_password(app):
+    with app.app_context():
+        user_id = 1
+        old_password = 'testpass'
+        new_password = 'updated'
+        error = User().change_password(user_id, old_password, new_password)
+        assert error is None
