@@ -43,7 +43,7 @@ def create():
 
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
-def delete_user(user_id):
+def delete(user_id):
     user_client = User()
     if user_client.fetch(user_id) is None:
         abort(404)
