@@ -14,7 +14,7 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 @bp.route('/')
-def get_users():
+def index():
     users = User().fetch_all()
     return render_template('user/index.html', users=users)
 
@@ -34,7 +34,7 @@ def create():
             error = User().create(username, password)
 
         if error is None:
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('user.index'))
         else:
             flash(error)
 
@@ -48,4 +48,4 @@ def delete(user_id):
     if user_client.fetch(user_id) is None:
         abort(404)
     user_client.delete(user_id)
-    return redirect(url_for('blog.index'))
+    return redirect(url_for('user.index'))
