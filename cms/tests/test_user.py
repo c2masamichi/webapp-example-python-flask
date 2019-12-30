@@ -22,7 +22,7 @@ def test_create(client, auth, app):
         '/user/create',
         data={'username': 'addeduser', 'password': 'abcd1234'}
     )
-    assert 'http://localhost/auth/login' == response.headers['Location']
+    assert 'http://localhost/user/' == response.headers['Location']
 
     with app.app_context():
         db = get_db()

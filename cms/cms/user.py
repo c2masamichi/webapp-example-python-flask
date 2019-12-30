@@ -1,6 +1,5 @@
 from flask import Blueprint
 from flask import flash
-from flask import g
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -11,6 +10,12 @@ from cms.auth import login_required
 from cms.model import User
 
 bp = Blueprint('user', __name__, url_prefix='/user')
+
+
+@bp.route('/')
+def index():
+    users = User().fetch_all()
+    return render_template('user/index.html', users=users)
 
 
 @bp.route('/create', methods=['GET', 'POST'])
@@ -28,7 +33,7 @@ def create():
             error = User().create(username, password)
 
         if error is None:
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('user.index'))
         else:
             flash(error)
 
@@ -37,9 +42,9 @@ def create():
 
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
-def delete_user(user_id):
+def delete(user_id):
     user_client = User()
     if user_client.fetch(user_id) is None:
         abort(404)
     user_client.delete(user_id)
-    return redirect(url_for('blog.index'))
+    return redirect(url_for('user.index'))

@@ -61,6 +61,15 @@ class User(object):
     def __init__(self):
         self._db = get_db()
 
+    def fetch_all(self):
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT id, username FROM user'
+                ' ORDER BY username'
+            )
+            return cursor.fetchall()
+
     def fetch(self, user_id):
         user = None
         db = self._db
@@ -78,13 +87,15 @@ class User(object):
         error = None
         with db.cursor() as cursor:
             cursor.execute(
-                'SELECT * FROM user WHERE username = %s', (username,)
+                'SELECT id, username, password FROM user WHERE username = %s',
+                (username,)
             )
             user = cursor.fetchone()
 
-        if (user is None or 
-            not check_password_hash(user['password'], password)):
+        if (user is None or
+                not check_password_hash(user['password'], password)):
             error = 'Incorrect username or password.'
+            user = None
 
         return user, error
 
@@ -119,3 +130,26 @@ class User(object):
                 (user_id,),
             )
         db.commit()
+
+    def change_password(self, user_id, old_password, new_password):
+        db = self._db
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT id, password FROM user WHERE id = %s',
+                (user_id,)
+            )
+            user = cursor.fetchone()
+
+        error = None
+        if (user is None or
+                not check_password_hash(user['password'], old_password)):
+            error = 'Incorrect password.'
+        else:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'UPDATE user SET password = %s WHERE id = %s',
+                    (generate_password_hash(new_password), user_id),
+                )
+            db.commit()
+
+        return error

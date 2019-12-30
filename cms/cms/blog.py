@@ -29,9 +29,9 @@ def get_entry(entry_id):
 
 @bp.route('/edit/')
 @login_required
-def list_for_editors():
+def edit_top():
     entries = Entry().fetch_all()
-    return render_template('blog/list.html', entries=entries)
+    return render_template('blog/edit_top.html', entries=entries)
 
 
 @bp.route('/edit/create', methods=['GET', 'POST'])
@@ -49,7 +49,7 @@ def create():
             flash(error)
         else:
             Entry().create(title, body)
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('blog.edit_top'))
 
     return render_template('blog/create.html')
 
@@ -74,7 +74,8 @@ def update(entry_id):
             flash(error)
         else:
             entry_client.update(entry_id, title, body)
-            return redirect(url_for('blog.index'))
+            flash('Update succeeded!')
+            return redirect(url_for('blog.update', entry_id=entry_id))
 
     return render_template('blog/update.html', entry=entry)
 
@@ -86,4 +87,4 @@ def delete(entry_id):
     if entry_client.fetch(entry_id) is None:
         abort(404)
     entry_client.delete(entry_id)
-    return redirect(url_for('blog.index'))
+    return redirect(url_for('blog.edit_top'))

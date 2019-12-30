@@ -21,10 +21,11 @@ def create_app():
 
     db.init_app(app)
 
-    from cms import auth, blog, user
+    from cms import auth, blog, mypage, user
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
+    app.register_blueprint(mypage.bp)
     app.register_blueprint(user.bp)
     app.add_url_rule('/', endpoint='index')
 
