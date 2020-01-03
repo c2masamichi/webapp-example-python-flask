@@ -1,5 +1,3 @@
-import json
-
 from flask import Blueprint
 from flask import jsonify
 from flask import request
@@ -39,7 +37,7 @@ def create_product():
         }
         return jsonify(error), 400
 
-    data = json.loads(request.data)
+    data = request.get_json()
     name = data.get('name')
     price = data.get('price')
     error_msg = ''
@@ -61,7 +59,7 @@ def update_product(product_id):
         }
         return jsonify(error), 400
 
-    data = json.loads(request.data)
+    data = request.get_json()
     name = data.get('name')
     price = data.get('price')
     error_msg = ''
