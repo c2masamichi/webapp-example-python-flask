@@ -4,14 +4,21 @@ import sys
 from flask import Flask
 
 
+CONFIGS = {
+    'production': 'config-production.py',
+    'development': 'config-development.py',
+    'testting': 'config-testing.py',
+}
+
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
+    config_name = CONFIGS[os.getenv('FLASK_ENV', 'production')]
 
     try:
-        app.config.from_pyfile('config.py')
-        app.logger.info('instance/config.py successfully loaeded.')
+        app.config.from_pyfile(config_name)
+        app.logger.info('config file successfully loaeded.')
     except FileNotFoundError:
-        app.logger.error('instance/config.py must exist.')
+        app.logger.error('config file must exist.')
         sys.exit(1)
 
     @app.route('/healthcheck')
