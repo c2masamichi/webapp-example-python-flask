@@ -9,8 +9,9 @@ def create_app():
 
     try:
         app.config.from_pyfile('config.py')
+        app.logger.info('config file successfully loaeded.')
     except FileNotFoundError:
-        print('[Error] instance/config.py must exist.', file=sys.stderr)
+        app.logger.error('config file must exist.')
         sys.exit(1)
 
     @app.route('/healthcheck')
