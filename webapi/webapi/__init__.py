@@ -7,7 +7,7 @@ from flask import Flask
 CONFIGS = {
     'production': 'config-production.py',
     'development': 'config-development.py',
-    'testting': 'config-testing.py',
+    'testing': 'config-testing.py',
 }
 
 def create_app():
