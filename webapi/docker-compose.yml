@@ -2,20 +2,9 @@ version: '3'
 services:
   web:
     build: .
-    ports:
-      - "5000:5000"
     volumes:
       - .:/code
     depends_on:
       - db
-    environment:
-      FLASK_ENV: development
   db:
     image: "mysql:5.7"
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root_dev
-      MYSQL_DATABASE: dev_db
-      MYSQL_USER: dev_user
-      MYSQL_PASSWORD: dev_pass
