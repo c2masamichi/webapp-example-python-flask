@@ -48,7 +48,10 @@ def create_product():
         return jsonify(error), 400
 
     result = Product().create(name, price)
-    return jsonify(result), 201
+    code = 201
+    if 'error' in result:
+        code = 500
+    return jsonify(result), code
 
 
 @bp.route('/products/<int:product_id>', methods=['PUT'])

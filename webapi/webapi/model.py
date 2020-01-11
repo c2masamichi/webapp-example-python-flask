@@ -1,3 +1,5 @@
+from flask import current_app
+
 from webapi.db import get_db
 
 
@@ -44,15 +46,23 @@ class Product(object):
 
     def create(self, name, price):
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'INSERT INTO product (name, price) VALUES (%s, %s)',
-                (name, price),
-            )
-        db.commit()
-        return {
-            'result': 'Successfully Created.'
-        }
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'INSERT INTO product (name, price) VALUES (%s, %s)',
+                    (name, price),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('creating product: {0}'.format(e))
+            return {
+                'error': 'Failed.'
+            }
+        else:
+            return {
+                'result': 'Successfully Created.'
+            }
 
     def update(self, product_id, name, price):
         db = self._db
