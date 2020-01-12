@@ -31,6 +31,14 @@ $ docker-compose -p webapi_dev down
 
 ## Testing
 
+### DB Setup
+
+```
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test up -d db
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test run web flask init-db
+Initialized the database.
+```
+
 ### Run Test
 
 ```
