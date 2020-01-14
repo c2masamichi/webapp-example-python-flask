@@ -25,6 +25,10 @@ def create_app():
     def healthcheck():
         return 'app running'
 
+    from webapi import error_handler as eh
+
+    app.register_error_handler(404, eh.page_not_found)
+
     from webapi import db
 
     db.init_app(app)

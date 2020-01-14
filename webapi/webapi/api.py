@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask import jsonify
 from flask import request
+from werkzeug.exceptions import abort
 
 from webapi.model import Product
 
@@ -22,10 +23,7 @@ def get_products():
 def get_product(product_id):
     result = Product().fetch(product_id)
     if result is None:
-        error = {
-            'error': 'Not Found.'
-        }
-        return jsonify(error), 404
+        abort(404, description='product {0}'.format(product_id))
     return jsonify(result)
 
 
@@ -74,10 +72,7 @@ def update_product(product_id):
 
     product = Product().fetch(product_id)
     if product is None:
-        error = {
-            'error': 'Not Found.'
-        }
-        return jsonify(error), 404
+        abort(404, description='product {0}'.format(product_id))
 
     result = Product().update(product_id, name, price)
     return jsonify(result)
@@ -87,10 +82,7 @@ def update_product(product_id):
 def delete_product(product_id):
     product = Product().fetch(product_id)
     if product is None:
-        error = {
-            'error': 'Not Found.'
-        }
-        return jsonify(error), 404
+        abort(404, description='product {0}'.format(product_id))
 
     result = Product().delete(product_id)
     return jsonify(result)
