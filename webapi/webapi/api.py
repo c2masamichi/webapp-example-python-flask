@@ -46,7 +46,7 @@ def create_product():
         return jsonify(error), 400
 
     result = Product().create(name, price)
-    code = 201
+    code = 200
     if 'error' in result:
         code = 500
     return jsonify(result), code

@@ -43,7 +43,7 @@ def test_create_product(client, app):
         '/products', data=new_product,
         content_type='application/json'
     )
-    assert response.status_code == 201
+    assert response.status_code == 200
 
     with app.app_context():
         db = get_db()
