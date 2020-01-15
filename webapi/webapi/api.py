@@ -30,20 +30,14 @@ def get_product(product_id):
 @bp.route('/products', methods=['POST'])
 def create_product():
     if request.headers.get('Content-Type') != 'application/json':
-        error = {
-            'error': 'Content-Type must be application/json.'
-        }
-        return jsonify(error), 400
+        abort(400, description='Content-Type must be application/json.')
 
     data = request.get_json()
     name = data.get('name')
     price = data.get('price')
     error_msg = ''
     if name is None or price is None:
-        error = {
-            'error': 'The key "name" and "price" are required.'
-        }
-        return jsonify(error), 400
+        abort(400, description='The key "name" and "price" are required.')
 
     result = Product().create(name, price)
     code = 200
@@ -55,20 +49,14 @@ def create_product():
 @bp.route('/products/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
     if request.headers.get('Content-Type') != 'application/json':
-        error = {
-            'error': 'Content-Type must be application/json.'
-        }
-        return jsonify(error), 400
+        abort(400, description='Content-Type must be application/json.')
 
     data = request.get_json()
     name = data.get('name')
     price = data.get('price')
     error_msg = ''
     if name is None or price is None:
-        error = {
-            'error': 'The key "name" and "price" are required.'
-        }
-        return jsonify(error), 400
+        abort(400, description='The key "name" and "price" are required.')
 
     product = Product().fetch(product_id)
     if product is None:
