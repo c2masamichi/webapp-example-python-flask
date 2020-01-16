@@ -45,6 +45,7 @@ class Product(object):
         }
 
     def create(self, name, price):
+        is_created = False
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -56,13 +57,10 @@ class Product(object):
         except Exception as e:
             db.rollback()
             current_app.logger.error('creating product: {0}'.format(e))
-            return {
-                'error': 'Failed.'
-            }
         else:
-            return {
-                'result': 'Successfully Created.'
-            }
+            is_created = True
+        finally:
+            return is_created
 
     def update(self, product_id, name, price):
         db = self._db
