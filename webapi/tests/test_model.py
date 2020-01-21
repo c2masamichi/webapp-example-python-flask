@@ -32,8 +32,8 @@ def test_create(app):
     with app.app_context():
         name = 'meat'
         price = 1000
-        is_created = Product().create(name, price)
-        assert is_created
+        result = Product().create(name, price)
+        assert result.code == 200
 
         db = get_db()
         with db.cursor() as cursor:

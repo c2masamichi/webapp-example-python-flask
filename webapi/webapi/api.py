@@ -39,10 +39,10 @@ def create_product():
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    is_created = Product().create(name, price)
-    if not is_created:
-        abort(500, description='Creating a product failed.')
-    return jsonify({'result': 'Successfully Created.'})
+    result = Product().create(name, price)
+    if result.code != 200:
+        abort(500, description=result.description)
+    return jsonify(result.value)
 
 
 @bp.route('/products/<int:product_id>', methods=['PUT'])
