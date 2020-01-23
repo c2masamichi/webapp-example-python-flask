@@ -62,7 +62,8 @@ def test_update(app):
 def test_delete(app):
     with app.app_context():
         product_id = 1
-        response = Product().delete(product_id)
+        result = Product().delete(product_id)
+        assert result.code == 200
 
         db = get_db()
         with db.cursor() as cursor:

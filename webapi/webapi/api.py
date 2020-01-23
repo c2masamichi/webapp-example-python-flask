@@ -73,4 +73,6 @@ def delete_product(product_id):
         abort(404, description='product {0}'.format(product_id))
 
     result = Product().delete(product_id)
-    return jsonify(result)
+    if result.code != 200:
+        abort(500, description=result.description)
+    return jsonify(result.value)

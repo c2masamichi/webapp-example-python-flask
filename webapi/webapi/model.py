@@ -85,17 +85,24 @@ class Product(object):
             return result
 
     def delete(self, product_id):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'DELETE FROM product WHERE id = %s',
-                (product_id,),
-            )
-        db.commit()
-
-        return {
-            'result': 'Successfully Deleted.'
-        }
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'DELETE FROM product WHERE id = %s',
+                    (product_id,),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('deleting product: {0}'.format(e))
+            result.code = 500
+            result.description = 'Deleting a product failed.'
+        else:
+            result.value = {'result': 'Successfully Deleted.'}
+        finally:
+            return result
 
 
 class Result(object):
