@@ -48,7 +48,8 @@ def test_update(app):
         product_id = 2
         name = 'rice'
         price = 900
-        response = Product().update(product_id, name, price)
+        result = Product().update(product_id, name, price)
+        assert result.code == 200
 
         db = get_db()
         with db.cursor() as cursor:

@@ -65,17 +65,24 @@ class Product(object):
             return result
 
     def update(self, product_id, name, price):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'UPDATE product SET name = %s, price = %s WHERE id = %s',
-                (name, price, product_id),
-            )
-        db.commit()
-
-        return {
-            'result': 'Successfully Updated.'
-        }
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'UPDATE product SET name = %s, price = %s WHERE id = %s',
+                    (name, price, product_id),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('updating product: {0}'.format(e))
+            result.code = 500
+            result.description = 'Updating a product failed.'
+        else:
+            result.value = {'result': 'Successfully Updated.'}
+        finally:
+            return result
 
     def delete(self, product_id):
         db = self._db

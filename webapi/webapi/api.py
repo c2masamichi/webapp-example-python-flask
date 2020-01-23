@@ -53,7 +53,6 @@ def update_product(product_id):
     data = request.get_json()
     name = data.get('name')
     price = data.get('price')
-    error_msg = ''
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
@@ -62,7 +61,9 @@ def update_product(product_id):
         abort(404, description='product {0}'.format(product_id))
 
     result = Product().update(product_id, name, price)
-    return jsonify(result)
+    if result.code != 200:
+        abort(500, description=result.description)
+    return jsonify(result.value)
 
 
 @bp.route('/products/<int:product_id>', methods=['DELETE'])
