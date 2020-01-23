@@ -1,28 +1,52 @@
 # Docker
 
-## DB Setup
+## Devepolment
+
+### DB Setup
 
 ```
-$ docker-compose up -d db
-$ docker-compose run web flask init-db
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p webapi_dev up -d db
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p webapi_dev run web flask init-db
 Initialized the database.
 ```
 
 Init DB wth test data
 
 ```
-$ docker-compose run web flask init-db --withdata
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p webapi_dev run web flask init-db --withdata
 Initialized the database.
 ```
 
-## Run
+### Run App
 
 ```
-docker-compose up web
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p webapi_dev up web
 ```
 
-## Test
+### Clear
 
 ```
-docker-compose run web pytest
+$ docker-compose -p webapi_dev down
+```
+
+## Testing
+
+### DB Setup
+
+```
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test up -d db
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test run web flask init-db
+Initialized the database.
+```
+
+### Run Test
+
+```
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test run web pytest
+```
+
+### Clear
+
+```
+$ docker-compose -p webapi_test down
 ```

@@ -12,7 +12,7 @@ def test_index(client):
 
 def test_get_products(client):
     response = client.get('/products')
-    data = json.loads(response.data)
+    data = response.get_json()
     assert 'result' in data
     result = data['result']
     assert len(result) == 2
@@ -21,7 +21,7 @@ def test_get_products(client):
 def test_get_product(client):
     response = client.get('/products/1')
     assert response.status_code == 200
-    data = json.loads(response.data)
+    data = response.get_json()
     assert 'result' in data
     result = data['result']
     assert result['id'] == 1
@@ -43,7 +43,7 @@ def test_create_product(client, app):
         '/products', data=new_product,
         content_type='application/json'
     )
-    assert response.status_code == 201
+    assert response.status_code == 200
 
     with app.app_context():
         db = get_db()
