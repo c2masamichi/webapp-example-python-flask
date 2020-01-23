@@ -16,15 +16,15 @@ def index():
 @bp.route('/products')
 def get_products():
     result = Product().fetch_all()
-    return jsonify(result)
+    if result.code != 200:
+        abort(500, description=result.description)
+    return jsonify(result.value)
 
 
 @bp.route('/products/<int:product_id>')
 def get_product(product_id):
-    result = Product().fetch(product_id)
-    if result is None:
-        abort(404, description='product {0}'.format(product_id))
-    return jsonify(result)
+    result = fetch_product_wrapper(product_id)
+    return jsonify(result.value)
 
 
 @bp.route('/products', methods=['POST'])
@@ -56,9 +56,7 @@ def update_product(product_id):
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    product = Product().fetch(product_id)
-    if product is None:
-        abort(404, description='product {0}'.format(product_id))
+    fetch_product_wrapper(product_id)
 
     result = Product().update(product_id, name, price)
     if result.code != 200:
@@ -68,11 +66,18 @@ def update_product(product_id):
 
 @bp.route('/products/<int:product_id>', methods=['DELETE'])
 def delete_product(product_id):
-    product = Product().fetch(product_id)
-    if product is None:
-        abort(404, description='product {0}'.format(product_id))
+    fetch_product_wrapper(product_id)
 
     result = Product().delete(product_id)
     if result.code != 200:
         abort(500, description=result.description)
     return jsonify(result.value)
+
+
+def fetch_product_wrapper(product_id):
+    result = Product().fetch(product_id)
+    if result.code != 200:
+        abort(result.code, description=result.description)
+    if not result.value:
+        abort(404, description='product {0}'.format(product_id))
+    return result

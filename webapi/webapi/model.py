@@ -8,41 +8,53 @@ class Product(object):
         self._db = get_db()
 
     def fetch_all(self):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM product')
-            data = cursor.fetchall()
-
-        return {
-            'result': [
-                {
-                    'id': row['id'],
-                    'name': row['name'],
-                    'price': row['price'],
-                }
-                for row in data
-            ]
-        }
+        try:
+            with db.cursor() as cursor:
+                cursor.execute('SELECT * FROM product')
+                data = cursor.fetchall()
+            result.value = {
+                'result': [
+                    {
+                        'id': row['id'],
+                        'name': row['name'],
+                        'price': row['price'],
+                    }
+                    for row in data
+                ]
+            }
+        except Exception as e:
+            current_app.logger.error('fetching all products: {0}'.format(e))
+            result.code = 500
+            result.description = 'Fetchting all products failed.'
+        finally:
+            return result
 
     def fetch(self, product_id):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM product WHERE id = %s',
-                (product_id,),
-            )
-            row = cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return {
-            'result': {
-                'id': row['id'],
-                'name': row['name'],
-                'price': row['price'],
-            }
-        }
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT * FROM product WHERE id = %s',
+                    (product_id,),
+                )
+                row = cursor.fetchone()
+            if row is not None:
+                result.value = {
+                    'result': {
+                        'id': row['id'],
+                        'name': row['name'],
+                        'price': row['price'],
+                    }
+                }
+        except Exception as e:
+            current_app.logger.error('fetching product: {0}'.format(e))
+            result.code = 500
+            result.description = 'Fetchting a product failed.'
+        finally:
+            return result
 
     def create(self, name, price):
         result = Result()

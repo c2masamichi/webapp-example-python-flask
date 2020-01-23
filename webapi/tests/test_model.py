@@ -4,28 +4,30 @@ from webapi.model import Product
 
 def test_fetch_all(app):
     with app.app_context():
-        response = Product().fetch_all()
-        assert 'result' in response
-        result = response['result']
-        assert len(result) == 2
+        result = Product().fetch_all()
+        assert result.code == 200
+
+        products = result.value['result']
+        assert len(products) == 2
 
 
 def test_fetch(app):
     with app.app_context():
         product_id = 1
-        response = Product().fetch(product_id)
-        assert 'result' in response
-        result = response['result']
-        assert result['id'] == 1
-        assert result['name'] == 'book'
-        assert result['price'] == 600
+        result = Product().fetch(product_id)
+        assert result.code == 200
+
+        product = result.value['result']
+        assert product['id'] == 1
+        assert product['name'] == 'book'
+        assert product['price'] == 600
 
 
 def test_fetch_not_exists(app):
     with app.app_context():
         product_id = 3
-        response = Product().fetch(product_id)
-        assert response is None
+        result = Product().fetch(product_id)
+        assert result.value == {}
 
 
 def test_create(app):
