@@ -15,8 +15,10 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
-    entries = Entry().fetch_all()
-    return render_template('blog/index.html', entries=entries)
+    result = Entry().fetch_all()
+    if not result.succeeded:
+        abort(500)
+    return render_template('blog/index.html', entries=result.value)
 
 
 @bp.route('/entry/<int:entry_id>')
@@ -30,8 +32,10 @@ def get_entry(entry_id):
 @bp.route('/edit/')
 @login_required
 def edit_top():
-    entries = Entry().fetch_all()
-    return render_template('blog/edit_top.html', entries=entries)
+    result = Entry().fetch_all()
+    if not result.succeeded:
+        abort(500)
+    return render_template('blog/edit_top.html', entries=result.value)
 
 
 @bp.route('/edit/create', methods=['GET', 'POST'])

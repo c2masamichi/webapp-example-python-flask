@@ -9,13 +9,20 @@ class Entry(object):
         self._db = get_db()
 
     def fetch_all(self):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT title, body, created FROM entry'
-                ' ORDER BY created DESC'
-            )
-            return cursor.fetchall()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT title, body, created FROM entry'
+                    ' ORDER BY created DESC'
+                )
+                result.value = cursor.fetchall()
+        except Exception as e:
+            current_app.logger.error('fetching entries: {0}'.format(e))
+            result.succeeded = False
+        finally:
+            return result
 
     def fetch(self, entry_id):
         entry = None
@@ -153,3 +160,10 @@ class User(object):
             db.commit()
 
         return error
+
+
+class Result(object):
+    def __init__(self, succeeded=True, description='', value=None):
+        self.succeeded = succeeded
+        self.description = description
+        self.value = value

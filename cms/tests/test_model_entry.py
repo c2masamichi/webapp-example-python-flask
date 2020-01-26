@@ -6,8 +6,12 @@ from cms.model import Entry
 
 def test_fetch_all(app):
     with app.app_context():
-        entries = Entry().fetch_all()
+        result = Entry().fetch_all()
+        assert result.succeeded
+
+        entries = result.value
         assert len(entries) == 3
+
         # sorted by created desc
         assert entries[0]['created'] == datetime(2019, 1, 2, 8, 20, 1)
         assert entries[1]['created'] == datetime(2019, 1, 1, 12, 30, 45)
