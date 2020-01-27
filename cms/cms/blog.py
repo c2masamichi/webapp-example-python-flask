@@ -23,9 +23,7 @@ def index():
 
 @bp.route('/entry/<int:entry_id>')
 def get_entry(entry_id):
-    entry = Entry().fetch(entry_id)
-    if entry is None:
-        abort(404)
+    entry = fetch_entry_wrapper(entry_id) 
     return render_template('blog/detail.html', entry=entry)
 
 
@@ -61,10 +59,7 @@ def create():
 @bp.route('/edit/update/<int:entry_id>', methods=['GET', 'POST'])
 @login_required
 def update(entry_id):
-    entry_client = Entry()
-    entry = entry_client.fetch(entry_id)
-    if entry is None:
-        abort(404)
+    entry = fetch_entry_wrapper(entry_id) 
 
     if request.method == 'POST':
         title = request.form['title']
@@ -77,7 +72,7 @@ def update(entry_id):
         if error is not None:
             flash(error)
         else:
-            entry_client.update(entry_id, title, body)
+            Entry().update(entry_id, title, body)
             flash('Update succeeded!')
             return redirect(url_for('blog.update', entry_id=entry_id))
 
@@ -87,8 +82,16 @@ def update(entry_id):
 @bp.route('/edit/delete/<int:entry_id>', methods=['POST'])
 @login_required
 def delete(entry_id):
-    entry_client = Entry()
-    if entry_client.fetch(entry_id) is None:
-        abort(404)
-    entry_client.delete(entry_id)
+    entry = fetch_entry_wrapper(entry_id) 
+    Entry().delete(entry_id)
     return redirect(url_for('blog.edit_top'))
+
+
+def fetch_entry_wrapper(entry_id):
+    result = Entry().fetch(entry_id)
+    if not result.succeeded:
+        abort(500)
+    entry = result.value
+    if entry is None:
+        abort(404)
+    return entry

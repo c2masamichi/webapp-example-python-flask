@@ -21,7 +21,10 @@ def test_fetch_all(app):
 def test_fetch(app):
     with app.app_context():
         entry_id = 1
-        entry = Entry().fetch(entry_id)
+        result = Entry().fetch(entry_id)
+        assert result.succeeded
+
+        entry = result.value
         assert entry['id'] == 1
         assert entry['title'] == 'Test Title 1'
         assert entry['body'] == 'This body is test.'
@@ -31,7 +34,8 @@ def test_fetch(app):
 def test_fetch_not_exists(app):
     with app.app_context():
         entry_id = 5
-        entry = Entry().fetch(entry_id)
+        result = Entry().fetch(entry_id)
+        entry = result.value
         assert entry is None
 
 

@@ -25,16 +25,20 @@ class Entry(object):
             return result
 
     def fetch(self, entry_id):
-        entry = None
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, title, body, created FROM entry WHERE id = %s',
-                (entry_id,),
-            )
-            entry = cursor.fetchone()
-
-        return entry
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, title, body, created FROM entry WHERE id = %s',
+                    (entry_id,),
+                )
+                result.value = cursor.fetchone()
+        except Exception as e:
+            current_app.logger.error('fetching entries: {0}'.format(e))
+            result.succeeded = False
+        finally:
+            return result
 
     def create(self, title, body):
         db = self._db
