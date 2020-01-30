@@ -43,7 +43,8 @@ def test_create(app):
     with app.app_context():
         title = 'created'
         body = 'created on test'
-        Entry().create(title, body)
+        result = Entry().create(title, body)
+        assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:
@@ -58,7 +59,8 @@ def test_update(app):
         entry_id = 1
         title = 'updated'
         body = 'updated on test'
-        Entry().update(entry_id, title, body)
+        result = Entry().update(entry_id, title, body)
+        assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:
@@ -71,7 +73,8 @@ def test_update(app):
 def test_delete(app):
     with app.app_context():
         entry_id = 1
-        Entry().delete(entry_id)
+        result = Entry().delete(entry_id)
+        assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:

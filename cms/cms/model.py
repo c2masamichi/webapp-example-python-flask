@@ -35,37 +35,64 @@ class Entry(object):
                 )
                 result.value = cursor.fetchone()
         except Exception as e:
-            current_app.logger.error('fetching entries: {0}'.format(e))
+            current_app.logger.error('fetching an entry: {0}'.format(e))
             result.succeeded = False
         finally:
             return result
 
     def create(self, title, body):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'INSERT INTO entry (title, body) VALUES (%s, %s)',
-                (title, body),
-            )
-        db.commit()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'INSERT INTO entry (title, body) VALUES (%s, %s)',
+                    (title, body),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('creating an entry: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Creating an entry failed.'
+        finally:
+            return result
 
     def update(self, entry_id, title, body):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'UPDATE entry SET title = %s, body = %s WHERE id = %s',
-                (title, body, entry_id),
-            )
-        db.commit()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'UPDATE entry SET title = %s, body = %s WHERE id = %s',
+                    (title, body, entry_id),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('updating an entry: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Updating an entry failed.'
+        finally:
+            return result
 
     def delete(self, entry_id):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'DELETE FROM entry WHERE id = %s',
-                (entry_id,),
-            )
-        db.commit()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'DELETE FROM entry WHERE id = %s',
+                    (entry_id,),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('deleting an entry: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Deleting an entry failed.'
+        finally:
+            return result
 
 
 class User(object):

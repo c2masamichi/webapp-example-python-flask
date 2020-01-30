@@ -50,8 +50,11 @@ def create():
         if error is not None:
             flash(error)
         else:
-            Entry().create(title, body)
-            return redirect(url_for('blog.edit_top'))
+            result = Entry().create(title, body)
+            if not result.succeeded:
+                flash(result.description)
+            else:
+                return redirect(url_for('blog.edit_top'))
 
     return render_template('blog/create.html')
 
@@ -72,9 +75,12 @@ def update(entry_id):
         if error is not None:
             flash(error)
         else:
-            Entry().update(entry_id, title, body)
-            flash('Update succeeded!')
-            return redirect(url_for('blog.update', entry_id=entry_id))
+            result = Entry().update(entry_id, title, body)
+            if not result.succeeded:
+                flash(result.description)
+            else:
+                flash('Update succeeded!')
+                return redirect(url_for('blog.update', entry_id=entry_id))
 
     return render_template('blog/update.html', entry=entry)
 
@@ -83,7 +89,10 @@ def update(entry_id):
 @login_required
 def delete(entry_id):
     entry = fetch_entry_wrapper(entry_id) 
-    Entry().delete(entry_id)
+    result = Entry().delete(entry_id)
+    if not result.succeeded:
+        flash(result.description)
+        render_template('blog/update.html', entry=entry)
     return redirect(url_for('blog.edit_top'))
 
 
