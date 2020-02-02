@@ -42,13 +42,9 @@ def create():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        error = None
 
         if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
+            flash('Title is required.')
         else:
             result = Entry().create(title, body)
             if not result.succeeded:
@@ -67,13 +63,9 @@ def update(entry_id):
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        error = None
 
         if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
+            flash('Title is required.')
         else:
             result = Entry().update(entry_id, title, body)
             flash(result.description)
