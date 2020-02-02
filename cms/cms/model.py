@@ -72,7 +72,9 @@ class Entry(object):
             db.rollback()
             current_app.logger.error('updating an entry: {0}'.format(e))
             result.succeeded = False
-            result.description = 'Updating an entry failed.'
+            result.description = 'Update failed.'
+        else:
+            result.description = 'Update succeeded.'
         finally:
             return result
 

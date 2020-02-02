@@ -76,10 +76,8 @@ def update(entry_id):
             flash(error)
         else:
             result = Entry().update(entry_id, title, body)
-            if not result.succeeded:
-                flash(result.description)
-            else:
-                flash('Update succeeded!')
+            flash(result.description)
+            if result.succeeded:
                 return redirect(url_for('blog.update', entry_id=entry_id))
 
     return render_template('blog/update.html', entry=entry)
