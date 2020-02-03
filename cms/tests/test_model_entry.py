@@ -6,8 +6,12 @@ from cms.model import Entry
 
 def test_fetch_all(app):
     with app.app_context():
-        entries = Entry().fetch_all()
+        result = Entry().fetch_all()
+        assert result.succeeded
+
+        entries = result.value
         assert len(entries) == 3
+
         # sorted by created desc
         assert entries[0]['created'] == datetime(2019, 1, 2, 8, 20, 1)
         assert entries[1]['created'] == datetime(2019, 1, 1, 12, 30, 45)
@@ -17,7 +21,10 @@ def test_fetch_all(app):
 def test_fetch(app):
     with app.app_context():
         entry_id = 1
-        entry = Entry().fetch(entry_id)
+        result = Entry().fetch(entry_id)
+        assert result.succeeded
+
+        entry = result.value
         assert entry['id'] == 1
         assert entry['title'] == 'Test Title 1'
         assert entry['body'] == 'This body is test.'
@@ -27,7 +34,8 @@ def test_fetch(app):
 def test_fetch_not_exists(app):
     with app.app_context():
         entry_id = 5
-        entry = Entry().fetch(entry_id)
+        result = Entry().fetch(entry_id)
+        entry = result.value
         assert entry is None
 
 
@@ -35,7 +43,8 @@ def test_create(app):
     with app.app_context():
         title = 'created'
         body = 'created on test'
-        Entry().create(title, body)
+        result = Entry().create(title, body)
+        assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:
@@ -50,7 +59,8 @@ def test_update(app):
         entry_id = 1
         title = 'updated'
         body = 'updated on test'
-        Entry().update(entry_id, title, body)
+        result = Entry().update(entry_id, title, body)
+        assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:
@@ -63,7 +73,8 @@ def test_update(app):
 def test_delete(app):
     with app.app_context():
         entry_id = 1
-        Entry().delete(entry_id)
+        result = Entry().delete(entry_id)
+        assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:

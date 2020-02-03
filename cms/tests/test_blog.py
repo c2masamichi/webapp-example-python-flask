@@ -103,7 +103,7 @@ def test_create_update_validate(client, auth, path):
 def test_delete(client, auth, app):
     auth.login()
     response = client.post('/edit/delete/1')
-    assert response.headers['Location'] == 'http://localhost/'
+    assert response.headers['Location'] == 'http://localhost/edit/'
 
     with app.app_context():
         db = get_db()

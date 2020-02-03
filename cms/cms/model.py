@@ -9,52 +9,92 @@ class Entry(object):
         self._db = get_db()
 
     def fetch_all(self):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT title, body, created FROM entry'
-                ' ORDER BY created DESC'
-            )
-            return cursor.fetchall()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT title, body, created FROM entry'
+                    ' ORDER BY created DESC'
+                )
+                result.value = cursor.fetchall()
+        except Exception as e:
+            current_app.logger.error('fetching entries: {0}'.format(e))
+            result.succeeded = False
+        finally:
+            return result
 
     def fetch(self, entry_id):
-        entry = None
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, title, body, created FROM entry WHERE id = %s',
-                (entry_id,),
-            )
-            entry = cursor.fetchone()
-
-        return entry
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, title, body, created FROM entry WHERE id = %s',
+                    (entry_id,),
+                )
+                result.value = cursor.fetchone()
+        except Exception as e:
+            current_app.logger.error('fetching an entry: {0}'.format(e))
+            result.succeeded = False
+        finally:
+            return result
 
     def create(self, title, body):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'INSERT INTO entry (title, body) VALUES (%s, %s)',
-                (title, body),
-            )
-        db.commit()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'INSERT INTO entry (title, body) VALUES (%s, %s)',
+                    (title, body),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('creating an entry: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Creating an entry failed.'
+        finally:
+            return result
 
     def update(self, entry_id, title, body):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'UPDATE entry SET title = %s, body = %s WHERE id = %s',
-                (title, body, entry_id),
-            )
-        db.commit()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'UPDATE entry SET title = %s, body = %s WHERE id = %s',
+                    (title, body, entry_id),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('updating an entry: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Update failed.'
+        else:
+            result.description = 'Update succeeded.'
+        finally:
+            return result
 
     def delete(self, entry_id):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'DELETE FROM entry WHERE id = %s',
-                (entry_id,),
-            )
-        db.commit()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'DELETE FROM entry WHERE id = %s',
+                    (entry_id,),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('deleting an entry: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Deleting an entry failed.'
+        finally:
+            return result
 
 
 class User(object):
@@ -153,3 +193,10 @@ class User(object):
             db.commit()
 
         return error
+
+
+class Result(object):
+    def __init__(self, succeeded=True, description='', value=None):
+        self.succeeded = succeeded
+        self.description = description
+        self.value = value

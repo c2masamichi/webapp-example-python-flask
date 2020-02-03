@@ -15,23 +15,25 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
-    entries = Entry().fetch_all()
-    return render_template('blog/index.html', entries=entries)
+    result = Entry().fetch_all()
+    if not result.succeeded:
+        abort(500)
+    return render_template('blog/index.html', entries=result.value)
 
 
 @bp.route('/entry/<int:entry_id>')
 def get_entry(entry_id):
-    entry = Entry().fetch(entry_id)
-    if entry is None:
-        abort(404)
+    entry = fetch_entry_wrapper(entry_id) 
     return render_template('blog/detail.html', entry=entry)
 
 
 @bp.route('/edit/')
 @login_required
 def edit_top():
-    entries = Entry().fetch_all()
-    return render_template('blog/edit_top.html', entries=entries)
+    result = Entry().fetch_all()
+    if not result.succeeded:
+        abort(500)
+    return render_template('blog/edit_top.html', entries=result.value)
 
 
 @bp.route('/edit/create', methods=['GET', 'POST'])
@@ -40,16 +42,15 @@ def create():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        error = None
 
         if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
+            flash('Title is required.')
         else:
-            Entry().create(title, body)
-            return redirect(url_for('blog.edit_top'))
+            result = Entry().create(title, body)
+            if not result.succeeded:
+                flash(result.description)
+            else:
+                return redirect(url_for('blog.edit_top'))
 
     return render_template('blog/create.html')
 
@@ -57,25 +58,19 @@ def create():
 @bp.route('/edit/update/<int:entry_id>', methods=['GET', 'POST'])
 @login_required
 def update(entry_id):
-    entry_client = Entry()
-    entry = entry_client.fetch(entry_id)
-    if entry is None:
-        abort(404)
+    entry = fetch_entry_wrapper(entry_id) 
 
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
-        error = None
 
         if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
+            flash('Title is required.')
         else:
-            entry_client.update(entry_id, title, body)
-            flash('Update succeeded!')
-            return redirect(url_for('blog.update', entry_id=entry_id))
+            result = Entry().update(entry_id, title, body)
+            flash(result.description)
+            if result.succeeded:
+                return redirect(url_for('blog.update', entry_id=entry_id))
 
     return render_template('blog/update.html', entry=entry)
 
@@ -83,8 +78,19 @@ def update(entry_id):
 @bp.route('/edit/delete/<int:entry_id>', methods=['POST'])
 @login_required
 def delete(entry_id):
-    entry_client = Entry()
-    if entry_client.fetch(entry_id) is None:
-        abort(404)
-    entry_client.delete(entry_id)
+    entry = fetch_entry_wrapper(entry_id) 
+    result = Entry().delete(entry_id)
+    if not result.succeeded:
+        flash(result.description)
+        render_template('blog/update.html', entry=entry)
     return redirect(url_for('blog.edit_top'))
+
+
+def fetch_entry_wrapper(entry_id):
+    result = Entry().fetch(entry_id)
+    if not result.succeeded:
+        abort(500)
+    entry = result.value
+    if entry is None:
+        abort(404)
+    return entry
