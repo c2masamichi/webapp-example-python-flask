@@ -6,7 +6,10 @@ from cms.model import User
 
 def test_fetch_all(app):
     with app.app_context():
-        users = User().fetch_all()
+        result = User().fetch_all()
+        assert result.succeeded
+
+        users = result.value
         assert len(users) == 1
 
 

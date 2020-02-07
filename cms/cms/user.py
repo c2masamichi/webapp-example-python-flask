@@ -14,8 +14,10 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 @bp.route('/')
 def index():
-    users = User().fetch_all()
-    return render_template('user/index.html', users=users)
+    result =  User().fetch_all()
+    if not result.succeeded:
+        abort(500)
+    return render_template('user/index.html', users=result.value)
 
 
 @bp.route('/create', methods=['GET', 'POST'])

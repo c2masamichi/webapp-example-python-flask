@@ -102,13 +102,20 @@ class User(object):
         self._db = get_db()
 
     def fetch_all(self):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, username FROM user'
-                ' ORDER BY username'
-            )
-            return cursor.fetchall()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, username FROM user'
+                    ' ORDER BY username'
+                )
+                result.value = cursor.fetchall()
+        except Exception as e:
+            current_app.logger.error('fetching users: {0}'.format(e))
+            result.succeeded = False
+        finally:
+            return result
 
     def fetch(self, user_id):
         user = None
