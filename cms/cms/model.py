@@ -21,8 +21,7 @@ class Entry(object):
         except Exception as e:
             current_app.logger.error('fetching entries: {0}'.format(e))
             result.succeeded = False
-        finally:
-            return result
+        return result
 
     def fetch(self, entry_id):
         result = Result()
@@ -37,8 +36,7 @@ class Entry(object):
         except Exception as e:
             current_app.logger.error('fetching an entry: {0}'.format(e))
             result.succeeded = False
-        finally:
-            return result
+        return result
 
     def create(self, title, body):
         result = Result()
@@ -55,8 +53,7 @@ class Entry(object):
             current_app.logger.error('creating an entry: {0}'.format(e))
             result.succeeded = False
             result.description = 'Creating an entry failed.'
-        finally:
-            return result
+        return result
 
     def update(self, entry_id, title, body):
         result = Result()
@@ -75,8 +72,7 @@ class Entry(object):
             result.description = 'Update failed.'
         else:
             result.description = 'Update succeeded.'
-        finally:
-            return result
+        return result
 
     def delete(self, entry_id):
         result = Result()
@@ -93,8 +89,7 @@ class Entry(object):
             current_app.logger.error('deleting an entry: {0}'.format(e))
             result.succeeded = False
             result.description = 'Deleting an entry failed.'
-        finally:
-            return result
+        return result
 
 
 class User(object):
@@ -114,8 +109,7 @@ class User(object):
         except Exception as e:
             current_app.logger.error('fetching users: {0}'.format(e))
             result.succeeded = False
-        finally:
-            return result
+        return result
 
     def fetch(self, user_id):
         user = None

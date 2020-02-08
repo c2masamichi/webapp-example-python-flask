@@ -23,7 +23,7 @@ def index():
 
 @bp.route('/entry/<int:entry_id>')
 def get_entry(entry_id):
-    entry = fetch_entry_wrapper(entry_id) 
+    entry = fetch_entry_wrapper(entry_id)
     return render_template('blog/detail.html', entry=entry)
 
 
@@ -47,10 +47,10 @@ def create():
             flash('Title is required.')
         else:
             result = Entry().create(title, body)
-            if not result.succeeded:
-                flash(result.description)
-            else:
+            if result.succeeded:
                 return redirect(url_for('blog.edit_top'))
+            else:
+                flash(result.description)
 
     return render_template('blog/create.html')
 
@@ -58,7 +58,7 @@ def create():
 @bp.route('/edit/update/<int:entry_id>', methods=['GET', 'POST'])
 @login_required
 def update(entry_id):
-    entry = fetch_entry_wrapper(entry_id) 
+    entry = fetch_entry_wrapper(entry_id)
 
     if request.method == 'POST':
         title = request.form['title']
@@ -78,7 +78,7 @@ def update(entry_id):
 @bp.route('/edit/delete/<int:entry_id>', methods=['POST'])
 @login_required
 def delete(entry_id):
-    entry = fetch_entry_wrapper(entry_id) 
+    entry = fetch_entry_wrapper(entry_id)
     result = Entry().delete(entry_id)
     if not result.succeeded:
         flash(result.description)
