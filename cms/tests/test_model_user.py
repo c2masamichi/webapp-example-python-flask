@@ -56,8 +56,8 @@ def test_create(app):
     with app.app_context():
         username = 'addeduser'
         password = 'abcd1234'
-        error = User().create(username, password)
-        assert error is None
+        result = User().create(username, password)
+        assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:
@@ -73,14 +73,16 @@ def test_create_error(app):
     with app.app_context():
         username = 'testuser'
         password = 'efgh5678'
-        error = User().create(username, password)
-        assert 'already registered' in error
+        result = User().create(username, password)
+        assert not result.succeeded
+        assert 'already registered' in result.description
 
 
 def test_delete(app):
     with app.app_context():
         user_id = 1
-        User().delete(user_id)
+        result = User().delete(user_id)
+        assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:

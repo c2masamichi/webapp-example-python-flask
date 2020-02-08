@@ -148,35 +148,55 @@ class User(object):
 
     def create(self, username, password):
         db = self._db
-        error = None
+        result = Result()
 
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id FROM user WHERE username = %s',
-                (username,)
-            )
-            user = cursor.fetchone()
-        if user is not None:
-            error = 'User {0} is already registered.'.format(username)
-
-        if error is None:
+        try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO user (username, password) VALUES (%s, %s)',
-                    (username, generate_password_hash(password)),
+                    'SELECT id FROM user WHERE username = %s',
+                    (username,)
                 )
-            db.commit()
+                user = cursor.fetchone()
+            if user is not None:
+                result.description = 'User {0} is already registered.'.format(username)
+                result.succeeded = False
+        except Exception as e:
+            current_app.logger.error('fetching a user: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Creation failed.'
 
-        return error
+        if result.succeeded:
+            try:
+                with db.cursor() as cursor:
+                    cursor.execute(
+                        'INSERT INTO user (username, password) VALUES (%s, %s)',
+                        (username, generate_password_hash(password)),
+                    )
+                db.commit()
+            except Exception as e:
+                db.rollback()
+                current_app.logger.error('creating a user: {0}'.format(e))
+                result.succeeded = False
+                result.description = 'Creation failed.'
+
+        return result
 
     def delete(self, user_id):
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'DELETE FROM user WHERE id = %s',
-                (user_id,),
-            )
-        db.commit()
+        result = Result()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'DELETE FROM user WHERE id = %s',
+                    (user_id,),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('deleting a user: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Deletion failed.'
+        return result
 
     def change_password(self, user_id, old_password, new_password):
         db = self._db
