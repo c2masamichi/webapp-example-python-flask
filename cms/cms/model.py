@@ -116,7 +116,7 @@ class User(object):
         db = self._db
         with db.cursor() as cursor:
             cursor.execute(
-                'SELECT id, username FROM user WHERE id = %s',
+                'SELECT id, username, password FROM user WHERE id = %s',
                 (user_id,),
             )
             user = cursor.fetchone()
@@ -194,26 +194,31 @@ class User(object):
 
     def change_password(self, user_id, old_password, new_password):
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, password FROM user WHERE id = %s',
-                (user_id,)
-            )
-            user = cursor.fetchone()
+        result = Result()
+        user = self.fetch(user_id)
 
-        error = None
         if (user is None or
                 not check_password_hash(user['password'], old_password)):
-            error = 'Incorrect password.'
-        else:
+            result.succeeded = False
+            result.description = 'Incorrect password.'
+            return result
+
+        try:
             with db.cursor() as cursor:
                 cursor.execute(
                     'UPDATE user SET password = %s WHERE id = %s',
                     (generate_password_hash(new_password), user_id),
                 )
             db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('updating a password: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Update failed.'
+        else:
+            result.description = 'Password Changed.'
 
-        return error
+        return result
 
 
 class Result(object):

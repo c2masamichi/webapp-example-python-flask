@@ -20,13 +20,9 @@ def change_my_password():
         old_password = request.form['old_password']
         new_password = request.form['new_password']
 
-        error = User().change_password(
+        result = User().change_password(
             g.user['id'], old_password, new_password
         )
-
-        if error is None:
-            flash('Password Changed!')
-        else:
-            flash(error)
+        flash(result.description)
 
     return render_template('mypage/chpasswd.html', user=g.user)

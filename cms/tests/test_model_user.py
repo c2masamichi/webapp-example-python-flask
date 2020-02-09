@@ -100,8 +100,8 @@ def test_change_password(app):
         username = 'testuser'
         old_password = 'testpass'
         new_password = 'updated'
-        error = User().change_password(user_id, old_password, new_password)
-        assert error is None
+        result = User().change_password(user_id, old_password, new_password)
+        assert result.succeeded
 
         user, error = User().auth(username, old_password)
         assert error is not None
@@ -116,5 +116,5 @@ def test_change_password_error(app):
         user_id = 1
         old_password = 'aaaa'
         new_password = 'updated'
-        error = User().change_password(user_id, old_password, new_password)
-        assert error == 'Incorrect password.'
+        result = User().change_password(user_id, old_password, new_password)
+        assert not result.succeeded
