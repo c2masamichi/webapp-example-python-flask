@@ -52,7 +52,7 @@ class Entry(object):
             db.rollback()
             current_app.logger.error('creating an entry: {0}'.format(e))
             result.succeeded = False
-            result.description = 'Creating an entry failed.'
+            result.description = 'Creation failed.'
         return result
 
     def update(self, entry_id, title, body):
@@ -88,7 +88,7 @@ class Entry(object):
             db.rollback()
             current_app.logger.error('deleting an entry: {0}'.format(e))
             result.succeeded = False
-            result.description = 'Deleting an entry failed.'
+            result.description = 'Deletion failed.'
         return result
 
 
