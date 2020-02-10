@@ -44,13 +44,13 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        user, error = User().auth(username, password)
-        if error is None:
+        result = User().auth(username, password)
+        if result.succeeded:
             session.clear()
-            session['user_id'] = user['id']
+            session['user_id'] = result.value['id']
             return redirect(url_for('index'))
 
-        flash(error)
+        flash(result.description)
 
     return render_template('auth/login.html')
 

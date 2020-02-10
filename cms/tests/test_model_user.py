@@ -38,8 +38,10 @@ def test_auth(app):
     with app.app_context():
         username = 'testuser'
         password = 'testpass'
-        user, error = User().auth(username, password)
-        assert error is None
+        result = User().auth(username, password)
+        assert result.succeeded
+
+        user = result.value
         assert user['id'] == 1
         assert user['username'] == 'testuser'
 
@@ -53,8 +55,10 @@ def test_auth(app):
 )
 def test_auth_error(app, username, password):
     with app.app_context():
-        user, error = User().auth(username, password)
-        assert error == 'Incorrect username or password.'
+        result = User().auth(username, password)
+        assert not result.succeeded
+
+        user = result.value
         assert user is None
 
 
@@ -108,11 +112,12 @@ def test_change_password(app):
         result = User().change_password(user_id, old_password, new_password)
         assert result.succeeded
 
-        user, error = User().auth(username, old_password)
-        assert error is not None
+        auth_result = User().auth(username, old_password)
+        assert not auth_result.succeeded
 
-        user, error = User().auth(username, new_password)
-        assert error is None
+        auth_result = User().auth(username, new_password)
+        assert auth_result.succeeded
+        user = auth_result.value
         assert user['id'] == 1
 
 

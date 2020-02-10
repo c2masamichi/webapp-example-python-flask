@@ -128,20 +128,29 @@ class User(object):
 
     def auth(self, username, password):
         db = self._db
-        error = None
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, username, password FROM user WHERE username = %s',
-                (username,)
-            )
-            user = cursor.fetchone()
+        result = Result()
+
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, username, password FROM user WHERE username = %s',
+                    (username,)
+                )
+                user = cursor.fetchone()
+        except Exception as e:
+            current_app.logger.error('fetching a user: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Authentication failed.'
+            return result
 
         if (user is None or
                 not check_password_hash(user['password'], password)):
-            error = 'Incorrect username or password.'
+            result.succeeded = False
+            result.description = 'Incorrect username or password.'
             user = None
 
-        return user, error
+        result.value = user
+        return result
 
     def create(self, username, password):
         db = self._db
