@@ -32,7 +32,10 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = User().fetch(user_id)
+        result = User().fetch(user_id)
+        if not result.succeeded:
+            abort(500)
+        g.user = result.value
 
 
 @bp.route('/login', methods=['GET', 'POST'])

@@ -112,16 +112,19 @@ class User(object):
         return result
 
     def fetch(self, user_id):
-        user = None
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, username, password FROM user WHERE id = %s',
-                (user_id,),
-            )
-            user = cursor.fetchone()
-
-        return user
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, username, password FROM user WHERE id = %s',
+                    (user_id,),
+                )
+                result.value = cursor.fetchone()
+        except Exception as e:
+            current_app.logger.error('fetching a user: {0}'.format(e))
+            result.succeeded = False
+        return result
 
     def auth(self, username, password):
         db = self._db
@@ -195,8 +198,14 @@ class User(object):
     def change_password(self, user_id, old_password, new_password):
         db = self._db
         result = Result()
-        user = self.fetch(user_id)
 
+        fetch_user_result = self.fetch(user_id)
+        if not fetch_user_result.succeeded:
+            result.succeeded = False
+            result.description = 'Update failed.'
+            return result
+
+        user = fetch_user_result.value
         if (user is None or
                 not check_password_hash(user['password'], old_password)):
             result.succeeded = False

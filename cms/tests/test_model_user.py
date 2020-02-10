@@ -16,7 +16,10 @@ def test_fetch_all(app):
 def test_fetch(app):
     with app.app_context():
         user_id = 1
-        user = User().fetch(user_id)
+        result = User().fetch(user_id)
+        assert result.succeeded
+
+        user = result.value
         assert user['id'] == 1
         assert user['username'] == 'testuser'
 
@@ -24,7 +27,10 @@ def test_fetch(app):
 def test_fetch_not_exists(app):
     with app.app_context():
         user_id = 5
-        user = User().fetch(user_id)
+        result = User().fetch(user_id)
+        assert result.succeeded
+
+        user = result.value
         assert user is None
 
 
