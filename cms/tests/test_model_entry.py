@@ -35,6 +35,8 @@ def test_fetch_not_exists(app):
     with app.app_context():
         entry_id = 5
         result = Entry().fetch(entry_id)
+        assert result.succeeded
+
         entry = result.value
         assert entry is None
 

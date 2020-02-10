@@ -32,7 +32,10 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = User().fetch(user_id)
+        result = User().fetch(user_id)
+        if not result.succeeded:
+            abort(500)
+        g.user = result.value
 
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -41,13 +44,13 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        user, error = User().auth(username, password)
-        if error is None:
+        result = User().auth(username, password)
+        if result.succeeded:
             session.clear()
-            session['user_id'] = user['id']
+            session['user_id'] = result.value['id']
             return redirect(url_for('index'))
 
-        flash(error)
+        flash(result.description)
 
     return render_template('auth/login.html')
 

@@ -21,8 +21,7 @@ class Entry(object):
         except Exception as e:
             current_app.logger.error('fetching entries: {0}'.format(e))
             result.succeeded = False
-        finally:
-            return result
+        return result
 
     def fetch(self, entry_id):
         result = Result()
@@ -37,8 +36,7 @@ class Entry(object):
         except Exception as e:
             current_app.logger.error('fetching an entry: {0}'.format(e))
             result.succeeded = False
-        finally:
-            return result
+        return result
 
     def create(self, title, body):
         result = Result()
@@ -54,9 +52,8 @@ class Entry(object):
             db.rollback()
             current_app.logger.error('creating an entry: {0}'.format(e))
             result.succeeded = False
-            result.description = 'Creating an entry failed.'
-        finally:
-            return result
+            result.description = 'Creation failed.'
+        return result
 
     def update(self, entry_id, title, body):
         result = Result()
@@ -75,8 +72,7 @@ class Entry(object):
             result.description = 'Update failed.'
         else:
             result.description = 'Update succeeded.'
-        finally:
-            return result
+        return result
 
     def delete(self, entry_id):
         result = Result()
@@ -92,9 +88,8 @@ class Entry(object):
             db.rollback()
             current_app.logger.error('deleting an entry: {0}'.format(e))
             result.succeeded = False
-            result.description = 'Deleting an entry failed.'
-        finally:
-            return result
+            result.description = 'Deletion failed.'
+        return result
 
 
 class User(object):
@@ -102,97 +97,146 @@ class User(object):
         self._db = get_db()
 
     def fetch_all(self):
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, username FROM user'
-                ' ORDER BY username'
-            )
-            return cursor.fetchall()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, username FROM user'
+                    ' ORDER BY username'
+                )
+                result.value = cursor.fetchall()
+        except Exception as e:
+            current_app.logger.error('fetching users: {0}'.format(e))
+            result.succeeded = False
+        return result
 
     def fetch(self, user_id):
-        user = None
+        result = Result()
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, username FROM user WHERE id = %s',
-                (user_id,),
-            )
-            user = cursor.fetchone()
-
-        return user
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, username, password FROM user WHERE id = %s',
+                    (user_id,),
+                )
+                result.value = cursor.fetchone()
+        except Exception as e:
+            current_app.logger.error('fetching a user: {0}'.format(e))
+            result.succeeded = False
+        return result
 
     def auth(self, username, password):
         db = self._db
-        error = None
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, username, password FROM user WHERE username = %s',
-                (username,)
-            )
-            user = cursor.fetchone()
+        result = Result()
+
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, username, password FROM user WHERE username = %s',
+                    (username,)
+                )
+                user = cursor.fetchone()
+        except Exception as e:
+            current_app.logger.error('fetching a user: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Authentication failed.'
+            return result
 
         if (user is None or
                 not check_password_hash(user['password'], password)):
-            error = 'Incorrect username or password.'
+            result.succeeded = False
+            result.description = 'Incorrect username or password.'
             user = None
 
-        return user, error
+        result.value = user
+        return result
 
     def create(self, username, password):
         db = self._db
-        error = None
+        result = Result()
 
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id FROM user WHERE username = %s',
-                (username,)
-            )
-            user = cursor.fetchone()
-        if user is not None:
-            error = 'User {0} is already registered.'.format(username)
-
-        if error is None:
+        try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO user (username, password) VALUES (%s, %s)',
-                    (username, generate_password_hash(password)),
+                    'SELECT id FROM user WHERE username = %s',
+                    (username,)
                 )
-            db.commit()
+                user = cursor.fetchone()
+            if user is not None:
+                result.description = 'User {0} is already registered.'.format(username)
+                result.succeeded = False
+        except Exception as e:
+            current_app.logger.error('fetching a user: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Creation failed.'
 
-        return error
+        if result.succeeded:
+            try:
+                with db.cursor() as cursor:
+                    cursor.execute(
+                        'INSERT INTO user (username, password) VALUES (%s, %s)',
+                        (username, generate_password_hash(password)),
+                    )
+                db.commit()
+            except Exception as e:
+                db.rollback()
+                current_app.logger.error('creating a user: {0}'.format(e))
+                result.succeeded = False
+                result.description = 'Creation failed.'
+
+        return result
 
     def delete(self, user_id):
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'DELETE FROM user WHERE id = %s',
-                (user_id,),
-            )
-        db.commit()
+        result = Result()
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'DELETE FROM user WHERE id = %s',
+                    (user_id,),
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('deleting a user: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Deletion failed.'
+        return result
 
     def change_password(self, user_id, old_password, new_password):
         db = self._db
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT id, password FROM user WHERE id = %s',
-                (user_id,)
-            )
-            user = cursor.fetchone()
+        result = Result()
 
-        error = None
+        fetch_user_result = self.fetch(user_id)
+        if not fetch_user_result.succeeded:
+            result.succeeded = False
+            result.description = 'Update failed.'
+            return result
+
+        user = fetch_user_result.value
         if (user is None or
                 not check_password_hash(user['password'], old_password)):
-            error = 'Incorrect password.'
-        else:
+            result.succeeded = False
+            result.description = 'Incorrect password.'
+            return result
+
+        try:
             with db.cursor() as cursor:
                 cursor.execute(
                     'UPDATE user SET password = %s WHERE id = %s',
                     (generate_password_hash(new_password), user_id),
                 )
             db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('updating a password: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Update failed.'
+        else:
+            result.description = 'Password Changed.'
 
-        return error
+        return result
 
 
 class Result(object):

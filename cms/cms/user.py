@@ -14,8 +14,10 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 @bp.route('/')
 def index():
-    users = User().fetch_all()
-    return render_template('user/index.html', users=users)
+    result = User().fetch_all()
+    if not result.succeeded:
+        abort(500)
+    return render_template('user/index.html', users=result.value)
 
 
 @bp.route('/create', methods=['GET', 'POST'])
@@ -25,17 +27,20 @@ def create():
         username = request.form['username']
         password = request.form['password']
 
+        error = ''
         if not username:
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
-        else:
-            error = User().create(username, password)
 
-        if error is None:
-            return redirect(url_for('user.index'))
-        else:
+        if error:
             flash(error)
+        else:
+            result = User().create(username, password)
+            if result.succeeded:
+                return redirect(url_for('user.index'))
+            else:
+                flash(result.description)
 
     return render_template('user/create.html')
 
@@ -46,5 +51,7 @@ def delete(user_id):
     user_client = User()
     if user_client.fetch(user_id) is None:
         abort(404)
-    user_client.delete(user_id)
+    result = user_client.delete(user_id)
+    if not result.succeeded:
+        flash(result.description)
     return redirect(url_for('user.index'))
