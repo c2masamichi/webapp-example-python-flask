@@ -168,9 +168,13 @@ class User(object):
         return result
 
     def create(self, username, password):
-        db = self._db
         result = Result()
+        if not self._validate_data(username, password):
+            result.succeeded = False
+            result.description = 'Bad data.'
+            return result
 
+        db = self._db
         try:
             with db.cursor() as cursor:
                 cursor.execute(
@@ -220,9 +224,13 @@ class User(object):
         return result
 
     def change_password(self, user_id, old_password, new_password):
-        db = self._db
         result = Result()
+        if not self._validate_data(password=new_password):
+            result.succeeded = False
+            result.description = 'Bad data.'
+            return result
 
+        db = self._db
         fetch_user_result = self.fetch(user_id)
         if not fetch_user_result.succeeded:
             result.succeeded = False
@@ -252,6 +260,15 @@ class User(object):
             result.description = 'Password Changed.'
 
         return result
+
+    def _validate_data(self, username='', password=''):
+        username_max = 20
+        password_max = 30
+        if len(username) > username_max:
+            return False
+        if len(password) > password_max:
+            return False
+        return True
 
 
 class Result(object):
