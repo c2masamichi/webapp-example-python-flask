@@ -42,7 +42,7 @@ class Entry(object):
         result = Result()
         if not self._validate_data(title, body):
             result.succeeded = False
-            result.description = 'Title or body is too long.'
+            result.description = 'Bad data.'
             return result
 
         db = self._db
@@ -64,7 +64,7 @@ class Entry(object):
         result = Result()
         if not self._validate_data(title, body):
             result.succeeded = False
-            result.description = 'Title or body is too long.'
+            result.description = 'Bad data.'
             return result
 
         db = self._db
@@ -104,7 +104,7 @@ class Entry(object):
     def _validate_data(self, title, body):
         title_max = 100
         body_max = 10000
-        return len(title) <= 100 and len(body) <= body_max
+        return len(title) <= title_max and len(body) <= body_max
 
 
 class User(object):
