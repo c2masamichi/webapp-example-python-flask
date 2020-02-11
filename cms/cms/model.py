@@ -40,6 +40,11 @@ class Entry(object):
 
     def create(self, title, body):
         result = Result()
+        if not self._validate_data(title, body):
+            result.succeeded = False
+            result.description = 'Title or body is too long.'
+            return result
+
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -57,6 +62,11 @@ class Entry(object):
 
     def update(self, entry_id, title, body):
         result = Result()
+        if not self._validate_data(title, body):
+            result.succeeded = False
+            result.description = 'Title or body is too long.'
+            return result
+
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -90,6 +100,11 @@ class Entry(object):
             result.succeeded = False
             result.description = 'Deletion failed.'
         return result
+
+    def _validate_data(self, title, body):
+        title_max = 100
+        body_max = 10000
+        return len(title) <= 100 and len(body) <= body_max
 
 
 class User(object):
