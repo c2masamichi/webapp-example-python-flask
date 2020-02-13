@@ -1,3 +1,5 @@
+import re
+
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
@@ -267,6 +269,13 @@ class User(object):
         if len(username) > username_max:
             return False
         if len(password) > password_max:
+            return False
+
+        username_patten = r'[0-9a-zA-Z-_]*'
+        if re.fullmatch(username_patten, username) is None:
+            return False
+        password_pattern = r'[0-9a-zA-Z-_]*'
+        if re.fullmatch(password_pattern, password) is None:
             return False
         return True
 
