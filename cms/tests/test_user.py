@@ -49,3 +49,16 @@ def test_create_validate_input(client, auth, username, password, message):
         '/user/create', data={'username': username, 'password': password}
     )
     assert message in response.data
+
+
+def test_delete(client, auth, app):
+    auth.login()
+    response = client.post('/user/delete/1')
+    assert response.headers['Location'] == 'http://localhost/user/'
+
+    with app.app_context():
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute('SELECT * FROM user WHERE id = 1')
+            user = cursor.fetchone()
+        assert user is None
