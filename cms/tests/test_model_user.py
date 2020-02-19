@@ -10,7 +10,7 @@ def test_fetch_all(app):
         assert result.succeeded
 
         users = result.value
-        assert len(users) == 1
+        assert len(users) == 3
 
 
 def test_fetch(app):
@@ -89,7 +89,7 @@ def test_create_error(app):
 
 def test_delete(app):
     with app.app_context():
-        user_id = 1
+        user_id = 2
         result = User().delete(user_id)
         assert result.succeeded
 
