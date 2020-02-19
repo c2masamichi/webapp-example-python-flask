@@ -40,7 +40,7 @@ def test_create(client, auth, app):
     (
         ('', '', b'Username is required.'),
         ('aabbccdd', '', b'Password is required.'),
-        ('testuser', 'testpass', b'already registered'),
+        ('user-admin01', 'testpass', b'already registered'),
     ),
 )
 def test_create_validate_input(client, auth, username, password, message):

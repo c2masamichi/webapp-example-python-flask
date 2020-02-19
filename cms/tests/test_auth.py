@@ -14,14 +14,14 @@ def test_login(client, auth):
     with client:
         client.get('/')
         assert session['user_id'] == 1
-        assert g.user['username'] == 'testuser'
+        assert g.user['username'] == 'user-admin01'
 
 
 @pytest.mark.parametrize(
     ('username', 'password'),
     (
         ('aaaa', 'testpass'),
-        ('testuser', 'aaaa')
+        ('user-admin01', 'aaaa')
     ),
 )
 def test_login_validate_input(auth, username, password):
