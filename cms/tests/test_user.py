@@ -40,7 +40,7 @@ def test_create(client, auth, app):
     (
         ('', '', b'Username is required.'),
         ('aabbccdd', '', b'Password is required.'),
-        ('testuser', 'testpass', b'already registered'),
+        ('user-admin01', 'testpass', b'already registered'),
     ),
 )
 def test_create_validate_input(client, auth, username, password, message):
@@ -49,3 +49,20 @@ def test_create_validate_input(client, auth, username, password, message):
         '/user/create', data={'username': username, 'password': password}
     )
     assert message in response.data
+
+
+def test_delete(client, auth, app):
+    user_id = 2
+    auth.login()
+    response = client.post('/user/delete/{0}'.format(user_id))
+    assert response.headers['Location'] == 'http://localhost/user/'
+
+    with app.app_context():
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT * FROM user WHERE id = %s',
+                (user_id,)
+            )
+            user = cursor.fetchone()
+        assert user is None

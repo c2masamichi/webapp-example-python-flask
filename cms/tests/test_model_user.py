@@ -10,7 +10,7 @@ def test_fetch_all(app):
         assert result.succeeded
 
         users = result.value
-        assert len(users) == 1
+        assert len(users) == 3
 
 
 def test_fetch(app):
@@ -21,7 +21,7 @@ def test_fetch(app):
 
         user = result.value
         assert user['id'] == 1
-        assert user['username'] == 'testuser'
+        assert user['username'] == 'user-admin01'
 
 
 def test_fetch_not_exists(app):
@@ -36,21 +36,21 @@ def test_fetch_not_exists(app):
 
 def test_auth(app):
     with app.app_context():
-        username = 'testuser'
+        username = 'user-admin01'
         password = 'testpass'
         result = User().auth(username, password)
         assert result.succeeded
 
         user = result.value
         assert user['id'] == 1
-        assert user['username'] == 'testuser'
+        assert user['username'] == 'user-admin01'
 
 
 @pytest.mark.parametrize(
     ('username', 'password'),
     (
         ('aaaa', 'testpass'),
-        ('testuser', 'aaaa')
+        ('user-admin01', 'aaaa')
     ),
 )
 def test_auth_error(app, username, password):
@@ -81,7 +81,7 @@ def test_create(app):
 
 def test_create_error(app):
     with app.app_context():
-        username = 'testuser'
+        username = 'user-admin01'
         password = 'efgh5678'
         result = User().create(username, password)
         assert not result.succeeded
@@ -89,7 +89,7 @@ def test_create_error(app):
 
 def test_delete(app):
     with app.app_context():
-        user_id = 1
+        user_id = 2
         result = User().delete(user_id)
         assert result.succeeded
 
@@ -106,7 +106,7 @@ def test_delete(app):
 def test_change_password(app):
     with app.app_context():
         user_id = 1
-        username = 'testuser'
+        username = 'user-admin01'
         old_password = 'testpass'
         new_password = 'updated'
         result = User().change_password(user_id, old_password, new_password)
