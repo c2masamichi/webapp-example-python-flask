@@ -69,6 +69,7 @@ def test_create(client, auth, app):
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM entry WHERE id = 4')
             entry = cursor.fetchone()
+        assert entry['author_id'] == 1
         assert entry['title'] == 'created'
         assert entry['body'] == 'created on test'
 

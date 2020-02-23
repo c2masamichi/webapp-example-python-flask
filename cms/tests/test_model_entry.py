@@ -43,15 +43,17 @@ def test_fetch_not_exists(app):
 
 def test_create(app):
     with app.app_context():
+        author_id = 1
         title = 'created'
         body = 'created on test'
-        result = Entry().create(title, body)
+        result = Entry().create(author_id, title, body)
         assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM entry WHERE id = 4')
             entry = cursor.fetchone()
+        assert entry['author_id'] == author_id
         assert entry['title'] == 'created'
         assert entry['body'] == 'created on test'
 

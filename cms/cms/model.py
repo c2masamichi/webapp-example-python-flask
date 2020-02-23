@@ -40,7 +40,7 @@ class Entry(object):
             result.succeeded = False
         return result
 
-    def create(self, title, body):
+    def create(self, author_id, title, body):
         result = Result()
         if not self._validate_data(title, body):
             result.succeeded = False
@@ -51,8 +51,9 @@ class Entry(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO entry (title, body) VALUES (%s, %s)',
-                    (title, body),
+                    'INSERT INTO entry (author_id, title, body)'
+                    ' VALUES (%s, %s, %s)',
+                    (author_id, title, body),
                 )
             db.commit()
         except Exception as e:
