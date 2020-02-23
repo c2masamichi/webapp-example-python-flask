@@ -20,7 +20,7 @@ def test_fetch(app):
         assert result.succeeded
 
         user = result.value
-        assert user['id'] == 1
+        assert user['id'] == user_id
         assert user['username'] == 'user-admin01'
 
 
@@ -43,7 +43,7 @@ def test_auth(app):
 
         user = result.value
         assert user['id'] == 1
-        assert user['username'] == 'user-admin01'
+        assert user['username'] == username
 
 
 @pytest.mark.parametrize(
@@ -118,7 +118,7 @@ def test_change_password(app):
         auth_result = User().auth(username, new_password)
         assert auth_result.succeeded
         user = auth_result.value
-        assert user['id'] == 1
+        assert user['id'] == user_id
 
 
 def test_change_password_error(app):
