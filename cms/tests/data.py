@@ -8,6 +8,6 @@ TEST_DATA_STATEMENTS = [
     'INSERT INTO entry (author_id, title, body, created)'
     ' VALUES'
     '  (1, "Test Title 1", "This body is test.", "2019-01-01 00:00:00"),'
-    '  (1, "Test Title 2", "Test Test Test Test", "2019-01-01 12:30:45"),'
-    '  (1, "Test Title 3", "Test Test Test Test", "2019-01-02 08:20:01")'
+    '  (2, "Test Title 2", "Test Test Test Test", "2019-01-01 12:30:45"),'
+    '  (3, "Test Title 3", "Test Test Test Test", "2019-01-02 08:20:01")'
 ]
