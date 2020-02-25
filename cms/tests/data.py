@@ -1,9 +1,9 @@
 TEST_DATA_STATEMENTS = [
-    'INSERT INTO user (username, password)'
+    'INSERT INTO user (role, username, password)'
     ' VALUES'
-    '  ("user-admin01", "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20"),'
-    '  ("user-editor01", "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20"),'
-    '  ("user-author01", "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20")',
+    '  ("administrator", "user-admin01", "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20"),'
+    '  ("editor", "user-editor01", "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20"),'
+    '  ("author", "user-author01", "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20")',
 
     'INSERT INTO entry (author_id, title, body, created)'
     ' VALUES'

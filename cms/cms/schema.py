@@ -4,6 +4,7 @@ SCHEMA_STATEMENTS = [
 
     'CREATE TABLE user ('
     ' id INT PRIMARY KEY AUTO_INCREMENT,'
+    ' role VARCHAR(20) NOT NULL,'
     ' username VARCHAR(20) UNIQUE NOT NULL,'
     ' password VARCHAR(200) NOT NULL'
     ')',
