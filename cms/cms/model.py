@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
 from cms.db import get_db
+from cms.role import ROLES
 
 
 class Entry(object):
@@ -171,8 +172,13 @@ class User(object):
         result.value = user
         return result
 
-    def create(self, username, password):
+    def create(self, role, username, password):
         result = Result()
+        if role not in ROLES:
+            result.succeeded = False
+            result.description = 'Role {0} does not exist.'.format(role)
+            return result
+
         if not self._validate_data(username, password):
             result.succeeded = False
             result.description = 'Bad data.'
@@ -198,8 +204,9 @@ class User(object):
             try:
                 with db.cursor() as cursor:
                     cursor.execute(
-                        'INSERT INTO user (username, password) VALUES (%s, %s)',
-                        (username, generate_password_hash(password)),
+                        'INSERT INTO user (role, username, password)'
+                        ' VALUES (%s, %s, %s)',
+                        (role, username, generate_password_hash(password)),
                     )
                 db.commit()
             except Exception as e:

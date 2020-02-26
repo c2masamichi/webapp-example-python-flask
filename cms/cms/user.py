@@ -26,6 +26,7 @@ def create():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        role = request.form['role']
 
         error = ''
         if not username:
@@ -36,7 +37,7 @@ def create():
         if error:
             flash(error)
         else:
-            result = User().create(username, password)
+            result = User().create(role, username, password)
             if result.succeeded:
                 return redirect(url_for('user.index'))
             else:

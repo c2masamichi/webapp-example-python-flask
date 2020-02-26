@@ -64,9 +64,10 @@ def test_auth_error(app, username, password):
 
 def test_create(app):
     with app.app_context():
+        role = 'administrator'
         username = 'addeduser'
         password = 'abcd1234'
-        result = User().create(username, password)
+        result = User().create(role, username, password)
         assert result.succeeded
 
         db = get_db()
@@ -81,9 +82,10 @@ def test_create(app):
 
 def test_create_error(app):
     with app.app_context():
+        role = 'administrator'
         username = 'user-admin01'
         password = 'efgh5678'
-        result = User().create(username, password)
+        result = User().create(role, username, password)
         assert not result.succeeded
 
 
