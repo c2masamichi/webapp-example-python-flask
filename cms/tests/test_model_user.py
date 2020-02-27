@@ -16,12 +16,15 @@ def test_fetch_all(app):
 def test_fetch(app):
     with app.app_context():
         user_id = 1
+        role = 'administrator'
+        username = 'user-admin01'
         result = User().fetch(user_id)
         assert result.succeeded
 
         user = result.value
         assert user['id'] == user_id
-        assert user['username'] == 'user-admin01'
+        assert user['username'] == username
+        assert user['role'] == role
 
 
 def test_fetch_not_exists(app):

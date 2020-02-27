@@ -122,7 +122,7 @@ class User(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'SELECT id, username FROM user'
+                    'SELECT id, role, username FROM user'
                     ' ORDER BY username'
                 )
                 result.value = cursor.fetchall()
@@ -137,7 +137,7 @@ class User(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'SELECT id, username, password FROM user WHERE id = %s',
+                    'SELECT id, role, username, password FROM user WHERE id = %s',
                     (user_id,),
                 )
                 result.value = cursor.fetchone()
