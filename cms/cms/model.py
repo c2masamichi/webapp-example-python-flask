@@ -18,7 +18,7 @@ class Entry(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'SELECT title, body, created FROM entry'
+                    'SELECT id, title, created FROM entry'
                     ' ORDER BY created DESC'
                 )
                 result.value = cursor.fetchall()

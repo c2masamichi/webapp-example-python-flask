@@ -8,7 +8,6 @@ def test_index(client):
     assert response.status_code == 200
     assert b'Test Title 1' in response.data
     assert b'2019-01-01' in response.data
-    assert b'This body is test.' in response.data
 
 
 def test_get_entry(client):
