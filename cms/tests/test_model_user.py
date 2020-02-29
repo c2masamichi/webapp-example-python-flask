@@ -90,6 +90,7 @@ def test_create_error(app):
         password = 'efgh5678'
         result = User().create(role, username, password)
         assert not result.succeeded
+        assert 'already registered' in result.description
 
 
 def test_update(app):
