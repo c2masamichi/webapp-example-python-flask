@@ -217,6 +217,53 @@ class User(object):
 
         return result
 
+    def update(self, user_id, role, username):
+        result = Result()
+        if role not in ROLES:
+            result.succeeded = False
+            result.description = 'Role {0} does not exist.'.format(role)
+            return result
+
+        if not self._validate_data(username=username):
+            result.succeeded = False
+            result.description = 'Bad data.'
+            return result
+
+        db = self._db
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id FROM user WHERE username = %s',
+                    (username,)
+                )
+                user = cursor.fetchone()
+            if user is not None:
+                result.description = 'User {0} is already registered.'.format(username)
+                result.succeeded = False
+        except Exception as e:
+            current_app.logger.error('fetching a user: {0}'.format(e))
+            result.succeeded = False
+            result.description = 'Update failed.'
+
+        if result.succeeded:
+            try:
+                with db.cursor() as cursor:
+                    cursor.execute(
+                        'UPDATE user SET role = %s, username = %s'
+                        ' WHERE id = %s',
+                        (role, username, user_id),
+                    )
+                db.commit()
+            except Exception as e:
+                db.rollback()
+                current_app.logger.error('updating a user: {0}'.format(e))
+                result.succeeded = False
+                result.description = 'Update failed.'
+            else:
+                result.description = 'Update succeeded.'
+
+        return result
+
     def delete(self, user_id):
         db = self._db
         result = Result()

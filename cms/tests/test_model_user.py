@@ -92,6 +92,35 @@ def test_create_error(app):
         assert not result.succeeded
 
 
+def test_update(app):
+    with app.app_context():
+        user_id = 2
+        role = 'author'
+        username = 'updated-to-author'
+        result = User().update(user_id, role, username)
+        assert result.succeeded
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute(
+                'select * from user where id = %s',
+                (user_id,)
+            )
+            user = cursor.fetchone()
+        assert user['role'] == role
+        assert user['username'] == username
+
+
+def test_update_error(app):
+    with app.app_context():
+        user_id = 2
+        role = 'author'
+        username = 'user-author01'
+        result = User().update(user_id, role, username)
+        assert not result.succeeded
+        assert 'already registered' in result.description
+
+
 def test_delete(app):
     with app.app_context():
         user_id = 2
