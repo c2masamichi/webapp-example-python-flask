@@ -179,7 +179,8 @@ class User(object):
             result.description = 'Role {0} does not exist.'.format(role)
             return result
 
-        if not self._validate_data(username, password):
+        if (not self._validate_username(username)
+                and not self._validate_password(password)):
             result.succeeded = False
             result.description = 'Bad data.'
             return result
@@ -224,7 +225,7 @@ class User(object):
             result.description = 'Role {0} does not exist.'.format(role)
             return result
 
-        if not self._validate_data(username=username):
+        if not self._validate_username(username):
             result.succeeded = False
             result.description = 'Bad data.'
             return result
@@ -283,7 +284,7 @@ class User(object):
 
     def change_password(self, user_id, old_password, new_password):
         result = Result()
-        if not self._validate_data(password=new_password):
+        if not self._validate_password(new_password):
             result.succeeded = False
             result.description = 'Bad data.'
             return result
@@ -319,19 +320,21 @@ class User(object):
 
         return result
 
-    def _validate_data(self, username='', password=''):
-        username_max = 20
-        password_max = 30
-        if len(username) > username_max:
+    def _validate_username(self, username):
+        max_length = 20
+        if len(username) > max_length:
             return False
-        if len(password) > password_max:
+        pattern = r'[0-9a-zA-Z-_]*'
+        if re.fullmatch(pattern, username) is None:
             return False
+        return True
 
-        username_patten = r'[0-9a-zA-Z-_]*'
-        if re.fullmatch(username_patten, username) is None:
+    def _validate_password(self, password):
+        max_length = 30
+        if len(password) > max_length:
             return False
-        password_pattern = r'[0-9a-zA-Z-_]*'
-        if re.fullmatch(password_pattern, password) is None:
+        pattern = r'[0-9a-zA-Z-_]*'
+        if re.fullmatch(pattern, password) is None:
             return False
         return True
 
