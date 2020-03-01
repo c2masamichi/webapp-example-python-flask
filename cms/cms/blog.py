@@ -46,7 +46,7 @@ def create():
         if not title:
             flash('Title is required.')
         else:
-            result = Entry().create(title, body)
+            result = Entry().create(g.user['id'], title, body)
             if result.succeeded:
                 return redirect(url_for('blog.edit_top'))
             else:

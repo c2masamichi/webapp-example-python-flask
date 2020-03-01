@@ -25,7 +25,7 @@ def test_fetch(app):
         assert result.succeeded
 
         entry = result.value
-        assert entry['id'] == 1
+        assert entry['id'] == entry_id
         assert entry['title'] == 'Test Title 1'
         assert entry['body'] == 'This body is test.'
         assert entry['created'] == datetime(2019, 1, 1, 0, 0)
@@ -43,17 +43,19 @@ def test_fetch_not_exists(app):
 
 def test_create(app):
     with app.app_context():
+        author_id = 1
         title = 'created'
         body = 'created on test'
-        result = Entry().create(title, body)
+        result = Entry().create(author_id, title, body)
         assert result.succeeded
 
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM entry WHERE id = 4')
             entry = cursor.fetchone()
-        assert entry['title'] == 'created'
-        assert entry['body'] == 'created on test'
+        assert entry['author_id'] == author_id
+        assert entry['title'] == title
+        assert entry['body'] == body
 
 
 def test_update(app):
@@ -66,10 +68,13 @@ def test_update(app):
 
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM entry WHERE id = 1')
+            cursor.execute(
+                'SELECT * FROM entry WHERE id = %s',
+                (entry_id,)
+            )
             entry = cursor.fetchone()
-        assert entry['title'] == 'updated'
-        assert entry['body'] == 'updated on test'
+        assert entry['title'] == title
+        assert entry['body'] == body
 
 
 def test_delete(app):
@@ -80,6 +85,9 @@ def test_delete(app):
 
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM entry WHERE id = 1')
+            cursor.execute(
+                'SELECT * FROM entry WHERE id = %s',
+                (entry_id,)
+            )
             entry = cursor.fetchone()
         assert entry is None

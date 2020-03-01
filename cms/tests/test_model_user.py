@@ -16,12 +16,15 @@ def test_fetch_all(app):
 def test_fetch(app):
     with app.app_context():
         user_id = 1
+        role = 'administrator'
+        username = 'user-admin01'
         result = User().fetch(user_id)
         assert result.succeeded
 
         user = result.value
-        assert user['id'] == 1
-        assert user['username'] == 'user-admin01'
+        assert user['id'] == user_id
+        assert user['username'] == username
+        assert user['role'] == role
 
 
 def test_fetch_not_exists(app):
@@ -43,7 +46,7 @@ def test_auth(app):
 
         user = result.value
         assert user['id'] == 1
-        assert user['username'] == 'user-admin01'
+        assert user['username'] == username
 
 
 @pytest.mark.parametrize(
@@ -64,9 +67,10 @@ def test_auth_error(app, username, password):
 
 def test_create(app):
     with app.app_context():
+        role = 'administrator'
         username = 'addeduser'
         password = 'abcd1234'
-        result = User().create(username, password)
+        result = User().create(role, username, password)
         assert result.succeeded
 
         db = get_db()
@@ -81,10 +85,41 @@ def test_create(app):
 
 def test_create_error(app):
     with app.app_context():
+        role = 'administrator'
         username = 'user-admin01'
         password = 'efgh5678'
-        result = User().create(username, password)
+        result = User().create(role, username, password)
         assert not result.succeeded
+        assert 'already registered' in result.description
+
+
+def test_update(app):
+    with app.app_context():
+        user_id = 2
+        role = 'author'
+        username = 'updated-to-author'
+        result = User().update(user_id, role, username)
+        assert result.succeeded
+
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute(
+                'select * from user where id = %s',
+                (user_id,)
+            )
+            user = cursor.fetchone()
+        assert user['role'] == role
+        assert user['username'] == username
+
+
+def test_update_error(app):
+    with app.app_context():
+        user_id = 2
+        role = 'author'
+        username = 'user-author01'
+        result = User().update(user_id, role, username)
+        assert not result.succeeded
+        assert 'already registered' in result.description
 
 
 def test_delete(app):
@@ -118,7 +153,7 @@ def test_change_password(app):
         auth_result = User().auth(username, new_password)
         assert auth_result.succeeded
         user = auth_result.value
-        assert user['id'] == 1
+        assert user['id'] == user_id
 
 
 def test_change_password_error(app):

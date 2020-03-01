@@ -8,7 +8,6 @@ def test_index(client):
     assert response.status_code == 200
     assert b'Test Title 1' in response.data
     assert b'2019-01-01' in response.data
-    assert b'This body is test.' in response.data
 
 
 def test_get_entry(client):
@@ -59,9 +58,12 @@ def test_list_for_editors(client, auth):
 def test_create(client, auth, app):
     auth.login()
     assert client.get('/edit/create').status_code == 200
+
+    title = 'created'
+    body = 'created on test'
     client.post(
         '/edit/create',
-        data={'title': 'created', 'body': 'created on test'}
+        data={'title': title, 'body': body}
     )
 
     with app.app_context():
@@ -69,25 +71,34 @@ def test_create(client, auth, app):
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM entry WHERE id = 4')
             entry = cursor.fetchone()
-        assert entry['title'] == 'created'
-        assert entry['body'] == 'created on test'
+        assert entry['author_id'] == 1
+        assert entry['title'] == title
+        assert entry['body'] == body
 
 
 def test_update(client, auth, app):
+    entry_id = 1
+    title = 'updated'
+    body = 'updated on test'
+    url = '/edit/update/{0}'.format(entry_id)
+
     auth.login()
-    assert client.get('/edit/update/1').status_code == 200
+    assert client.get(url).status_code == 200
     client.post(
-        '/edit/update/1',
-        data={'title': 'updated', 'body': 'updated on test'}
+        url,
+        data={'title': title, 'body': body}
     )
 
     with app.app_context():
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM entry WHERE id = 1')
+            cursor.execute(
+                'SELECT * FROM entry WHERE id = %s',
+                (entry_id,)
+            )
             entry = cursor.fetchone()
-        assert entry['title'] == 'updated'
-        assert entry['body'] == 'updated on test'
+        assert entry['title'] == title
+        assert entry['body'] == body
 
 
 @pytest.mark.parametrize(
@@ -101,13 +112,17 @@ def test_create_update_validate(client, auth, path):
 
 
 def test_delete(client, auth, app):
+    entry_id = 1
     auth.login()
-    response = client.post('/edit/delete/1')
+    response = client.post('/edit/delete/{0}'.format(entry_id))
     assert response.headers['Location'] == 'http://localhost/edit/'
 
     with app.app_context():
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM entry WHERE id = 1')
+            cursor.execute(
+                'SELECT * FROM entry WHERE id = %s',
+                (entry_id,)
+            )
             entry = cursor.fetchone()
         assert entry is None

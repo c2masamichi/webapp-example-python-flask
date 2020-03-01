@@ -18,9 +18,12 @@ def test_create(client, auth, app):
     auth.login()
     assert client.get('/user/create').status_code == 200
 
+    role = 'administrator'
+    username = 'addeduser'
+    password = 'abcd1234'
     response = client.post(
         '/user/create',
-        data={'username': 'addeduser', 'password': 'abcd1234'}
+        data={'role': role, 'username': username, 'password': password}
     )
     assert 'http://localhost/user/' == response.headers['Location']
 
@@ -29,7 +32,7 @@ def test_create(client, auth, app):
         with db.cursor() as cursor:
             cursor.execute(
                 'select * from user where username = %s',
-                ('addeduser',)
+                (username,)
             )
             user = cursor.fetchone()
         assert user is not None
@@ -44,9 +47,11 @@ def test_create(client, auth, app):
     ),
 )
 def test_create_validate_input(client, auth, username, password, message):
+    role = 'administrator'
     auth.login()
     response = client.post(
-        '/user/create', data={'username': username, 'password': password}
+        '/user/create',
+        data={'role': role, 'username': username, 'password': password}
     )
     assert message in response.data
 

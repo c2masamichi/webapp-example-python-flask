@@ -6,6 +6,12 @@
 
 {% block content %}
   <form method="post">
+    <label for="role">Role</label>
+    <select name="role" id="role" required>
+      <option value="author">author</option>
+      <option value="editor">editor</option>
+      <option value="administrator">administrator</option>
+    </select>
     <label for="username">Username</label>
     <input name="username" id="username" required>
     <label for="password">Password</label>
