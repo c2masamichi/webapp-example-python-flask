@@ -143,23 +143,14 @@ class User(object):
         return result
 
     def auth(self, username, password):
-        db = self._db
-
-        try:
-            with db.cursor() as cursor:
-                cursor.execute(
-                    'SELECT id, username, password'
-                    ' FROM user WHERE username = %s',
-                    (username,)
-                )
-                user = cursor.fetchone()
-        except Exception as e:
-            current_app.logger.error('fetching a user: {0}'.format(e))
+        fetch_user_result = self._fetch_by_username(username)
+        if not fetch_user_result.succeeded:
             return Result(
                 succeeded=False,
                 description='Authentication failed.'
             )
 
+        user = fetch_user_result.value
         if (user is None or
                 not check_password_hash(user['password'], password)):
             return Result(
@@ -180,36 +171,29 @@ class User(object):
                 and not self._validate_password(password)):
             return Result(succeeded=False, description='Bad data.')
 
-        db = self._db
-        try:
-            with db.cursor() as cursor:
-                cursor.execute(
-                    'SELECT id FROM user WHERE username = %s',
-                    (username,)
-                )
-                user = cursor.fetchone()
-        except Exception as e:
-            current_app.logger.error('fetching a user: {0}'.format(e))
+        fetch_user_result = self._fetch_by_username(username)
+        if not fetch_user_result.succeeded:
             return Result(succeeded=False, description='Creation failed.')
 
-        if user is not None:
+        if fetch_user_result.value is not None:
             return Result(
                 succeeded=False,
                 description='User {0} is already registered.'.format(username)
             )
-        else:
-            try:
-                with db.cursor() as cursor:
-                    cursor.execute(
-                        'INSERT INTO user (role, username, password)'
-                        ' VALUES (%s, %s, %s)',
-                        (role, username, generate_password_hash(password))
-                    )
-                db.commit()
-            except Exception as e:
-                db.rollback()
-                current_app.logger.error('creating a user: {0}'.format(e))
-                return Result(succeeded=False, description='Creation failed.')
+
+        db = self._db
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'INSERT INTO user (role, username, password)'
+                    ' VALUES (%s, %s, %s)',
+                    (role, username, generate_password_hash(password))
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('creating a user: {0}'.format(e))
+            return Result(succeeded=False, description='Creation failed.')
 
         return Result()
 
@@ -223,36 +207,29 @@ class User(object):
         if not self._validate_username(username):
             return Result(succeeded=False, description='Bad data.')
 
-        db = self._db
-        try:
-            with db.cursor() as cursor:
-                cursor.execute(
-                    'SELECT id FROM user WHERE username = %s',
-                    (username,)
-                )
-                user = cursor.fetchone()
-        except Exception as e:
-            current_app.logger.error('fetching a user: {0}'.format(e))
+        fetch_user_result = self._fetch_by_username(username)
+        if not fetch_user_result.succeeded:
             return Result(succeeded=False, description='Update failed.')
 
-        if user is not None:
+        if fetch_user_result.value is not None:
             return Result(
                 succeeded=False,
                 description='User {0} is already registered.'.format(username)
             )
-        else:
-            try:
-                with db.cursor() as cursor:
-                    cursor.execute(
-                        'UPDATE user SET role = %s, username = %s'
-                        ' WHERE id = %s',
-                        (role, username, user_id)
-                    )
-                db.commit()
-            except Exception as e:
-                db.rollback()
-                current_app.logger.error('updating a user: {0}'.format(e))
-                return Result(succeeded=False, description='Update failed.')
+
+        db = self._db
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'UPDATE user SET role = %s, username = %s'
+                    ' WHERE id = %s',
+                    (role, username, user_id)
+                )
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            current_app.logger.error('updating a user: {0}'.format(e))
+            return Result(succeeded=False, description='Update failed.')
 
         return Result(description='Update succeeded.')
 
@@ -317,6 +294,22 @@ class User(object):
         if re.fullmatch(pattern, password) is None:
             return False
         return True
+
+    def _fetch_by_username(self, username):
+        db = self._db
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(
+                    'SELECT id, role, username, password'
+                    ' FROM user WHERE username = %s',
+                    (username,)
+                )
+                user = cursor.fetchone()
+        except Exception as e:
+            current_app.logger.error('fetching a user: {0}'.format(e))
+            return Result(succeeded=False)
+
+        return Result(value=user)
 
 
 class Result(object):
