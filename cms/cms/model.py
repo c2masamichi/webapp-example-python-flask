@@ -13,7 +13,6 @@ class Entry(object):
         self._db = get_db()
 
     def fetch_all(self):
-        result = Result()
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -21,15 +20,14 @@ class Entry(object):
                     'SELECT id, title, created FROM entry'
                     ' ORDER BY created DESC'
                 )
-                result.value = cursor.fetchall()
+                entries = cursor.fetchall()
         except Exception as e:
             current_app.logger.error('fetching entries: {0}'.format(e))
             return Result(succeeded=False)
 
-        return result
+        return Result(value=entries)
 
     def fetch(self, entry_id):
-        result = Result()
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -37,12 +35,12 @@ class Entry(object):
                     'SELECT id, title, body, created FROM entry WHERE id = %s',
                     (entry_id,)
                 )
-                result.value = cursor.fetchone()
+                entry = cursor.fetchone()
         except Exception as e:
             current_app.logger.error('fetching an entry: {0}'.format(e))
             return Result(succeeded=False)
 
-        return result
+        return Result(value=entry)
 
     def create(self, author_id, title, body):
         if not self._validate_data(title, body):
@@ -110,7 +108,6 @@ class User(object):
         self._db = get_db()
 
     def fetch_all(self):
-        result = Result()
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -118,15 +115,14 @@ class User(object):
                     'SELECT id, role, username FROM user'
                     ' ORDER BY username'
                 )
-                result.value = cursor.fetchall()
+                users = cursor.fetchall()
         except Exception as e:
             current_app.logger.error('fetching users: {0}'.format(e))
             return Result(succeeded=False)
 
-        return result
+        return Result(value=users)
 
     def fetch(self, user_id):
-        result = Result()
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -135,12 +131,12 @@ class User(object):
                     ' FROM user WHERE id = %s',
                     (user_id,)
                 )
-                result.value = cursor.fetchone()
+                user = cursor.fetchone()
         except Exception as e:
             current_app.logger.error('fetching a user: {0}'.format(e))
             return Result(succeeded=False)
 
-        return result
+        return Result(value=user)
 
     def auth(self, username, password):
         fetch_user_result = self._fetch_by_username(username)
@@ -253,7 +249,6 @@ class User(object):
         if not self._validate_password(new_password):
             return Result(succeeded=False, description='Bad data.')
 
-        db = self._db
         fetch_user_result = self.fetch(user_id)
         if not fetch_user_result.succeeded:
             return Result(succeeded=False, description='Update failed.')
@@ -263,6 +258,7 @@ class User(object):
                 not check_password_hash(user['password'], old_password)):
             return Result(succeeded=False, description='Incorrect password.')
 
+        db = self._db
         try:
             with db.cursor() as cursor:
                 cursor.execute(
@@ -275,7 +271,7 @@ class User(object):
             current_app.logger.error('updating a password: {0}'.format(e))
             return Result(succeeded=False, description='Update failed.')
 
-        return Result(description='Password Changed.') 
+        return Result(description='Password Changed.')
 
     def _validate_username(self, username):
         max_length = 20
