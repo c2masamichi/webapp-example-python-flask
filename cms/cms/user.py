@@ -46,6 +46,30 @@ def create():
     return render_template('user/create.html')
 
 
+@bp.route('/update/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def update(user_id):
+    result = User().fetch(user_id)
+    if not result.succeeded:
+        abort(500)
+    user = result.value
+    if user is None:
+        abort(404)
+
+    if request.method == 'POST':
+        role = request.form['role']
+        username = request.form['username']
+
+        if not username:
+            flash('Username is required.')
+        else:
+            result = User().update(user_id, role, username)
+            flash(result.description)
+            if result.succeeded:
+                return redirect(url_for('user.update', user_id=user_id))
+
+    return render_template('user/update.html', user=user)
+
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete(user_id):
