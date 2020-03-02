@@ -49,12 +49,7 @@ def create():
 @bp.route('/update/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def update(user_id):
-    result = User().fetch(user_id)
-    if not result.succeeded:
-        abort(500)
-    user = result.value
-    if user is None:
-        abort(404)
+    user = fetch_user_wrapper(user_id)
 
     if request.method == 'POST':
         role = request.form['role']
@@ -74,15 +69,19 @@ def update(user_id):
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete(user_id):
+    user = fetch_user_wrapper(user_id)
+    result = User().delete(user_id)
+    if not result.succeeded:
+        flash(result.description)
+        render_template('user/update.html', user=user)
+    return redirect(url_for('user.index'))
+
+
+def fetch_user_wrapper(user_id):
     result = User().fetch(user_id)
     if not result.succeeded:
         abort(500)
     user = result.value
     if user is None:
         abort(404)
-
-    result = User().delete(user_id)
-    if not result.succeeded:
-        flash(result.description)
-        render_template('user/update.html', user=user)
-    return redirect(url_for('user.index'))
+    return user
