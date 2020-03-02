@@ -26,6 +26,19 @@ def test_get_entry_error(client):
 @pytest.mark.parametrize(
     'path',
     (
+        '/edit/',
+        '/edit/create',
+        '/edit/update/1',
+    )
+)
+def test_login_required_get(client, path):
+    response = client.get(path)
+    assert response.headers['Location'] == 'http://localhost/auth/login'
+
+
+@pytest.mark.parametrize(
+    'path',
+    (
         '/edit/create',
         '/edit/update/1',
         '/edit/delete/1',
@@ -38,7 +51,7 @@ def test_login_required_post(client, path):
 
 @pytest.mark.parametrize(
     'path',
-    ('/edit/update/5', '/edit/delete/5')
+    ('/edit/update/10', '/edit/delete/10')
 )
 def test_exists_required(client, auth, path):
     auth.login()
