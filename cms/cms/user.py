@@ -13,6 +13,7 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 @bp.route('/')
+@login_required
 def index():
     result = User().fetch_all()
     if not result.succeeded:

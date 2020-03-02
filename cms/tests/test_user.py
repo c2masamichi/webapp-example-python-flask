@@ -6,12 +6,25 @@ from cms.db import get_db
 @pytest.mark.parametrize(
     'path',
     (
+        '/user/',
+        '/user/create',
+        '/user/update/2',
+    )
+)
+def test_login_required_get(client, path):
+    response = client.get(path)
+    assert response.headers['Location'] == 'http://localhost/auth/login'
+
+
+@pytest.mark.parametrize(
+    'path',
+    (
         '/user/create',
         '/user/update/2',
         '/user/delete/2',
     )
 )
-def test_login_required(client, path):
+def test_login_required_post(client, path):
     response = client.post(path)
     assert response.headers['Location'] == 'http://localhost/auth/login'
 
