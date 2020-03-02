@@ -70,13 +70,19 @@ def update(user_id):
 
     return render_template('user/update.html', user=user)
 
+
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete(user_id):
-    user_client = User()
-    if user_client.fetch(user_id) is None:
+    result = User().fetch(user_id)
+    if not result.succeeded:
+        abort(500)
+    user = result.value
+    if user is None:
         abort(404)
-    result = user_client.delete(user_id)
+
+    result = User().delete(user_id)
     if not result.succeeded:
         flash(result.description)
+        render_template('user/update.html', user=user)
     return redirect(url_for('user.index'))

@@ -16,6 +16,15 @@ def test_login_required(client, path):
     assert response.headers['Location'] == 'http://localhost/auth/login'
 
 
+@pytest.mark.parametrize(
+    'path',
+    ('/user/update/10', '/user/delete/10')
+)
+def test_exists_required(client, auth, path):
+    auth.login()
+    assert client.post(path).status_code == 404
+
+
 def test_create(client, auth, app):
     auth.login()
     assert client.get('/user/create').status_code == 200
