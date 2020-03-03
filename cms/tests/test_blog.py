@@ -59,14 +59,12 @@ def test_exists_required(client, auth, path):
 
 
 def test_list_for_editors(client, auth):
-    response = client.get('/edit/')
-    assert response.headers['Location'] == 'http://localhost/auth/login'
-
     auth.login()
     response = client.get('/edit/')
     assert response.status_code == 200
     assert b'Test Title 1' in response.data
     assert b'2019-01-01' in response.data
+
 
 def test_create(client, auth, app):
     auth.login()
