@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Mypage{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="user">
+    <p>Username: <span id="username">{{ user['username'] }}</span></p>
+    <p>Role: <span id="role">{{ user['role'] }}</span></p>
+  </div>
+{% endblock %}
