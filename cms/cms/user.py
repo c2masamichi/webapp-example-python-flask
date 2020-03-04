@@ -13,6 +13,7 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 @bp.route('/')
+@login_required
 def index():
     result = User().fetch_all()
     if not result.succeeded:
@@ -46,13 +47,42 @@ def create():
     return render_template('user/create.html')
 
 
+@bp.route('/update/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def update(user_id):
+    user = fetch_user_wrapper(user_id)
+
+    if request.method == 'POST':
+        role = request.form['role']
+        username = request.form['username']
+
+        if not username:
+            flash('Username is required.')
+        else:
+            result = User().update(user_id, role, username)
+            flash(result.description)
+            if result.succeeded:
+                return redirect(url_for('user.update', user_id=user_id))
+
+    return render_template('user/update.html', user=user)
+
+
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete(user_id):
-    user_client = User()
-    if user_client.fetch(user_id) is None:
-        abort(404)
-    result = user_client.delete(user_id)
+    user = fetch_user_wrapper(user_id)
+    result = User().delete(user_id)
     if not result.succeeded:
         flash(result.description)
+        render_template('user/update.html', user=user)
     return redirect(url_for('user.index'))
+
+
+def fetch_user_wrapper(user_id):
+    result = User().fetch(user_id)
+    if not result.succeeded:
+        abort(500)
+    user = result.value
+    if user is None:
+        abort(404)
+    return user

@@ -9,8 +9,15 @@ from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.model import User
+from cms.user import fetch_user_wrapper
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
+
+
+@bp.route('/')
+@login_required
+def index():
+    return render_template('mypage/index.html', user=g.user)
 
 
 @bp.route('/chpasswd', methods=['GET', 'POST'])
