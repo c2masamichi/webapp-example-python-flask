@@ -8,8 +8,11 @@ from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.model import User
+from cms.role import ROLES
 
 bp = Blueprint('user', __name__, url_prefix='/user')
+
+roles = sorted(ROLES.keys())
 
 
 @bp.route('/')
@@ -44,7 +47,7 @@ def create():
             else:
                 flash(result.description)
 
-    return render_template('user/create.html')
+    return render_template('user/create.html', roles=roles)
 
 
 @bp.route('/update/<int:user_id>', methods=['GET', 'POST'])
@@ -62,9 +65,11 @@ def update(user_id):
             result = User().update(user_id, role, username)
             flash(result.description)
             if result.succeeded:
-                return redirect(url_for('user.update', user_id=user_id))
+                return redirect(
+                    url_for('user.update', user_id=user_id, roles=roles)
+                )
 
-    return render_template('user/update.html', user=user)
+    return render_template('user/update.html', user=user, roles=roles)
 
 
 @bp.route('/delete/<int:user_id>', methods=['POST'])
@@ -74,7 +79,7 @@ def delete(user_id):
     result = User().delete(user_id)
     if not result.succeeded:
         flash(result.description)
-        render_template('user/update.html', user=user)
+        render_template('user/update.html', user=user, roles=roles)
     return redirect(url_for('user.index'))
 
 
