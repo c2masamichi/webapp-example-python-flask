@@ -43,7 +43,7 @@ def test_chpasswd(client, auth, app):
         assert check_password_hash(user['password'], new_password)
 
 
-def test_chpasswd_error(client, auth, app):
+def test_chpasswd_validate(client, auth, app):
     auth.login()
     old_password = 'aaaa'
     new_password = 'updated'

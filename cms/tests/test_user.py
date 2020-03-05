@@ -70,7 +70,7 @@ def test_create(client, auth, app):
         ('user-admin01', 'testpass', b'already registered'),
     ),
 )
-def test_create_validate_input(client, auth, username, password, message):
+def test_create_validate(client, auth, username, password, message):
     role = 'administrator'
     auth.login()
     response = client.post(
@@ -111,7 +111,7 @@ def test_update(client, auth, app):
         ('user-admin01', b'already registered'),
     ),
 )
-def test_update_validate_input(client, auth, username, message):
+def test_update_validate(client, auth, username, message):
     user_id = 2
     role = 'administrator'
     url = '/user/update/{0}'.format(user_id)

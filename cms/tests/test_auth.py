@@ -24,7 +24,7 @@ def test_login(client, auth):
         ('user-admin01', 'aaaa')
     ),
 )
-def test_login_validate_input(auth, username, password):
+def test_login_validate(auth, username, password):
     response = auth.login(username, password)
     message = b'Incorrect username or password.'
     assert message in response.data

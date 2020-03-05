@@ -56,7 +56,7 @@ def test_auth(app):
         ('user-admin01', 'aaaa')
     ),
 )
-def test_auth_error(app, username, password):
+def test_auth_validate(app, username, password):
     with app.app_context():
         result = User().auth(username, password)
         assert not result.succeeded
@@ -83,7 +83,7 @@ def test_create(app):
         assert user is not None
 
 
-def test_create_error(app):
+def test_create_validate(app):
     with app.app_context():
         role = 'administrator'
         username = 'user-admin01'
@@ -112,7 +112,7 @@ def test_update(app):
         assert user['username'] == username
 
 
-def test_update_error(app):
+def test_update_validate(app):
     with app.app_context():
         user_id = 2
         role = 'author'
@@ -156,7 +156,7 @@ def test_change_password(app):
         assert user['id'] == user_id
 
 
-def test_change_password_error(app):
+def test_change_password_validate(app):
     with app.app_context():
         user_id = 1
         old_password = 'aaaa'
