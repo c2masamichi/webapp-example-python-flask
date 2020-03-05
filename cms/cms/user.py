@@ -66,7 +66,7 @@ def update(user_id):
             flash(result.description)
             if result.succeeded:
                 return redirect(
-                    url_for('user.update', user_id=user_id, roles=roles)
+                    url_for('user.update', user_id=user_id)
                 )
 
     return render_template('user/update.html', user=user, roles=roles)
@@ -79,7 +79,7 @@ def delete(user_id):
     result = User().delete(user_id)
     if not result.succeeded:
         flash(result.description)
-        render_template('user/update.html', user=user, roles=roles)
+        render_template('user/update.html', user=user)
     return redirect(url_for('user.index'))
 
 
