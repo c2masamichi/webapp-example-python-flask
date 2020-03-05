@@ -83,14 +83,19 @@ def test_create(app):
         assert user is not None
 
 
-def test_create_validate(app):
+@pytest.mark.parametrize(
+    ('role', 'username', 'message'),
+    (
+        ('aaa', 'addeduser', 'does not exist'),
+        ('author', 'user-author01', 'already registered'),
+    ),
+)
+def test_create_validate(app, role, username, message):
     with app.app_context():
-        role = 'administrator'
-        username = 'user-admin01'
         password = 'efgh5678'
         result = User().create(role, username, password)
         assert not result.succeeded
-        assert 'already registered' in result.description
+        assert message in result.description
 
 
 def test_update(app):
@@ -112,14 +117,19 @@ def test_update(app):
         assert user['username'] == username
 
 
-def test_update_validate(app):
+@pytest.mark.parametrize(
+    ('role', 'username', 'message'),
+    (
+        ('aaa', 'addeduser', 'does not exist'),
+        ('author', 'user-author01', 'already registered'),
+    ),
+)
+def test_update_validate(app, role, username, message):
     with app.app_context():
         user_id = 2
-        role = 'author'
-        username = 'user-author01'
         result = User().update(user_id, role, username)
         assert not result.succeeded
-        assert 'already registered' in result.description
+        assert message in result.description
 
 
 def test_delete(app):
