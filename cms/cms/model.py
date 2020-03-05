@@ -1,3 +1,4 @@
+from operator import itemgetter
 import re
 
 from flask import current_app
@@ -313,3 +314,10 @@ class Result(object):
         self.succeeded = succeeded
         self.description = description
         self.value = value
+
+
+def make_roles():
+    role_priv_pairs = [(k, v) for k, v in ROLE_PRIV.items()]
+    role_priv_pairs.sort(key=itemgetter(1))
+    roles = [role for role, _ in role_priv_pairs]
+    return roles
