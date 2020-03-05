@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+  <a href="{{ url_for('user.create') }}">create</a>
   {% for user in users %}
     <div class="user">
       <p>
