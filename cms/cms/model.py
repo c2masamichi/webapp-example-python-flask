@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
 from cms.db import get_db
-from cms.role import ROLES
+from cms.role import ROLE_PRIV
 
 
 class Entry(object):
@@ -157,7 +157,7 @@ class User(object):
         return Result(value=user)
 
     def create(self, role, username, password):
-        if role not in ROLES:
+        if role not in ROLE_PRIV:
             return Result(
                 succeeded=False,
                 description='Role {0} does not exist.'.format(role)
@@ -194,7 +194,7 @@ class User(object):
         return Result()
 
     def update(self, user_id, role, username):
-        if role not in ROLES:
+        if role not in ROLE_PRIV:
             return Result(
                 succeeded=False,
                 description='Role {0} does not exist.'.format(role)
