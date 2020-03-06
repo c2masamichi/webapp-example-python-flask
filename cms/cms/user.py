@@ -72,6 +72,18 @@ def update(user_id):
     return render_template('user/update.html', user=user, roles=roles)
 
 
+@bp.route('/chpasswd/<int:user_id>', methods=['POST'])
+@login_required
+def change_password(user_id):
+    user = fetch_user_wrapper(user_id)
+
+    new_password = request.form['new_password']
+    result = User().change_password(
+        user_id, new_password, old_required=False)
+    flash(result.description)
+    return render_template('user/update.html', user=user)
+
+
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete(user_id):
