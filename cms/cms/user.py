@@ -66,8 +66,7 @@ def update(user_id):
             flash(result.description)
             if result.succeeded:
                 return redirect(
-                    url_for('user.update', user_id=user_id)
-                )
+                    url_for('user.update', user_id=user_id))
 
     return render_template('user/update.html', user=user, roles=roles)
 

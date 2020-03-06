@@ -154,8 +154,7 @@ def test_change_password(app):
         username = 'user-editor01'
         new_password = 'updated'
         result = User().change_password(
-            user_id, new_password, old_required=False
-        )
+            user_id, new_password, old_required=False)
         assert result.succeeded
 
         auth_result = User().auth(username, new_password)
