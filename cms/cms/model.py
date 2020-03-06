@@ -247,18 +247,24 @@ class User(object):
 
         return Result()
 
-    def change_password(self, user_id, new_password, old_password):
+    def change_password(
+            self, user_id, new_password,
+            old_password=None, old_required=True):
+        default_err_msg = 'Incorrect password.'
+        if old_required and old_password is None:
+            return Result(succeeded=False, description=default_err_msg)
+
         if not self._validate_password(new_password):
             return Result(succeeded=False, description='Bad data.')
 
         fetch_user_result = self.fetch(user_id)
-        if not fetch_user_result.succeeded:
+        user = fetch_user_result.value
+        if not fetch_user_result.succeeded or user is None:
             return Result(succeeded=False, description='Update failed.')
 
-        user = fetch_user_result.value
-        if (user is None or
+        if (old_required and
                 not check_password_hash(user['password'], old_password)):
-            return Result(succeeded=False, description='Incorrect password.')
+            return Result(succeeded=False, description=default_err_msg)
 
         db = self._db
         try:

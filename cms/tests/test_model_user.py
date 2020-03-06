@@ -150,6 +150,20 @@ def test_delete(app):
 
 def test_change_password(app):
     with app.app_context():
+        user_id = 2
+        username = 'user-editor01'
+        new_password = 'updated'
+        result = User().change_password(
+            user_id, new_password, old_required=False
+        )
+        assert result.succeeded
+
+        auth_result = User().auth(username, new_password)
+        assert auth_result.succeeded
+
+
+def test_change_own_password(app):
+    with app.app_context():
         user_id = 1
         username = 'user-admin01'
         old_password = 'testpass'
@@ -162,11 +176,17 @@ def test_change_password(app):
 
         auth_result = User().auth(username, new_password)
         assert auth_result.succeeded
-        user = auth_result.value
-        assert user['id'] == user_id
 
 
-def test_change_password_validate(app):
+def test_change_password_validate01(app):
+    with app.app_context():
+        user_id = 1
+        new_password = 'updated'
+        result = User().change_password(user_id, new_password)
+        assert not result.succeeded
+
+
+def test_change_password_validate02(app):
     with app.app_context():
         user_id = 1
         old_password = 'aaaa'
