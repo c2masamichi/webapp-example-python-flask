@@ -9,4 +9,5 @@
     <p>Username: <span id="username">{{ user['username'] }}</span></p>
     <p>Role: <span id="role">{{ user['role'] }}</span></p>
   </div>
+  <a href="{{ url_for('mypage.change_my_password') }}">change password</a>
 {% endblock %}

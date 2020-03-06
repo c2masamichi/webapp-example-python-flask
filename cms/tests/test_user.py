@@ -1,4 +1,5 @@
 import pytest
+from werkzeug.security import check_password_hash
 
 from cms.db import get_db
 
@@ -21,6 +22,7 @@ def test_login_required_get(client, path):
     (
         '/user/create',
         '/user/update/2',
+        '/user/chpasswd/2',
         '/user/delete/2',
     )
 )
@@ -31,7 +33,11 @@ def test_login_required_post(client, path):
 
 @pytest.mark.parametrize(
     'path',
-    ('/user/update/10', '/user/delete/10')
+    (
+        '/user/update/10',
+        '/user/chpasswd/10',
+        '/user/delete/10'
+    )
 )
 def test_exists_required(client, auth, path):
     auth.login()
@@ -70,7 +76,7 @@ def test_create(client, auth, app):
         ('user-admin01', 'testpass', b'already registered'),
     ),
 )
-def test_create_validate_input(client, auth, username, password, message):
+def test_create_validate(client, auth, username, password, message):
     role = 'administrator'
     auth.login()
     response = client.post(
@@ -88,9 +94,7 @@ def test_update(client, auth, app):
 
     auth.login()
     assert client.get(url).status_code == 200
-    client.post(
-        url, data={'role': role, 'username': username}
-    )
+    client.post(url, data={'role': role, 'username': username})
 
     with app.app_context():
         db = get_db()
@@ -111,15 +115,33 @@ def test_update(client, auth, app):
         ('user-admin01', b'already registered'),
     ),
 )
-def test_update_validate_input(client, auth, username, message):
+def test_update_validate(client, auth, username, message):
     user_id = 2
     role = 'administrator'
     url = '/user/update/{0}'.format(user_id)
     auth.login()
-    response = client.post(
-        url, data={'role': role, 'username': username}
-    )
+    response = client.post(url, data={'role': role, 'username': username})
     assert message in response.data
+
+
+def test_chpasswd(client, auth, app):
+    user_id = 2
+    new_password = 'updated'
+    auth.login()
+    response = client.post(
+        '/user/chpasswd/{0}'.format(user_id),
+        data={'new_password': new_password}
+    )
+
+    with app.app_context():
+        db = get_db()
+        with db.cursor() as cursor:
+            cursor.execute(
+                'SELECT * FROM user WHERE id = %s',
+                (user_id,)
+            )
+            user = cursor.fetchone()
+        assert check_password_hash(user['password'], new_password)
 
 
 def test_delete(client, auth, app):

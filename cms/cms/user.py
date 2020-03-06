@@ -8,8 +8,11 @@ from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.model import User
+from cms.model import make_sorted_roles
 
 bp = Blueprint('user', __name__, url_prefix='/user')
+
+roles = make_sorted_roles()
 
 
 @bp.route('/')
@@ -44,7 +47,7 @@ def create():
             else:
                 flash(result.description)
 
-    return render_template('user/create.html')
+    return render_template('user/create.html', roles=roles)
 
 
 @bp.route('/update/<int:user_id>', methods=['GET', 'POST'])
@@ -62,8 +65,21 @@ def update(user_id):
             result = User().update(user_id, role, username)
             flash(result.description)
             if result.succeeded:
-                return redirect(url_for('user.update', user_id=user_id))
+                return redirect(
+                    url_for('user.update', user_id=user_id))
 
+    return render_template('user/update.html', user=user, roles=roles)
+
+
+@bp.route('/chpasswd/<int:user_id>', methods=['POST'])
+@login_required
+def change_password(user_id):
+    user = fetch_user_wrapper(user_id)
+
+    new_password = request.form['new_password']
+    result = User().change_password(
+        user_id, new_password, old_required=False)
+    flash(result.description)
     return render_template('user/update.html', user=user)
 
 
@@ -74,7 +90,7 @@ def delete(user_id):
     result = User().delete(user_id)
     if not result.succeeded:
         flash(result.description)
-        render_template('user/update.html', user=user)
+        return render_template('user/update.html', user=user)
     return redirect(url_for('user.index'))
 
 

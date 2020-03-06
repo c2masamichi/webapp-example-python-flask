@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block content %}
+  <a href="{{ url_for('user.create') }}">create</a>
   {% for user in users %}
     <div class="user">
-      <p>{{ user['username'] }}</p>
+      <p>
+        {{ user['username'] }}
+        <a href="{{ url_for('user.update', user_id=user['id']) }}">update</a>
+      </p>
     </div>
     {% if not loop.last %}
       <hr>

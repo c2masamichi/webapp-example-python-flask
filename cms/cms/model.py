@@ -1,3 +1,4 @@
+from operator import itemgetter
 import re
 
 from flask import current_app
@@ -5,7 +6,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
 from cms.db import get_db
-from cms.role import ROLES
+from cms.role import ROLE_PRIV
 
 
 class Entry(object):
@@ -32,7 +33,8 @@ class Entry(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'SELECT id, title, body, created FROM entry WHERE id = %s',
+                    'SELECT id, title, body, created'
+                    ' FROM entry WHERE id = %s',
                     (entry_id,)
                 )
                 entry = cursor.fetchone()
@@ -157,7 +159,7 @@ class User(object):
         return Result(value=user)
 
     def create(self, role, username, password):
-        if role not in ROLES:
+        if role not in ROLE_PRIV:
             return Result(
                 succeeded=False,
                 description='Role {0} does not exist.'.format(role)
@@ -194,7 +196,7 @@ class User(object):
         return Result()
 
     def update(self, user_id, role, username):
-        if role not in ROLES:
+        if role not in ROLE_PRIV:
             return Result(
                 succeeded=False,
                 description='Role {0} does not exist.'.format(role)
@@ -245,18 +247,24 @@ class User(object):
 
         return Result()
 
-    def change_password(self, user_id, old_password, new_password):
+    def change_password(
+            self, user_id, new_password,
+            old_password=None, old_required=True):
+        default_err_msg = 'Incorrect password.'
+        if old_required and old_password is None:
+            return Result(succeeded=False, description=default_err_msg)
+
         if not self._validate_password(new_password):
             return Result(succeeded=False, description='Bad data.')
 
         fetch_user_result = self.fetch(user_id)
-        if not fetch_user_result.succeeded:
+        user = fetch_user_result.value
+        if not fetch_user_result.succeeded or user is None:
             return Result(succeeded=False, description='Update failed.')
 
-        user = fetch_user_result.value
-        if (user is None or
+        if (old_required and
                 not check_password_hash(user['password'], old_password)):
-            return Result(succeeded=False, description='Incorrect password.')
+            return Result(succeeded=False, description=default_err_msg)
 
         db = self._db
         try:
@@ -313,3 +321,10 @@ class Result(object):
         self.succeeded = succeeded
         self.description = description
         self.value = value
+
+
+def make_sorted_roles():
+    role_priv_pairs = [(k, v) for k, v in ROLE_PRIV.items()]
+    role_priv_pairs.sort(key=itemgetter(1))
+    roles = [role for role, _ in role_priv_pairs]
+    return roles
