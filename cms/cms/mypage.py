@@ -28,7 +28,7 @@ def change_my_password():
         new_password = request.form['new_password']
 
         result = User().change_password(
-            g.user['id'], old_password, new_password
+            g.user['id'], new_password, old_password
         )
         flash(result.description)
 

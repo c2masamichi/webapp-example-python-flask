@@ -247,7 +247,7 @@ class User(object):
 
         return Result()
 
-    def change_password(self, user_id, old_password, new_password):
+    def change_password(self, user_id, new_password, old_password):
         if not self._validate_password(new_password):
             return Result(succeeded=False, description='Bad data.')
 
