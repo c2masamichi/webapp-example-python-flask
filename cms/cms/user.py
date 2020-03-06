@@ -8,11 +8,11 @@ from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.model import User
-from cms.model import make_roles
+from cms.model import make_sorted_roles
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
-roles = make_roles()
+roles = make_sorted_roles()
 
 
 @bp.route('/')

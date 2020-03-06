@@ -317,7 +317,7 @@ class Result(object):
         self.value = value
 
 
-def make_roles():
+def make_sorted_roles():
     role_priv_pairs = [(k, v) for k, v in ROLE_PRIV.items()]
     role_priv_pairs.sort(key=itemgetter(1))
     roles = [role for role, _ in role_priv_pairs]
