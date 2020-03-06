@@ -91,7 +91,7 @@ def delete(user_id):
     result = User().delete(user_id)
     if not result.succeeded:
         flash(result.description)
-        render_template('user/update.html', user=user)
+        return render_template('user/update.html', user=user)
     return redirect(url_for('user.index'))
 
 
