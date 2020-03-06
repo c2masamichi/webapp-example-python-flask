@@ -33,7 +33,8 @@ class Entry(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'SELECT id, title, body, created FROM entry WHERE id = %s',
+                    'SELECT id, title, body, created'
+                    ' FROM entry WHERE id = %s',
                     (entry_id,)
                 )
                 entry = cursor.fetchone()
