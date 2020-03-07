@@ -17,7 +17,7 @@
   margin-bottom: 0.5em;
 }
 
-.content input, .content textarea {
+.content select, .content input, .content textarea {
   margin-bottom: 1em;
   max-width: 40em;
 }
