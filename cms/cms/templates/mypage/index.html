@@ -5,9 +5,17 @@
 {% endblock %}
 
 {% block content %}
-  <div class="user">
-    <p>Username: <span id="username">{{ user['username'] }}</span></p>
-    <p>Role: <span id="role">{{ user['role'] }}</span></p>
-  </div>
+  <table class="user pure-table">
+    <tbody>
+      <tr>
+        <td>Username</td>
+        <td id="username">{{ user['username'] }}</td>
+      </tr>
+      <tr>
+        <td>Role</td>
+        <td id="role">{{ user['role'] }}</td>
+      </tr>
+    </tbody>
+  </table>
   <a href="{{ url_for('mypage.change_my_password') }}">change password</a>
 {% endblock %}
