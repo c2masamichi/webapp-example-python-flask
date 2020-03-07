@@ -6,10 +6,6 @@
   padding: 0 1rem 1rem;
 }
 
-.content:last-child {
-  margin-bottom: 0;
-}
-
 .content form {
   margin: 1em 0;
   display: flex;
