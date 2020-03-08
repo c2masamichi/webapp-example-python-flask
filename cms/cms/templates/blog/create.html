@@ -5,11 +5,15 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="title">Title</label>
-    <input name="title" id="title" value="{{ request.form['title'] }}" required>
-    <label for="body">Body</label>
-    <textarea name="body" id="body" required>{{ request.form['body'] }}</textarea>
-    <input type="submit" value="Save">
+  <form method="post" class="entry pure-form pure-form-stacked">
+    <fieldset>
+      <label for="title">Title</label>
+      <input name="title" id="title" value="{{ request.form['title'] }}" required>
+
+      <label for="body">Body</label>
+      <textarea name="body" id="body" required>{{ request.form['body'] }}</textarea>
+
+      <button type="submit" class="pure-button pure-button-primary">Create</button>
+    </fieldset>
   </form>
 {% endblock %}

@@ -1,4 +1,4 @@
-.post .body {
+.entry .body {
   white-space: pre-line;
 }
 
@@ -6,28 +6,15 @@
   padding: 0 1rem 1rem;
 }
 
-.content form {
-  margin: 1em 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.content label {
+form label {
   font-weight: bold;
-  margin-bottom: 0.5em;
 }
 
-.content select, .content input, .content textarea {
-  margin-bottom: 1em;
-  max-width: 40em;
+.entry input, .entry textarea {
+  min-width: 18em;
 }
 
 .content textarea {
   min-height: 12em;
-  resize: vertical;
-}
-
-input[type=submit] {
-  align-self: start;
-  min-width: 10em;
+  resize: both;
 }

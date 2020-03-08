@@ -5,17 +5,22 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="role">Role</label>
-    <select name="role" id="role" required>
-      {% for role in roles %}
-        <option value="{{ role }}">{{ role }}</option>
-      {% endfor %}
-    </select>
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="Register">
+  <form method="post" class="user pure-form pure-form-stacked">
+    <fieldset>
+      <label for="role">Role</label>
+      <select name="role" id="role" required>
+        {% for role in roles %}
+          <option value="{{ role }}">{{ role }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="username">Username</label>
+      <input name="username" id="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required>
+
+      <button type="submit" class="pure-button pure-button-primary">Create</button>
+    </fieldset>
   </form>
 {% endblock %}
