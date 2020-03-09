@@ -8,16 +8,16 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <nav>
-    <h1><a href="{{ url_for('index') }}">CMS</a></h1>
-    <ul>
+  <nav class="pure-menu pure-menu-horizontal">
+    <a href="{{ url_for('index') }}" class="pure-menu-heading pure-menu-link">CMS</a>
+    <ul class="pure-menu-list">
       {% if g.user %}
-        <li><a href="{{ url_for('user.index') }}">Users</a></li>
-        <li><a href="{{ url_for('blog.edit_top') }}">Edit</a></li>
-        <li><a href="{{ url_for('mypage.index') }}"><span>{{ g.user['username'] }}</span></a></li>
-        <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('user.index') }}" class="pure-menu-link">Users</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('blog.edit_top') }}" class="pure-menu-link">Edit</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('mypage.index') }}" class="pure-menu-link">{{ g.user['username'] }}</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('auth.logout') }}" class="pure-menu-link">Log Out</a></li>
       {% else %}
-        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('auth.login') }}">Log In</a></li>
       {% endif %}
     </ul>
   </nav>
