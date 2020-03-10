@@ -34,7 +34,7 @@
 
   <form action="{{ url_for('user.delete', user_id=user['id']) }}" method="post" class="user pure-form">
     <fieldset>
-      <button type="submit" class="pure-button pure-button-primary" onclick="return confirm('Are you sure?');">Delete user</button>
+      <button type="submit" class="pure-button button-error" onclick="return confirm('Are you sure?');">Delete user</button>
     </fieldset>
   </form>
 {% endblock %}
