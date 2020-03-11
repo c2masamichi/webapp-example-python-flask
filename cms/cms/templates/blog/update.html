@@ -5,15 +5,23 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="title">Title</label>
-    <input name="title" id="title" value="{{ request.form['title'] or entry['title'] }}" required>
-    <label for="body">Body</label>
-    <textarea name="body" id="body" required>{{ request.form['body'] or entry['body'] }}</textarea>
-    <input type="submit" value="Save">
+  <form method="post" class="entry pure-form pure-form-stacked">
+    <fieldset>
+      <label for="title">Title</label>
+      <input name="title" id="title" value="{{ request.form['title'] or entry['title'] }}" required>
+
+      <label for="body">Body</label>
+      <textarea name="body" id="body" required>{{ request.form['body'] or entry['body'] }}</textarea>
+
+      <button type="submit" class="pure-button pure-button-primary">Update entry</button>
+    </fieldset>
+
   </form>
   <hr>
-  <form action="{{ url_for('blog.delete', entry_id=entry['id']) }}" method="post">
-    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+
+  <form action="{{ url_for('blog.delete', entry_id=entry['id']) }}" method="post" class="entry pure-form">
+    <fieldset>
+      <button type="submit" class="pure-button button-error" onclick="return confirm('Are you sure?');">Delete entry</button>
+    </fieldset>
   </form>
 {% endblock %}

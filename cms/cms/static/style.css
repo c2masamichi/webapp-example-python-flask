@@ -1,4 +1,4 @@
-.post .body {
+.entry .body {
   white-space: pre-line;
 }
 
@@ -6,32 +6,40 @@
   padding: 0 1rem 1rem;
 }
 
-.content:last-child {
-  margin-bottom: 0;
-}
-
-.content form {
-  margin: 1em 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.content label {
+form label {
   font-weight: bold;
-  margin-bottom: 0.5em;
 }
 
-.content input, .content textarea {
-  margin-bottom: 1em;
-  max-width: 40em;
+.entry input, .entry textarea {
+  min-width: 18em;
 }
 
 .content textarea {
   min-height: 12em;
-  resize: vertical;
+  resize: both;
 }
 
-input[type=submit] {
-  align-self: start;
-  min-width: 10em;
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.button-success {
+    background: rgb(28, 184, 65); /* this is a green */
+}
+
+.button-error {
+    background: rgb(202, 60, 60); /* this is a maroon */
+}
+
+.button-warning {
+    background: rgb(223, 117, 20); /* this is an orange */
+}
+
+.button-secondary {
+    background: rgb(66, 184, 221); /* this is a light blue */
 }

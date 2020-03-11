@@ -3,20 +3,27 @@
 <head>
 <title>{% block title %}{% endblock %} - CMS</title>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <nav>
-    <h1><a href="{{ url_for('index') }}">CMS</a></h1>
-    <ul>
+  <nav class="pure-menu pure-menu-horizontal">
+    <ul class="pure-menu-list">
       {% if g.user %}
-        <li><a href="{{ url_for('user.index') }}">Users</a></li>
-        <li><a href="{{ url_for('blog.edit_top') }}">Edit</a></li>
-        <li><a href="{{ url_for('mypage.index') }}"><span>{{ g.user['username'] }}</span></a></li>
-        <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+        <li class="pure-menu-item pure-menu-selected"><a href="{{ url_for('index') }}" class="pure-menu-link">Home</a></li>
+        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+          <a href="#" id="menuLink1" class="pure-menu-link">menu</a>
+          <ul class="pure-menu-children">
+            <li class="pure-menu-item"><a href="{{ url_for('user.index') }}" class="pure-menu-link">Users</a></li>
+            <li class="pure-menu-item"><a href="{{ url_for('blog.edit_top') }}" class="pure-menu-link">Edit</a></li>
+            <li class="pure-menu-item"><a href="{{ url_for('mypage.index') }}" class="pure-menu-link">{{ g.user['username'] }}</a></li>
+            <li class="pure-menu-item"><a href="{{ url_for('auth.logout') }}" class="pure-menu-link">Logout</a></li>
+          </ul>
+        </li>
       {% else %}
-        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+        <li class="pure-menu-item pure-menu-selected"><a href="{{ url_for('index') }}" class="pure-menu-link">Home</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('auth.login') }}" class="pure-menu-link">Login</a></li>
       {% endif %}
     </ul>
   </nav>
