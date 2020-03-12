@@ -19,6 +19,10 @@ form label {
   resize: both;
 }
 
+table.user {
+  margin-bottom: 0.5em;
+}
+
 .button-success,
 .button-error,
 .button-warning,
