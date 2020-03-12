@@ -9,7 +9,7 @@
   {% for user in users %}
     <div class="user">
       <p>
-        {{ user['username'] }}
+        <span>{{ user['username'] }}</span>
         <a class="pure-button button-secondary" href="{{ url_for('user.update', user_id=user['id']) }}">update</a>
       </p>
     </div>
