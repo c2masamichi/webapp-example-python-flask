@@ -1,13 +1,17 @@
-.entry .body {
-  white-space: pre-line;
+nav {
+  background: rgb(66, 184, 221);
 }
 
 .content {
-  padding: 0 1rem 1rem;
+  margin: 0 5%;
 }
 
 form label {
   font-weight: bold;
+}
+
+.entry .body {
+  white-space: pre-line;
 }
 
 .entry input, .entry textarea {
@@ -19,27 +23,31 @@ form label {
   resize: both;
 }
 
+table.user {
+  margin-bottom: 0.5em;
+}
+
 .button-success,
 .button-error,
 .button-warning,
 .button-secondary {
-    color: white;
-    border-radius: 4px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  color: white;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .button-success {
-    background: rgb(28, 184, 65); /* this is a green */
+  background: rgb(28, 184, 65); /* this is a green */
 }
 
 .button-error {
-    background: rgb(202, 60, 60); /* this is a maroon */
+  background: rgb(202, 60, 60); /* this is a maroon */
 }
 
 .button-warning {
-    background: rgb(223, 117, 20); /* this is an orange */
+  background: rgb(223, 117, 20); /* this is an orange */
 }
 
 .button-secondary {
-    background: rgb(66, 184, 221); /* this is a light blue */
+  background: rgb(66, 184, 221); /* this is a light blue */
 }
