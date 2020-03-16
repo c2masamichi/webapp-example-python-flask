@@ -8,8 +8,11 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from werkzeug.exceptions import abort
 
 from cms.model import User
+from cms.role import Privilege
+from cms.role import ROLE_PRIV
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -19,6 +22,17 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+def admin_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if ROLE_PRIV[g.user['role']] < Privilege.ADMINISTRATOR:
+            abort(401)
 
         return view(**kwargs)
 

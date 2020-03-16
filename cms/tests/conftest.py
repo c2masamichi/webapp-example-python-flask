@@ -26,8 +26,8 @@ class AuthActions(object):
     def login(self, role='administrator'):
         role_user = {
             'administrator': 'user-admin01',
-            'editor': 'user-editor01"',
-            'author': 'user-author01"',
+            'editor': 'user-editor01',
+            'author': 'user-author01',
         }
 
         username = role_user[role]

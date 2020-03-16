@@ -34,6 +34,43 @@ def test_login_required_post(client, path):
 @pytest.mark.parametrize(
     'path',
     (
+        '/user/',
+        '/user/create',
+        '/user/update/2',
+    )
+)
+def test_admin_required_get(client, auth, path):
+    auth.login(role='editor')
+    response = client.get(path)
+    assert client.get(path).status_code == 401
+
+    auth.login(role='author')
+    response = client.get(path)
+    assert client.get(path).status_code == 401
+
+
+@pytest.mark.parametrize(
+    'path',
+    (
+        '/user/create',
+        '/user/update/2',
+        '/user/chpasswd/2',
+        '/user/delete/2',
+    )
+)
+def test_admin_required_post(client, auth, path):
+    auth.login(role='editor')
+    response = client.post(path)
+    assert client.post(path).status_code == 401
+
+    auth.login(role='author')
+    response = client.post(path)
+    assert client.post(path).status_code == 401
+
+
+@pytest.mark.parametrize(
+    'path',
+    (
         '/user/update/10',
         '/user/chpasswd/10',
         '/user/delete/10'
