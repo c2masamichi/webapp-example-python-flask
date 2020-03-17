@@ -32,7 +32,7 @@ def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if ROLE_PRIV[g.user['role']] < Privilege.ADMINISTRATOR:
-            abort(401)
+            abort(403)
 
         return view(**kwargs)
 

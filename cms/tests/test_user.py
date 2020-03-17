@@ -42,11 +42,11 @@ def test_login_required_post(client, path):
 def test_admin_required_get(client, auth, path):
     auth.login(role='editor')
     response = client.get(path)
-    assert client.get(path).status_code == 401
+    assert client.get(path).status_code == 403
 
     auth.login(role='author')
     response = client.get(path)
-    assert client.get(path).status_code == 401
+    assert client.get(path).status_code == 403
 
 
 @pytest.mark.parametrize(
@@ -61,11 +61,11 @@ def test_admin_required_get(client, auth, path):
 def test_admin_required_post(client, auth, path):
     auth.login(role='editor')
     response = client.post(path)
-    assert client.post(path).status_code == 401
+    assert client.post(path).status_code == 403
 
     auth.login(role='author')
     response = client.post(path)
-    assert client.post(path).status_code == 401
+    assert client.post(path).status_code == 403
 
 
 @pytest.mark.parametrize(
