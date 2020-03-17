@@ -81,6 +81,13 @@ def test_exists_required(client, auth, path):
     assert client.post(path).status_code == 404
 
 
+def test_index(client, auth):
+    auth.login()
+    response = client.get('/user/')
+    assert response.status_code == 200
+    assert b'user-admin01' in response.data
+
+
 def test_create(client, auth, app):
     auth.login()
     assert client.get('/user/create').status_code == 200
