@@ -58,12 +58,13 @@ def test_exists_required(client, auth, path):
     assert client.post(path).status_code == 404
 
 
-def test_list_for_editors(client, auth):
+def test_edit_top(client, auth):
     auth.login()
     response = client.get('/edit/')
     assert response.status_code == 200
     assert b'Test Title 1' in response.data
     assert b'2019-01-01' in response.data
+    assert b'user-editor01' in response.data
 
 
 def test_create(client, auth, app):
