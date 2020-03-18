@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+  <a class="pure-button button-secondary" href="{{ url_for('user.create') }}">create</a>
   <table class="user pure-table pure-table-horizontal">
     <thead>
       <tr>
@@ -25,5 +26,4 @@
       {% endfor %}
     </tbody>
   </table>
-  <a class="pure-button button-secondary" href="{{ url_for('user.create') }}">create</a>
 {% endblock %}
