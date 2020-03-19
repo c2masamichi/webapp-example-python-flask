@@ -18,7 +18,8 @@ class Entry(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'SELECT id, title, created FROM entry'
+                    'SELECT e.id, title, created, author_id, username'
+                    ' FROM entry e JOIN user u ON e.author_id = u.id'
                     ' ORDER BY created DESC'
                 )
                 entries = cursor.fetchall()

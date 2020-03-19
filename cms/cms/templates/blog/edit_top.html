@@ -9,7 +9,7 @@
   {% for entry in entries %}
     <div class="entry">
       <h2>{{ entry['title'] }}</h1>
-      <div class="about">created {{ entry['created'].strftime('%Y-%m-%d') }}</div>
+      <div class="abou">created on {{ entry['created'].strftime('%Y-%m-%d') }} by {{ entry['username'] }}</div>
       <a class="pure-button button-secondary" href="{{ url_for('blog.update', entry_id=entry['id']) }}">update</a>
     </div>
     {% if not loop.last %}

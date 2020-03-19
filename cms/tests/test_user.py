@@ -34,6 +34,43 @@ def test_login_required_post(client, path):
 @pytest.mark.parametrize(
     'path',
     (
+        '/user/',
+        '/user/create',
+        '/user/update/2',
+    )
+)
+def test_admin_required_get(client, auth, path):
+    auth.login(role='editor')
+    response = client.get(path)
+    assert client.get(path).status_code == 403
+
+    auth.login(role='author')
+    response = client.get(path)
+    assert client.get(path).status_code == 403
+
+
+@pytest.mark.parametrize(
+    'path',
+    (
+        '/user/create',
+        '/user/update/2',
+        '/user/chpasswd/2',
+        '/user/delete/2',
+    )
+)
+def test_admin_required_post(client, auth, path):
+    auth.login(role='editor')
+    response = client.post(path)
+    assert client.post(path).status_code == 403
+
+    auth.login(role='author')
+    response = client.post(path)
+    assert client.post(path).status_code == 403
+
+
+@pytest.mark.parametrize(
+    'path',
+    (
         '/user/update/10',
         '/user/chpasswd/10',
         '/user/delete/10'
@@ -42,6 +79,13 @@ def test_login_required_post(client, path):
 def test_exists_required(client, auth, path):
     auth.login()
     assert client.post(path).status_code == 404
+
+
+def test_index(client, auth):
+    auth.login()
+    response = client.get('/user/')
+    assert response.status_code == 200
+    assert b'user-admin01' in response.data
 
 
 def test_create(client, auth, app):

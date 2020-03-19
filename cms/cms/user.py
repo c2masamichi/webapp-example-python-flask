@@ -6,6 +6,7 @@ from flask import request
 from flask import url_for
 from werkzeug.exceptions import abort
 
+from cms.auth import admin_required
 from cms.auth import login_required
 from cms.model import User
 from cms.model import make_sorted_roles
@@ -17,6 +18,7 @@ roles = make_sorted_roles()
 
 @bp.route('/')
 @login_required
+@admin_required
 def index():
     result = User().fetch_all()
     if not result.succeeded:
@@ -26,6 +28,7 @@ def index():
 
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def create():
     if request.method == 'POST':
         username = request.form['username']
@@ -52,6 +55,7 @@ def create():
 
 @bp.route('/update/<int:user_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def update(user_id):
     user = fetch_user_wrapper(user_id)
 
@@ -73,6 +77,7 @@ def update(user_id):
 
 @bp.route('/chpasswd/<int:user_id>', methods=['POST'])
 @login_required
+@admin_required
 def change_password(user_id):
     user = fetch_user_wrapper(user_id)
 
@@ -85,6 +90,7 @@ def change_password(user_id):
 
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete(user_id):
     user = fetch_user_wrapper(user_id)
     result = User().delete(user_id)
