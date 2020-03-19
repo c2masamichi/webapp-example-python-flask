@@ -19,7 +19,7 @@ def test_get_entry(client):
 
 
 def test_get_entry_error(client):
-    response = client.get('/entry/5')
+    response = client.get('/entry/10')
     assert response.status_code == 404
 
 
@@ -28,7 +28,7 @@ def test_get_entry_error(client):
     (
         '/edit/',
         '/edit/create',
-        '/edit/update/1',
+        '/edit/update/2',
     )
 )
 def test_login_required_get(client, path):
@@ -40,8 +40,8 @@ def test_login_required_get(client, path):
     'path',
     (
         '/edit/create',
-        '/edit/update/1',
-        '/edit/delete/1',
+        '/edit/update/2',
+        '/edit/delete/2',
     )
 )
 def test_login_required_post(client, path):
@@ -62,7 +62,7 @@ def test_edit_top(client, auth):
     auth.login()
     response = client.get('/edit/')
     assert response.status_code == 200
-    assert b'Test Title 1' in response.data
+    assert b'Test Title 2' in response.data
     assert b'2019-01-01' in response.data
     assert b'user-editor01' in response.data
 
@@ -91,7 +91,7 @@ def test_create(client, auth, app):
 
 
 def test_update(client, auth, app):
-    entry_id = 1
+    entry_id = 2
     title = 'updated'
     body = 'updated on test'
     url = '/edit/update/{0}'.format(entry_id)
@@ -119,7 +119,7 @@ def test_update(client, auth, app):
 
 @pytest.mark.parametrize(
     'path',
-    ('/edit/create', '/edit/update/1')
+    ('/edit/create', '/edit/update/2')
 )
 def test_create_update_validate(client, auth, path):
     auth.login()
@@ -128,7 +128,7 @@ def test_create_update_validate(client, auth, path):
 
 
 def test_delete(client, auth, app):
-    entry_id = 1
+    entry_id = 2
     auth.login()
     response = client.post('/edit/delete/{0}'.format(entry_id))
     assert response.status_code == 302
