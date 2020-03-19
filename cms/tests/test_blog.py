@@ -73,10 +73,12 @@ def test_create(client, auth, app):
 
     title = 'created'
     body = 'created on test'
-    client.post(
+    response = client.post(
         '/edit/create',
         data={'title': title, 'body': body}
     )
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost/edit/'
 
     with app.app_context():
         db = get_db()
@@ -96,10 +98,12 @@ def test_update(client, auth, app):
 
     auth.login()
     assert client.get(url).status_code == 200
-    client.post(
+    response = client.post(
         url,
         data={'title': title, 'body': body}
     )
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost{0}'.format(url)
 
     with app.app_context():
         db = get_db()
@@ -127,6 +131,7 @@ def test_delete(client, auth, app):
     entry_id = 1
     auth.login()
     response = client.post('/edit/delete/{0}'.format(entry_id))
+    assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/edit/'
 
     with app.app_context():
