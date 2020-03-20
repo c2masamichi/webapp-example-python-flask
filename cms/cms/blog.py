@@ -9,6 +9,8 @@ from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.model import Entry
+from cms.role import Privilege
+from cms.role import ROLE_PRIV
 
 bp = Blueprint('blog', __name__)
 
@@ -33,7 +35,15 @@ def edit_top():
     result = Entry().fetch_all()
     if not result.succeeded:
         abort(500)
-    return render_template('blog/edit_top.html', entries=result.value)
+
+    can_update_all_enrty = False
+    if ROLE_PRIV[g.user['role']] >= Privilege.EDITOR:
+        can_update_all_enrty = True
+
+    return render_template(
+        'blog/edit_top.html', entries=result.value,
+        can_update_all_enrty=can_update_all_enrty
+    )
 
 
 @bp.route('/edit/create', methods=['GET', 'POST'])
