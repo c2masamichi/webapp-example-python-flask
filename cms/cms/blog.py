@@ -70,6 +70,10 @@ def create():
 def update(entry_id):
     entry = fetch_entry_wrapper(entry_id)
 
+    if (ROLE_PRIV[g.user['role']] < Privilege.EDITOR and
+            entry['author_id'] != g.user['id']):
+        abort(403)
+
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
@@ -89,6 +93,10 @@ def update(entry_id):
 @login_required
 def delete(entry_id):
     entry = fetch_entry_wrapper(entry_id)
+    if (ROLE_PRIV[g.user['role']] < Privilege.EDITOR and
+            entry['author_id'] != g.user['id']):
+        abort(403)
+
     result = Entry().delete(entry_id)
     if not result.succeeded:
         flash(result.description)

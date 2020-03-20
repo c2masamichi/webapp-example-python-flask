@@ -144,3 +144,55 @@ def test_delete(client, auth, app):
             entry = cursor.fetchone()
         assert entry is None
 
+
+def test_update_own_entry(client, auth, app):
+    title = 'updated'
+    body = 'updated on test'
+    own_entry_id = 3
+    others_entry_id = 1  # author is user-admin01
+
+    # role=author: can update own entries, but not others' entries
+    auth.login(role='author')
+    path = '/edit/update/{0}'.format(own_entry_id)
+    assert client.get(path).status_code == 200
+    response = client.post(
+        path,
+        data={'title': title, 'body': body}
+    )
+    assert response.status_code == 302
+
+    path = '/edit/update/{0}'.format(others_entry_id)
+    assert client.get(path).status_code == 403
+    response = client.post(
+        path,
+        data={'title': title, 'body': body}
+    )
+    assert response.status_code == 403
+
+    # role=editor: can update others' entries
+    auth.login(role='editor')
+    path = '/edit/update/{0}'.format(others_entry_id)
+    assert client.get(path).status_code == 200
+    response = client.post(
+        path,
+        data={'title': title, 'body': body}
+    )
+    assert response.status_code == 302
+
+
+def test_delete_own_entry(client, auth, app):
+    own_entry_id = 3
+    others_entry_id = 1  # author is user-admin01
+
+    # role=author: can delete own entries, but not others' entries
+    auth.login(role='author')
+    response = client.post('/edit/delete/{0}'.format(own_entry_id))
+    assert response.status_code == 302
+
+    response = client.post('/edit/delete/{0}'.format(others_entry_id))
+    assert response.status_code == 403
+
+    # role=editor: can delete others' entries
+    auth.login(role='editor')
+    response = client.post('/edit/delete/{0}'.format(others_entry_id))
+    assert response.status_code == 302
