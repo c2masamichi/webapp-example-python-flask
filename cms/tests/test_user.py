@@ -134,11 +134,11 @@ def test_update(client, auth, app):
     user_id = 2
     role = 'author'
     username = 'updated-to-author'
-    url = '/user/update/{0}'.format(user_id)
+    path = '/user/update/{0}'.format(user_id)
 
     auth.login()
-    assert client.get(url).status_code == 200
-    client.post(url, data={'role': role, 'username': username})
+    assert client.get(path).status_code == 200
+    client.post(path, data={'role': role, 'username': username})
 
     with app.app_context():
         db = get_db()
@@ -162,9 +162,9 @@ def test_update(client, auth, app):
 def test_update_validate(client, auth, username, message):
     user_id = 2
     role = 'administrator'
-    url = '/user/update/{0}'.format(user_id)
+    path = '/user/update/{0}'.format(user_id)
     auth.login()
-    response = client.post(url, data={'role': role, 'username': username})
+    response = client.post(path, data={'role': role, 'username': username})
     assert message in response.data
 
 

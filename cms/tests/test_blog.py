@@ -94,16 +94,16 @@ def test_update(client, auth, app):
     entry_id = 2
     title = 'updated'
     body = 'updated on test'
-    url = '/edit/update/{0}'.format(entry_id)
+    path = '/edit/update/{0}'.format(entry_id)
 
     auth.login()
-    assert client.get(url).status_code == 200
+    assert client.get(path).status_code == 200
     response = client.post(
-        url,
+        path,
         data={'title': title, 'body': body}
     )
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost{0}'.format(url)
+    assert response.headers['Location'] == 'http://localhost{0}'.format(path)
 
     with app.app_context():
         db = get_db()
@@ -143,3 +143,4 @@ def test_delete(client, auth, app):
             )
             entry = cursor.fetchone()
         assert entry is None
+
