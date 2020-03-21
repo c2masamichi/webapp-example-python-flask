@@ -76,7 +76,6 @@ class Entry(object):
                     'UPDATE entry SET title = %s, body = %s WHERE id = %s',
                     (title, body, entry_id)
                 )
-            raise
             db.commit()
         except Exception as e:
             db.rollback()
