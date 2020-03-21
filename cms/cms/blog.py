@@ -54,13 +54,13 @@ def create():
         body = request.form['body']
 
         if not title:
-            flash('Title is required.')
+            flash_error('Title is required.')
         else:
             result = Entry().create(g.user['id'], title, body)
             if result.succeeded:
                 return redirect(url_for('blog.edit_top'))
             else:
-                flash(result.description)
+                flash_error(result.description)
 
     return render_template('blog/create.html')
 
@@ -79,12 +79,14 @@ def update(entry_id):
         body = request.form['body']
 
         if not title:
-            flash('Title is required.')
+            flash_error('Title is required.')
         else:
             result = Entry().update(entry_id, title, body)
-            flash(result.description)
             if result.succeeded:
+                flash_success(result.description)
                 return redirect(url_for('blog.update', entry_id=entry_id))
+            else:
+                flash_error(result.description)
 
     return render_template('blog/update.html', entry=entry)
 
@@ -99,7 +101,7 @@ def delete(entry_id):
 
     result = Entry().delete(entry_id)
     if not result.succeeded:
-        flash(result.description)
+        flash_error(result.description)
         render_template('blog/update.html', entry=entry)
     return redirect(url_for('blog.edit_top'))
 
@@ -112,3 +114,11 @@ def fetch_entry_wrapper(entry_id):
     if entry is None:
         abort(404)
     return entry
+
+
+def flash_error(message):
+    flash(message, category='error')
+
+
+def flash_success(message):
+    flash(message, category='success')
