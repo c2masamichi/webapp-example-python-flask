@@ -19,7 +19,7 @@ def test_get_entry(client):
 
 
 def test_get_entry_error(client):
-    response = client.get('/entry/5')
+    response = client.get('/entry/10')
     assert response.status_code == 404
 
 
@@ -28,7 +28,7 @@ def test_get_entry_error(client):
     (
         '/edit/',
         '/edit/create',
-        '/edit/update/1',
+        '/edit/update/2',
     )
 )
 def test_login_required_get(client, path):
@@ -40,8 +40,8 @@ def test_login_required_get(client, path):
     'path',
     (
         '/edit/create',
-        '/edit/update/1',
-        '/edit/delete/1',
+        '/edit/update/2',
+        '/edit/delete/2',
     )
 )
 def test_login_required_post(client, path):
@@ -62,7 +62,7 @@ def test_edit_top(client, auth):
     auth.login()
     response = client.get('/edit/')
     assert response.status_code == 200
-    assert b'Test Title 1' in response.data
+    assert b'Test Title 2' in response.data
     assert b'2019-01-01' in response.data
     assert b'user-editor01' in response.data
 
@@ -73,10 +73,12 @@ def test_create(client, auth, app):
 
     title = 'created'
     body = 'created on test'
-    client.post(
+    response = client.post(
         '/edit/create',
         data={'title': title, 'body': body}
     )
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost/edit/'
 
     with app.app_context():
         db = get_db()
@@ -89,17 +91,19 @@ def test_create(client, auth, app):
 
 
 def test_update(client, auth, app):
-    entry_id = 1
+    entry_id = 2
     title = 'updated'
     body = 'updated on test'
-    url = '/edit/update/{0}'.format(entry_id)
+    path = '/edit/update/{0}'.format(entry_id)
 
     auth.login()
-    assert client.get(url).status_code == 200
-    client.post(
-        url,
+    assert client.get(path).status_code == 200
+    response = client.post(
+        path,
         data={'title': title, 'body': body}
     )
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost{0}'.format(path)
 
     with app.app_context():
         db = get_db()
@@ -115,7 +119,7 @@ def test_update(client, auth, app):
 
 @pytest.mark.parametrize(
     'path',
-    ('/edit/create', '/edit/update/1')
+    ('/edit/create', '/edit/update/2')
 )
 def test_create_update_validate(client, auth, path):
     auth.login()
@@ -124,9 +128,10 @@ def test_create_update_validate(client, auth, path):
 
 
 def test_delete(client, auth, app):
-    entry_id = 1
+    entry_id = 2
     auth.login()
     response = client.post('/edit/delete/{0}'.format(entry_id))
+    assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/edit/'
 
     with app.app_context():
@@ -138,3 +143,56 @@ def test_delete(client, auth, app):
             )
             entry = cursor.fetchone()
         assert entry is None
+
+
+def test_update_own_entry(client, auth, app):
+    title = 'updated'
+    body = 'updated on test'
+    own_entry_id = 3
+    others_entry_id = 1  # author is user-admin01
+
+    # role=author: can update own entries, but not others' entries
+    auth.login(role='author')
+    path = '/edit/update/{0}'.format(own_entry_id)
+    assert client.get(path).status_code == 200
+    response = client.post(
+        path,
+        data={'title': title, 'body': body}
+    )
+    assert response.status_code == 302
+
+    path = '/edit/update/{0}'.format(others_entry_id)
+    assert client.get(path).status_code == 403
+    response = client.post(
+        path,
+        data={'title': title, 'body': body}
+    )
+    assert response.status_code == 403
+
+    # role=editor: can update others' entries
+    auth.login(role='editor')
+    path = '/edit/update/{0}'.format(others_entry_id)
+    assert client.get(path).status_code == 200
+    response = client.post(
+        path,
+        data={'title': title, 'body': body}
+    )
+    assert response.status_code == 302
+
+
+def test_delete_own_entry(client, auth, app):
+    own_entry_id = 3
+    others_entry_id = 1  # author is user-admin01
+
+    # role=author: can delete own entries, but not others' entries
+    auth.login(role='author')
+    response = client.post('/edit/delete/{0}'.format(own_entry_id))
+    assert response.status_code == 302
+
+    response = client.post('/edit/delete/{0}'.format(others_entry_id))
+    assert response.status_code == 403
+
+    # role=editor: can delete others' entries
+    auth.login(role='editor')
+    response = client.post('/edit/delete/{0}'.format(others_entry_id))
+    assert response.status_code == 302

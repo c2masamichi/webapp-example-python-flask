@@ -6,6 +6,20 @@ nav {
   margin: 0 5%;
 }
 
+.flash {
+  color: white;
+  padding: 0.25em 0.5em;
+  margin: 0.5em 0;
+}
+
+.flash.success {
+  background: rgb(28, 184, 65);
+}
+
+.flash.error {
+  background: rgb(202, 60, 60);
+}
+
 form label {
   font-weight: bold;
 }

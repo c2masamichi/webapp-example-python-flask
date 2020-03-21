@@ -99,6 +99,7 @@ def test_create(client, auth, app):
         '/user/create',
         data={'role': role, 'username': username, 'password': password}
     )
+    assert response.status_code == 302
     assert 'http://localhost/user/' == response.headers['Location']
 
     with app.app_context():
@@ -134,11 +135,13 @@ def test_update(client, auth, app):
     user_id = 2
     role = 'author'
     username = 'updated-to-author'
-    url = '/user/update/{0}'.format(user_id)
+    path = '/user/update/{0}'.format(user_id)
 
     auth.login()
-    assert client.get(url).status_code == 200
-    client.post(url, data={'role': role, 'username': username})
+    assert client.get(path).status_code == 200
+    response = client.post(path, data={'role': role, 'username': username})
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost{0}'.format(path)
 
     with app.app_context():
         db = get_db()
@@ -162,9 +165,9 @@ def test_update(client, auth, app):
 def test_update_validate(client, auth, username, message):
     user_id = 2
     role = 'administrator'
-    url = '/user/update/{0}'.format(user_id)
+    path = '/user/update/{0}'.format(user_id)
     auth.login()
-    response = client.post(url, data={'role': role, 'username': username})
+    response = client.post(path, data={'role': role, 'username': username})
     assert message in response.data
 
 
@@ -192,6 +195,7 @@ def test_delete(client, auth, app):
     user_id = 2
     auth.login()
     response = client.post('/user/delete/{0}'.format(user_id))
+    assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/user/'
 
     with app.app_context():

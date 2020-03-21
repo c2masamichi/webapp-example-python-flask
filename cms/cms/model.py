@@ -34,7 +34,7 @@ class Entry(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute(
-                    'SELECT id, title, body, created'
+                    'SELECT id, title, body, created, author_id'
                     ' FROM entry WHERE id = %s',
                     (entry_id,)
                 )
@@ -63,7 +63,7 @@ class Entry(object):
             current_app.logger.error('creating an entry: {0}'.format(e))
             return Result(succeeded=False, description='Creation failed.')
 
-        return Result()
+        return Result(description='Creation succeeded.')
 
     def update(self, entry_id, title, body):
         if not self._validate_data(title, body):
@@ -98,7 +98,7 @@ class Entry(object):
             current_app.logger.error('deleting an entry: {0}'.format(e))
             return Result(succeeded=False, description='Deletion failed.')
 
-        return Result()
+        return Result(description='Deletion succeeded.')
 
     def _validate_data(self, title, body):
         title_max = 100
@@ -194,7 +194,7 @@ class User(object):
             current_app.logger.error('creating a user: {0}'.format(e))
             return Result(succeeded=False, description='Creation failed.')
 
-        return Result()
+        return Result(description='Creation succeeded.')
 
     def update(self, user_id, role, username):
         if role not in ROLE_PRIV:
@@ -246,7 +246,7 @@ class User(object):
             current_app.logger.error('deleting a user: {0}'.format(e))
             return Result(succeeded=False, description='Deletion failed.')
 
-        return Result()
+        return Result(description='Deletion succeeded.')
 
     def change_password(
             self, user_id, new_password,

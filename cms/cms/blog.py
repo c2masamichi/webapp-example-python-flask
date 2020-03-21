@@ -1,5 +1,4 @@
 from flask import Blueprint
-from flask import flash
 from flask import g
 from flask import redirect
 from flask import render_template
@@ -9,6 +8,9 @@ from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.model import Entry
+from cms.role import Privilege
+from cms.role import ROLE_PRIV
+from cms.utils import flash_error, flash_success
 
 bp = Blueprint('blog', __name__)
 
@@ -33,7 +35,15 @@ def edit_top():
     result = Entry().fetch_all()
     if not result.succeeded:
         abort(500)
-    return render_template('blog/edit_top.html', entries=result.value)
+
+    can_update_all_enrty = False
+    if ROLE_PRIV[g.user['role']] >= Privilege.EDITOR:
+        can_update_all_enrty = True
+
+    return render_template(
+        'blog/edit_top.html', entries=result.value,
+        can_update_all_enrty=can_update_all_enrty
+    )
 
 
 @bp.route('/edit/create', methods=['GET', 'POST'])
@@ -44,13 +54,14 @@ def create():
         body = request.form['body']
 
         if not title:
-            flash('Title is required.')
+            flash_error('Title is required.')
         else:
             result = Entry().create(g.user['id'], title, body)
             if result.succeeded:
+                flash_success(result.description)
                 return redirect(url_for('blog.edit_top'))
             else:
-                flash(result.description)
+                flash_error(result.description)
 
     return render_template('blog/create.html')
 
@@ -60,17 +71,23 @@ def create():
 def update(entry_id):
     entry = fetch_entry_wrapper(entry_id)
 
+    if (ROLE_PRIV[g.user['role']] < Privilege.EDITOR and
+            entry['author_id'] != g.user['id']):
+        abort(403)
+
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
 
         if not title:
-            flash('Title is required.')
+            flash_error('Title is required.')
         else:
             result = Entry().update(entry_id, title, body)
-            flash(result.description)
             if result.succeeded:
+                flash_success(result.description)
                 return redirect(url_for('blog.update', entry_id=entry_id))
+            else:
+                flash_error(result.description)
 
     return render_template('blog/update.html', entry=entry)
 
@@ -79,9 +96,15 @@ def update(entry_id):
 @login_required
 def delete(entry_id):
     entry = fetch_entry_wrapper(entry_id)
+    if (ROLE_PRIV[g.user['role']] < Privilege.EDITOR and
+            entry['author_id'] != g.user['id']):
+        abort(403)
+
     result = Entry().delete(entry_id)
-    if not result.succeeded:
-        flash(result.description)
+    if result.succeeded:
+        flash_success(result.description)
+    else:
+        flash_error(result.description)
         render_template('blog/update.html', entry=entry)
     return redirect(url_for('blog.edit_top'))
 
