@@ -1,5 +1,4 @@
 from flask import Blueprint
-from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -10,6 +9,7 @@ from cms.auth import admin_required
 from cms.auth import login_required
 from cms.model import User
 from cms.model import make_sorted_roles
+from cms.utils import flash_error, flash_success
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -42,13 +42,13 @@ def create():
             error = 'Password is required.'
 
         if error:
-            flash(error)
+            flash_error(error)
         else:
             result = User().create(role, username, password)
             if result.succeeded:
                 return redirect(url_for('user.index'))
             else:
-                flash(result.description)
+                flash_error(result.description)
 
     return render_template('user/create.html', roles=roles)
 
@@ -64,13 +64,15 @@ def update(user_id):
         username = request.form['username']
 
         if not username:
-            flash('Username is required.')
+            flash_error('Username is required.')
         else:
             result = User().update(user_id, role, username)
-            flash(result.description)
             if result.succeeded:
+                flash_success(result.description)
                 return redirect(
                     url_for('user.update', user_id=user_id))
+            else:
+                flash_error(result.description)
 
     return render_template('user/update.html', user=user, roles=roles)
 
@@ -84,7 +86,11 @@ def change_password(user_id):
     new_password = request.form['new_password']
     result = User().change_password(
         user_id, new_password, old_required=False)
-    flash(result.description)
+    if result.succeeded:
+        flash_success(result.description)
+    else:
+        flash_error(result.description)
+
     return render_template('user/update.html', user=user)
 
 
@@ -95,7 +101,7 @@ def delete(user_id):
     user = fetch_user_wrapper(user_id)
     result = User().delete(user_id)
     if not result.succeeded:
-        flash(result.description)
+        flash_error(result.description)
         return render_template('user/update.html', user=user)
     return redirect(url_for('user.index'))
 

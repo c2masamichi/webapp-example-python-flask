@@ -1,5 +1,4 @@
 from flask import Blueprint
-from flask import flash
 from flask import g
 from flask import redirect
 from flask import render_template
@@ -11,6 +10,7 @@ from cms.auth import login_required
 from cms.model import Entry
 from cms.role import Privilege
 from cms.role import ROLE_PRIV
+from cms.utils import flash_error, flash_success
 
 bp = Blueprint('blog', __name__)
 
@@ -114,11 +114,3 @@ def fetch_entry_wrapper(entry_id):
     if entry is None:
         abort(404)
     return entry
-
-
-def flash_error(message):
-    flash(message, category='error')
-
-
-def flash_success(message):
-    flash(message, category='success')
