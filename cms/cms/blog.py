@@ -58,6 +58,7 @@ def create():
         else:
             result = Entry().create(g.user['id'], title, body)
             if result.succeeded:
+                flash_success(result.description)
                 return redirect(url_for('blog.edit_top'))
             else:
                 flash_error(result.description)
@@ -100,7 +101,9 @@ def delete(entry_id):
         abort(403)
 
     result = Entry().delete(entry_id)
-    if not result.succeeded:
+    if result.succeeded:
+        flash_success(result.description)
+    else:
         flash_error(result.description)
         render_template('blog/update.html', entry=entry)
     return redirect(url_for('blog.edit_top'))

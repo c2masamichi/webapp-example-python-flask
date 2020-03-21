@@ -46,6 +46,7 @@ def create():
         else:
             result = User().create(role, username, password)
             if result.succeeded:
+                flash_success(result.description)
                 return redirect(url_for('user.index'))
             else:
                 flash_error(result.description)
@@ -100,7 +101,9 @@ def change_password(user_id):
 def delete(user_id):
     user = fetch_user_wrapper(user_id)
     result = User().delete(user_id)
-    if not result.succeeded:
+    if result.succeeded:
+        flash_success(result.description)
+    else:
         flash_error(result.description)
         return render_template('user/update.html', user=user)
     return redirect(url_for('user.index'))

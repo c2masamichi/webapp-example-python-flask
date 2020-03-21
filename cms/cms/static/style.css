@@ -8,7 +8,8 @@ nav {
 
 .flash {
   color: white;
-  padding: 0.25em 0.5em
+  padding: 0.25em 0.5em;
+  margin: 0.5em 0;
 }
 
 .flash.success {
