@@ -17,7 +17,7 @@ def index():
 def get_products():
     result = Product().fetch_all()
     if result.code != 200:
-        abort(500, description=result.description)
+        abort(result.code, description=result.description)
     return jsonify(result.value)
 
 
@@ -41,7 +41,7 @@ def create_product():
 
     result = Product().create(name, price)
     if result.code != 200:
-        abort(500, description=result.description)
+        abort(result.code, description=result.description)
     return jsonify(result.value)
 
 
@@ -60,7 +60,7 @@ def update_product(product_id):
 
     result = Product().update(product_id, name, price)
     if result.code != 200:
-        abort(500, description=result.description)
+        abort(result.code, description=result.description)
     return jsonify(result.value)
 
 
@@ -70,7 +70,7 @@ def delete_product(product_id):
 
     result = Product().delete(product_id)
     if result.code != 200:
-        abort(500, description=result.description)
+        abort(result.code, description=result.description)
     return jsonify(result.value)
 
 

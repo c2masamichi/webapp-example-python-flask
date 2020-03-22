@@ -14,30 +14,36 @@ def test_get_products(client):
     response = client.get('/products')
     data = response.get_json()
     assert 'result' in data
-    result = data['result']
-    assert len(result) == 2
+    products = data['result']
+    assert len(products) == 2
 
 
 def test_get_product(client):
-    response = client.get('/products/1')
+    product_id = 1
+    name = 'book'
+    price = 600
+    response = client.get('/products/{0}'.format(product_id))
     assert response.status_code == 200
+
     data = response.get_json()
     assert 'result' in data
-    result = data['result']
-    assert result['id'] == 1
-    assert result['name'] == 'book'
-    assert result['price'] == 600
+    product = data['result']
+    assert product['id'] == product_id
+    assert product['name'] == name
+    assert product['price'] == price
 
 
-def test_get_product_error(client):
-    response = client.get('/products/3')
+def test_get_product_exists_required(client):
+    response = client.get('/products/10')
     assert response.status_code == 404
 
 
 def test_create_product(client, app):
+    name = 'meat'
+    price = 1000
     new_product = json.dumps({
-        'name': 'meat',
-        'price': 1000,
+        'name': name,
+        'price': price,
     })
     response = client.post(
         '/products', data=new_product,
@@ -49,9 +55,9 @@ def test_create_product(client, app):
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM product WHERE id = 3')
-            row = cursor.fetchone()
-        assert row['name'] == 'meat'
-        assert row['price'] == 1000
+            product = cursor.fetchone()
+        assert product['name'] == name
+        assert product['price'] == price
 
 
 def test_create_product_error(client):
@@ -60,12 +66,16 @@ def test_create_product_error(client):
 
 
 def test_update_product(client, app):
+    product_id = 2
+    name = 'rice'
+    price = 900
     updated_data = json.dumps({
-        'name': 'rice',
-        'price': 900,
+        'name': name,
+        'price': price,
     })
     response = client.put(
-        '/products/2', data=updated_data,
+        '/products/{0}'.format(product_id),
+        data=updated_data,
         content_type='application/json'
     )
     assert response.status_code == 200
@@ -73,36 +83,43 @@ def test_update_product(client, app):
     with app.app_context():
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM product WHERE id = 2')
-            row = cursor.fetchone()
-        assert row['name'] == 'rice'
-        assert row['price'] == 900
+            cursor.execute(
+                'SELECT * FROM product WHERE id = %s',
+                (product_id,)
+            )
+            product = cursor.fetchone()
+        assert product['name'] == name
+        assert product['price'] == price
 
 
-def test_update_product_error(client):
+def test_update_product_exists_required(client):
     updated_data = json.dumps({
         'name': 'rice',
         'price': 900,
     })
     response = client.put(
-        '/products/5', data=updated_data,
+        '/products/10', data=updated_data,
         content_type='application/json'
     )
     assert response.status_code == 404
 
 
 def test_delete_product(client, app):
-    response = client.delete('/products/1')
+    product_id = 2
+    response = client.delete('/products/{0}'.format(product_id))
     assert response.status_code == 200
 
     with app.app_context():
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM product WHERE id = 1')
-            row = cursor.fetchone()
-        assert row is None
+            cursor.execute(
+                'SELECT * FROM product WHERE id = %s',
+                (product_id,)
+            )
+            product = cursor.fetchone()
+        assert product is None
 
 
-def test_delete_product_error(client, app):
-    response = client.delete('/products/3')
+def test_delete_product_exists_required(client, app):
+    response = client.delete('/products/10')
     assert response.status_code == 404
