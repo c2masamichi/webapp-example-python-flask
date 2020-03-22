@@ -29,8 +29,8 @@ def test_get_product(client):
     assert result['price'] == 600
 
 
-def test_get_product_error(client):
-    response = client.get('/products/3')
+def test_get_product_exists_required(client):
+    response = client.get('/products/10')
     assert response.status_code == 404
 
 
@@ -79,13 +79,13 @@ def test_update_product(client, app):
         assert row['price'] == 900
 
 
-def test_update_product_error(client):
+def test_update_product_exists_required(client):
     updated_data = json.dumps({
         'name': 'rice',
         'price': 900,
     })
     response = client.put(
-        '/products/5', data=updated_data,
+        '/products/10', data=updated_data,
         content_type='application/json'
     )
     assert response.status_code == 404
@@ -103,6 +103,6 @@ def test_delete_product(client, app):
         assert row is None
 
 
-def test_delete_product_error(client, app):
-    response = client.delete('/products/3')
+def test_delete_product_exists_required(client, app):
+    response = client.delete('/products/10')
     assert response.status_code == 404
