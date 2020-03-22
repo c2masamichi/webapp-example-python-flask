@@ -14,13 +14,15 @@ def test_fetch_all(app):
 def test_fetch(app):
     with app.app_context():
         product_id = 1
+        name = 'book'
+        price = 600
         result = Product().fetch(product_id)
         assert result.code == 200
 
         product = result.value['result']
-        assert product['id'] == 1
-        assert product['name'] == 'book'
-        assert product['price'] == 600
+        assert product['id'] == product_id
+        assert product['name'] == name
+        assert product['price'] == price
 
 
 def test_fetch_not_exists(app):
@@ -39,9 +41,11 @@ def test_create(app):
 
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM product WHERE id = 3')
+            cursor.execute(
+                'SELECT * FROM product WHERE name = %s',
+                (name,)
+            )
             product = cursor.fetchone()
-        assert product['name'] == name
         assert product['price'] == price
 
 
@@ -55,7 +59,10 @@ def test_update(app):
 
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM product WHERE id = 2')
+            cursor.execute(
+                'SELECT * FROM product WHERE id = %s',
+                (product_id,)
+            )
             product = cursor.fetchone()
         assert product['name'] == name
         assert product['price'] == price
@@ -63,12 +70,15 @@ def test_update(app):
 
 def test_delete(app):
     with app.app_context():
-        product_id = 1
+        product_id = 2
         result = Product().delete(product_id)
         assert result.code == 200
 
         db = get_db()
         with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM product WHERE id = 1')
+            cursor.execute(
+                'SELECT * FROM product WHERE id = %s',
+                (product_id,)
+            )
             product = cursor.fetchone()
         assert product is None
