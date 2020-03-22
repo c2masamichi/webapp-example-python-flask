@@ -25,7 +25,7 @@ def test_fetch(app):
 
 def test_fetch_not_exists(app):
     with app.app_context():
-        product_id = 3
+        product_id = 10
         result = Product().fetch(product_id)
         assert result.value == {}
 
@@ -40,9 +40,9 @@ def test_create(app):
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM product WHERE id = 3')
-            row = cursor.fetchone()
-        assert row['name'] == name
-        assert row['price'] == price
+            product = cursor.fetchone()
+        assert product['name'] == name
+        assert product['price'] == price
 
 
 def test_update(app):
@@ -56,9 +56,9 @@ def test_update(app):
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM product WHERE id = 2')
-            row = cursor.fetchone()
-        assert row['name'] == name
-        assert row['price'] == price
+            product = cursor.fetchone()
+        assert product['name'] == name
+        assert product['price'] == price
 
 
 def test_delete(app):
@@ -70,5 +70,5 @@ def test_delete(app):
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute('SELECT * FROM product WHERE id = 1')
-            row = cursor.fetchone()
-        assert row is None
+            product = cursor.fetchone()
+        assert product is None
