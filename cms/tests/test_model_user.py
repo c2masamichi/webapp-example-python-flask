@@ -122,6 +122,7 @@ def test_update(app):
     ('role', 'username', 'message'),
     (
         ('aaa', 'addeduser', 'does not exist'),
+        ('author', 'a' * 21, 'Bad data'),
         ('author', 'user-author01', 'already registered'),
     ),
 )
