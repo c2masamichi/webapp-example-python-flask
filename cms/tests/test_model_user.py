@@ -84,15 +84,16 @@ def test_create(app):
 
 
 @pytest.mark.parametrize(
-    ('role', 'username', 'message'),
+    ('role', 'username', 'password', 'message'),
     (
-        ('aaa', 'addeduser', 'does not exist'),
-        ('author', 'user-author01', 'already registered'),
+        ('aaa', 'addeduser', 'efgh5678', 'does not exist'),
+        ('author', 'a' * 21, 'efgh5678', 'Bad data'),
+        ('author', 'addeduser', 'a' * 31, 'Bad data'),
+        ('author', 'user-author01', 'efgh5678', 'already registered'),
     ),
 )
-def test_create_validate(app, role, username, message):
+def test_create_validate(app, role, username, password, message):
     with app.app_context():
-        password = 'efgh5678'
         result = User().create(role, username, password)
         assert not result.succeeded
         assert message in result.description

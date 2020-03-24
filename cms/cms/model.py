@@ -167,7 +167,7 @@ class User(object):
             )
 
         if (not self._validate_username(username)
-                and not self._validate_password(password)):
+                or not self._validate_password(password)):
             return Result(succeeded=False, description='Bad data.')
 
         fetch_user_result = self._fetch_by_username(username)
