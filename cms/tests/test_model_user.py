@@ -68,8 +68,8 @@ def test_auth_validate(app, username, password):
 def test_create(app):
     with app.app_context():
         role = 'administrator'
-        username = 'addeduser'
-        password = 'abcd1234'
+        username = 'added-user_01'
+        password = 'ab-cd_1234'
         result = User().create(role, username, password)
         assert result.succeeded
 
@@ -86,9 +86,9 @@ def test_create(app):
 @pytest.mark.parametrize(
     ('role', 'username', 'password', 'message'),
     (
-        ('aaa', 'addeduser', 'efgh5678', 'does not exist'),
-        ('author', 'a' * 21, 'efgh5678', 'Bad data'),
-        ('author', 'addeduser', 'a' * 31, 'Bad data'),
+        ('aaa', 'user-a_01', 'ef-gh_5678', 'does not exist'),
+        ('author', 'a' * 21, 'ef-gh_5678', 'Bad data'),
+        ('author', 'user-a_01', 'a' * 31, 'Bad data'),
         ('author', 'user-author01', 'efgh5678', 'already registered'),
     ),
 )
@@ -103,7 +103,7 @@ def test_update(app):
     with app.app_context():
         user_id = 2
         role = 'author'
-        username = 'updated-to-author'
+        username = 'updated-to-author02'
         result = User().update(user_id, role, username)
         assert result.succeeded
 
@@ -121,7 +121,7 @@ def test_update(app):
 @pytest.mark.parametrize(
     ('role', 'username', 'message'),
     (
-        ('aaa', 'addeduser', 'does not exist'),
+        ('aaa', 'user-a_01', 'does not exist'),
         ('author', 'a' * 21, 'Bad data'),
         ('author', 'user-author01', 'already registered'),
     ),
@@ -154,7 +154,7 @@ def test_change_password(app):
     with app.app_context():
         user_id = 2
         username = 'user-editor01'
-        new_password = 'updated'
+        new_password = 'updated-pass_01'
         result = User().change_password(
             user_id, new_password, old_required=False)
         assert result.succeeded
@@ -168,7 +168,7 @@ def test_change_own_password(app):
         user_id = 1
         username = 'user-admin01'
         old_password = 'testpass'
-        new_password = 'updated'
+        new_password = 'updated-pass_01'
         result = User().change_password(user_id, new_password, old_password)
         assert result.succeeded
 
@@ -182,7 +182,7 @@ def test_change_own_password(app):
 def test_change_password_validate01(app):
     with app.app_context():
         user_id = 1
-        new_password = 'updated'
+        new_password = 'updated-pass_01'
         result = User().change_password(user_id, new_password)
         assert not result.succeeded
 
@@ -191,6 +191,6 @@ def test_change_password_validate02(app):
     with app.app_context():
         user_id = 1
         old_password = 'aaaa'
-        new_password = 'updated'
+        new_password = 'updated-pass_01'
         result = User().change_password(user_id, new_password, old_password)
         assert not result.succeeded
