@@ -89,6 +89,8 @@ def test_create(app):
         ('aaa', 'user-a_01', 'ef-gh_5678', 'does not exist'),
         ('author', 'a' * 21, 'ef-gh_5678', 'Bad data'),
         ('author', 'user-a_01', 'a' * 31, 'Bad data'),
+        ('author', 'user-a_01%', 'ef-gh_5678', 'Bad data'),
+        ('author', 'user-a_01', 'ef-gh_5678%', 'Bad data'),
         ('author', 'user-author01', 'efgh5678', 'already registered'),
     ),
 )
@@ -123,6 +125,7 @@ def test_update(app):
     (
         ('aaa', 'user-a_01', 'does not exist'),
         ('author', 'a' * 21, 'Bad data'),
+        ('author', 'user-a_01%', 'Bad data'),
         ('author', 'user-author01', 'already registered'),
     ),
 )
@@ -183,8 +186,10 @@ def test_change_password_validate01(app):
     with app.app_context():
         user_id = 1
         new_password = 'updated-pass_01'
+        message = 'Incorrect password.'
         result = User().change_password(user_id, new_password)
         assert not result.succeeded
+        assert message in result.description
 
 
 def test_change_password_validate02(app):
@@ -192,5 +197,7 @@ def test_change_password_validate02(app):
         user_id = 1
         old_password = 'aaaa'
         new_password = 'updated-pass_01'
+        message = 'Incorrect password.'
         result = User().change_password(user_id, new_password, old_password)
         assert not result.succeeded
+        assert message in result.description
