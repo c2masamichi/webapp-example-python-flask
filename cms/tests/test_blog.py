@@ -132,6 +132,9 @@ def test_create_update_validate(client, auth, path):
     response = client.post(path, data={'title': '', 'body': ''})
     assert b'Title is required.' in response.data
 
+    response = client.post(path, data={'title': 'a' * 101, 'body': ''})
+    assert b'Bad data' in response.data
+
 
 def test_delete(client, auth, app):
     entry_id = 2
