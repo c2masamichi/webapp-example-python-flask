@@ -187,6 +187,7 @@ def test_change_password_validate01(app):
         user_id = 1
         new_password = 'updated-pass_01'
         message = 'Incorrect password.'
+        # Default: old_required=True
         result = User().change_password(user_id, new_password)
         assert not result.succeeded
         assert message in result.description
