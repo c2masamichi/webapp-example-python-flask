@@ -202,3 +202,19 @@ def test_change_password_validate02(app):
         result = User().change_password(user_id, new_password, old_password)
         assert not result.succeeded
         assert message in result.description
+
+
+@pytest.mark.parametrize(
+    ('new_password', 'message'),
+    (
+        ('a' * 31, 'Bad data'),
+        ('ef-gh_5678%', 'Bad data'),
+    ),
+)
+def test_change_password_validate03(app, new_password, message):
+    with app.app_context():
+        user_id = 2
+        result = User().change_password(
+            user_id, new_password, old_required=False)
+        assert not result.succeeded
+        assert message in result.description
