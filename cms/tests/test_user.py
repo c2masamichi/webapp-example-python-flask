@@ -191,6 +191,23 @@ def test_chpasswd(client, auth, app):
         assert check_password_hash(user['password'], new_password)
 
 
+@pytest.mark.parametrize(
+    ('new_password', 'message'),
+    (
+        ('a' * 31, b'Bad data'),
+        ('ef-gh_5678%', b'Bad data'),
+    ),
+)
+def test_chpasswd_validate(client, auth, new_password, message):
+    user_id = 2
+    auth.login()
+    response = client.post(
+        '/user/chpasswd/{0}'.format(user_id),
+        data={'new_password': new_password}
+    )
+    assert message in response.data
+
+
 def test_delete(client, auth, app):
     user_id = 2
     auth.login()
