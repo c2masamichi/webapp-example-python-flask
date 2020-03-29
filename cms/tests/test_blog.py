@@ -18,7 +18,7 @@ def test_get_entry(client):
     assert b'This body is test.' in response.data
 
 
-def test_get_entry_error(client):
+def test_get_entry_exists_required(client):
     response = client.get('/entry/10')
     assert response.status_code == 404
 
@@ -51,9 +51,12 @@ def test_login_required_post(client, path):
 
 @pytest.mark.parametrize(
     'path',
-    ('/edit/update/10', '/edit/delete/10')
+    (
+        '/edit/update/10',
+        '/edit/delete/10',
+    )
 )
-def test_exists_required(client, auth, path):
+def test_exists_required_post(client, auth, path):
     auth.login()
     assert client.post(path).status_code == 404
 
@@ -119,12 +122,18 @@ def test_update(client, auth, app):
 
 @pytest.mark.parametrize(
     'path',
-    ('/edit/create', '/edit/update/2')
+    (
+        '/edit/create',
+        '/edit/update/2',
+    )
 )
 def test_create_update_validate(client, auth, path):
     auth.login()
     response = client.post(path, data={'title': '', 'body': ''})
     assert b'Title is required.' in response.data
+
+    response = client.post(path, data={'title': 'a' * 101, 'body': ''})
+    assert b'Bad data' in response.data
 
 
 def test_delete(client, auth, app):

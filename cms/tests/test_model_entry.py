@@ -58,6 +58,17 @@ def test_create(app):
         assert entry['body'] == body
 
 
+def test_create_validate(app):
+    with app.app_context():
+        author_id = 1
+        title = 'a' * 101
+        body = 'created on test'
+        message = 'Bad data'
+        result = Entry().create(author_id, title, body)
+        assert not result.succeeded
+        assert message in result.description
+
+
 def test_update(app):
     with app.app_context():
         entry_id = 1
@@ -75,6 +86,17 @@ def test_update(app):
             entry = cursor.fetchone()
         assert entry['title'] == title
         assert entry['body'] == body
+
+
+def test_update_validate(app):
+    with app.app_context():
+        entry_id = 1
+        title = 'a' * 101
+        body = 'updated on test'
+        message = 'Bad data'
+        result = Entry().update(entry_id, title, body)
+        assert not result.succeeded
+        assert message in result.description
 
 
 def test_delete(app):

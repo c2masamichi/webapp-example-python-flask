@@ -29,7 +29,7 @@ def test_chpasswd(client, auth, app):
     assert client.get('/mypage/chpasswd').status_code == 200
 
     old_password = 'testpass'
-    new_password = 'updated'
+    new_password = 'updated-pass_01'
     response = client.post(
         '/mypage/chpasswd',
         data={'old_password': old_password, 'new_password': new_password}
@@ -46,7 +46,7 @@ def test_chpasswd(client, auth, app):
 def test_chpasswd_validate(client, auth, app):
     auth.login()
     old_password = 'aaaa'
-    new_password = 'updated'
+    new_password = 'updated-pass_01'
     response = client.post(
         '/mypage/chpasswd',
         data={'old_password': old_password, 'new_password': new_password}

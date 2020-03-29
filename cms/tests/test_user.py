@@ -93,8 +93,8 @@ def test_create(client, auth, app):
     assert client.get('/user/create').status_code == 200
 
     role = 'administrator'
-    username = 'addeduser'
-    password = 'abcd1234'
+    username = 'added-user_01'
+    password = 'ab-cd_1234'
     response = client.post(
         '/user/create',
         data={'role': role, 'username': username, 'password': password}
@@ -134,7 +134,7 @@ def test_create_validate(client, auth, username, password, message):
 def test_update(client, auth, app):
     user_id = 2
     role = 'author'
-    username = 'updated-to-author'
+    username = 'updated-to-author02'
     path = '/user/update/{0}'.format(user_id)
 
     auth.login()
@@ -173,7 +173,7 @@ def test_update_validate(client, auth, username, message):
 
 def test_chpasswd(client, auth, app):
     user_id = 2
-    new_password = 'updated'
+    new_password = 'updated-pass_01'
     auth.login()
     response = client.post(
         '/user/chpasswd/{0}'.format(user_id),
@@ -189,6 +189,23 @@ def test_chpasswd(client, auth, app):
             )
             user = cursor.fetchone()
         assert check_password_hash(user['password'], new_password)
+
+
+@pytest.mark.parametrize(
+    ('new_password', 'message'),
+    (
+        ('a' * 31, b'Bad data'),
+        ('ef-gh_5678%', b'Bad data'),
+    ),
+)
+def test_chpasswd_validate(client, auth, new_password, message):
+    user_id = 2
+    auth.login()
+    response = client.post(
+        '/user/chpasswd/{0}'.format(user_id),
+        data={'new_password': new_password}
+    )
+    assert message in response.data
 
 
 def test_delete(client, auth, app):
