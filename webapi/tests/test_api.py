@@ -60,9 +60,11 @@ def test_create_product(client, app):
         assert product['price'] == price
 
 
-def test_create_product_error(client):
+def test_create_product_validate01(client):
     response = client.post('/products', data='wrong data')
     assert response.status_code == 400
+    data = response.get_json()
+    assert 'Content-Type must be application/json.' in data['error']
 
 
 def test_update_product(client, app):
