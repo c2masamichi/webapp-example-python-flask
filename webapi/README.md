@@ -45,6 +45,14 @@ Initialized the database.
 $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test run web pytest
 ```
 
+Run with coverage report
+
+```
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test run web coverage run -m pytest
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test run web coverage report
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test run web coverage html 
+```
+
 ### Clear
 
 ```
