@@ -60,9 +60,29 @@ def test_create_product(client, app):
         assert product['price'] == price
 
 
-def test_create_product_error(client):
+def test_create_product_validate01(client):
     response = client.post('/products', data='wrong data')
     assert response.status_code == 400
+    data = response.get_json()
+    assert 'Content-Type must be application/json.' in data['error']
+
+
+@pytest.mark.parametrize(
+    'data',
+    (
+        {'name': 'meat'},
+        {'price': 1000},
+    )
+)
+def test_create_product_validate02(client, data):
+    response = client.post(
+        '/products',
+        data=json.dumps(data),
+        content_type='application/json'
+    )
+    assert response.status_code == 400
+    data = response.get_json()
+    assert 'The key "name" and "price" are required.' in data['error']
 
 
 def test_update_product(client, app):
