@@ -62,6 +62,12 @@ class Product(object):
         return Result(value=value)
 
     def create(self, name, price):
+        if not self._validate_data(name, price):
+            return Result(
+                code=Code.BAD_REQUEST,
+                description='Bad data.'
+            )
+
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -119,6 +125,16 @@ class Product(object):
 
         return Result(value={'result': 'Successfully Updated.'})
 
+    def _validate_data(self, name, price):
+        name_len_max = 20
+        price_max = 1000000000
+
+        if len(name) > name_len_max:
+            return False
+        if price > price_max:
+            return False
+
+        return True
 
 class Code(IntEnum):
     OK = 200

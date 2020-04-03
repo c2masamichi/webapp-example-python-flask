@@ -1,3 +1,5 @@
+import pytest
+
 from webapi.db import get_db
 from webapi.model import Product
 
@@ -47,6 +49,20 @@ def test_create(app):
             )
             product = cursor.fetchone()
         assert product['price'] == price
+
+
+@pytest.mark.parametrize(
+    ('name', 'price', 'message'),
+    (
+        ('a' * 21, 1000, 'Bad data'),
+        ('house', 1000000001, 'Bad data'),
+    ),
+)
+def test_create_validate(app, name, price, message):
+    with app.app_context():
+        result = Product().create(name, price)
+        assert result.code == 400
+        assert message in result.description
 
 
 def test_update(app):
