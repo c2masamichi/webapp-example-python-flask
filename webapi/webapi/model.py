@@ -126,12 +126,14 @@ class Product(object):
         return Result(value={'result': 'Successfully Updated.'})
 
     def _validate_data(self, name, price):
+        name_len_min = 3
         name_len_max = 20
+        price_min = 0
         price_max = 1000000000
 
-        if len(name) > name_len_max:
+        if len(name) < name_len_min or len(name) > name_len_max:
             return False
-        if price > price_max:
+        if price < price_min or price > price_max:
             return False
 
         return True

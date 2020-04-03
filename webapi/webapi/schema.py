@@ -3,6 +3,6 @@ SCHEMA_STATEMENTS = [
     'CREATE TABLE product ('
     ' id INT PRIMARY KEY AUTO_INCREMENT,'
     ' name VARCHAR(20) UNIQUE NOT NULL,'
-    ' price INT NOT NULL'
+    ' price INT UNSIGNED NOT NULL'
     ');',
 ]

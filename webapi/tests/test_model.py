@@ -54,8 +54,10 @@ def test_create(app):
 @pytest.mark.parametrize(
     ('name', 'price', 'message'),
     (
+        ('aa', 1000, 'Bad data'),
         ('a' * 21, 1000, 'Bad data'),
         ('house', 1000000001, 'Bad data'),
+        ('minus', -1, 'Bad data'),
     ),
 )
 def test_create_validate(app, name, price, message):
