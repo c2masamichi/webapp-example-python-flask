@@ -85,6 +85,22 @@ def test_create_product_validate02(client, data):
     assert 'The key "name" and "price" are required.' in data['error']
 
 
+def test_create_product_validate03(client):
+    name = 'minus'
+    price = -1
+    new_product = json.dumps({
+        'name': name,
+        'price': price,
+    })
+    response = client.post(
+        '/products', data=new_product,
+        content_type='application/json'
+    )
+    assert response.status_code == 400
+    data = response.get_json()
+    assert 'Bad data' in data['error']
+
+
 def test_update_product(client, app):
     product_id = 2
     name = 'rice'
@@ -122,6 +138,54 @@ def test_update_product_exists_required(client):
         content_type='application/json'
     )
     assert response.status_code == 404
+
+
+def test_update_product_validate01(client):
+    product_id = 2
+    response = client.put(
+        '/products/{0}'.format(product_id),
+        data='wrong data',
+    )
+    assert response.status_code == 400
+    data = response.get_json()
+    assert 'Content-Type must be application/json.' in data['error']
+
+
+@pytest.mark.parametrize(
+    'data',
+    (
+        {'name': 'meat'},
+        {'price': 1000},
+    )
+)
+def test_update_product_validate02(client, data):
+    product_id = 2
+    response = client.put(
+        '/products/{0}'.format(product_id),
+        data=json.dumps(data),
+        content_type='application/json'
+    )
+    assert response.status_code == 400
+    data = response.get_json()
+    assert 'The key "name" and "price" are required.' in data['error']
+
+
+def test_update_product_validate03(client):
+    product_id = 2
+    name = 'minus'
+    price = -1
+    updated_data = json.dumps({
+        'name': name,
+        'price': price,
+    })
+    response = client.put(
+        '/products/{0}'.format(product_id),
+        data=updated_data,
+        content_type='application/json'
+    )
+    assert response.status_code == 400
+    data = response.get_json()
+    assert 'Bad data' in data['error']
 
 
 def test_delete_product(client, app):
