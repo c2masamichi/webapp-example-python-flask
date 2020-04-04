@@ -88,6 +88,12 @@ class Product(object):
         return Result(value={'result': 'Successfully Created.'})
 
     def update(self, product_id, name, price):
+        if not self._validate_data(name, price):
+            return Result(
+                code=Code.BAD_REQUEST,
+                description='Bad data.'
+            )
+
         db = self._db
         try:
             with db.cursor() as cursor:

@@ -87,6 +87,24 @@ def test_update(app):
         assert product['price'] == price
 
 
+@pytest.mark.parametrize(
+    ('name', 'price', 'message'),
+    (
+        ('aa', 1000, 'Bad data'),
+        ('a' * 21, 1000, 'Bad data'),
+        ('house', 1000000001, 'Bad data'),
+        ('minus', -1, 'Bad data'),
+        ('A 01 %', 100, 'Bad data'),
+    ),
+)
+def test_update_validate(app, name, price, message):
+    with app.app_context():
+        product_id = 2
+        result = Product().update(product_id, name, price)
+        assert result.code == 400
+        assert message in result.description
+
+
 def test_delete(app):
     with app.app_context():
         product_id = 2
