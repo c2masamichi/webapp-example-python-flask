@@ -36,8 +36,8 @@ def test_fetch_not_exists(app):
 
 def test_create(app):
     with app.app_context():
-        name = 'meat'
-        price = 1000
+        name = 'Mineral water 500ml'
+        price = 100
         result = Product().create(name, price)
         assert result.code == 200
 
@@ -58,6 +58,7 @@ def test_create(app):
         ('a' * 21, 1000, 'Bad data'),
         ('house', 1000000001, 'Bad data'),
         ('minus', -1, 'Bad data'),
+        ('A 01 %', 100, 'Bad data'),
     ),
 )
 def test_create_validate(app, name, price, message):

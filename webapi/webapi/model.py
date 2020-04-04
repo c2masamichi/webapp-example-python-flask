@@ -1,4 +1,5 @@
 from enum import IntEnum
+import re
 
 from flask import current_app
 
@@ -130,10 +131,13 @@ class Product(object):
         name_len_max = 20
         price_min = 0
         price_max = 1000000000
-
         if len(name) < name_len_min or len(name) > name_len_max:
             return False
         if price < price_min or price > price_max:
+            return False
+
+        pattern = r'[0-9a-zA-Z ]*'
+        if re.fullmatch(pattern, name) is None:
             return False
 
         return True
