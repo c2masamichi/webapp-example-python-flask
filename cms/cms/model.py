@@ -19,13 +19,18 @@ class Entry(object):
             with db.cursor() as cursor:
                 cursor.execute(
                     'SELECT e.id, title, created, author_id, username'
-                    ' FROM entry e JOIN user u ON e.author_id = u.id'
+                    ' FROM entry e LEFT JOIN user u ON e.author_id = u.id'
                     ' ORDER BY created DESC'
                 )
                 entries = cursor.fetchall()
         except Exception as e:
             current_app.logger.error('fetching entries: {0}'.format(e))
             return Result(succeeded=False)
+
+        for entry in entries:
+            if entry['author_id'] is None:
+                entry['author_id'] = -1
+                entry['username'] = 'deleted-user'
 
         return Result(value=entries)
 
