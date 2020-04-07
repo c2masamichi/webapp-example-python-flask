@@ -35,6 +35,14 @@ class Entry(object):
         return Result(value=entries)
 
     def fetch(self, entry_id):
+        """Fetch entry
+
+        Args:
+            entry_id (int): id of entry to fetch
+
+        Returns:
+            Result: entry info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
