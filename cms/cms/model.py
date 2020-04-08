@@ -14,6 +14,11 @@ class Entry(object):
         self._db = get_db()
 
     def fetch_all(self):
+        """Fetch entries
+
+        Returns:
+            Result: entries info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -114,6 +119,15 @@ class Entry(object):
         return Result(description='Deletion succeeded.')
 
     def _validate_data(self, title, body):
+        """Validate input data for creation or update
+
+        Args:
+            title (str): title of entry
+            body (str): body of entry
+
+        Returns:
+            bool: True if data is ok
+        """
         title_max = 100
         body_max = 10000
         return len(title) <= title_max and len(body) <= body_max
