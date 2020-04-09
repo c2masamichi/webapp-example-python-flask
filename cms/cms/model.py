@@ -138,6 +138,11 @@ class User(object):
         self._db = get_db()
 
     def fetch_all(self):
+        """Fetch users
+
+        Returns:
+            Result: users info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
