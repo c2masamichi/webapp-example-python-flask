@@ -158,6 +158,14 @@ class User(object):
         return Result(value=users)
 
     def fetch(self, user_id):
+        """Fetch user
+
+        Args:
+            user_id (int): id of user to fetch
+
+        Returns:
+            Result: user info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -315,6 +323,14 @@ class User(object):
         return Result(description='Password Changed.')
 
     def _validate_username(self, username):
+        """Validate username for creation or update
+
+        Args:
+            username (str): user's name
+
+        Returns:
+            bool: True if username is ok
+        """
         max_length = 20
         if len(username) > max_length:
             return False
@@ -324,6 +340,14 @@ class User(object):
         return True
 
     def _validate_password(self, password):
+        """Validate password for creation or update
+
+        Args:
+            password(str): user's password
+
+        Returns:
+            bool: True if password is ok
+        """
         max_length = 30
         if len(password) > max_length:
             return False
