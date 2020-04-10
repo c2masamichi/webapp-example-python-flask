@@ -357,6 +357,14 @@ class User(object):
         return True
 
     def _fetch_by_username(self, username):
+        """Fetch user by name
+
+        Args:
+            username (str): name of user to fetch
+
+        Returns:
+            Result: user info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -381,6 +389,11 @@ class Result(object):
 
 
 def make_sorted_roles():
+        """Fetch user
+
+        Returns:
+            list: roles
+        """
     role_priv_pairs = [(k, v) for k, v in ROLE_PRIV.items()]
     role_priv_pairs.sort(key=itemgetter(1))
     roles = [role for role, _ in role_priv_pairs]
