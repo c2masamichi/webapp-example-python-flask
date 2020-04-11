@@ -64,6 +64,16 @@ class Entry(object):
         return Result(value=entry)
 
     def create(self, author_id, title, body):
+        """Create entry
+
+        Args:
+            author_id (int): author's id
+            title (str): title of entry
+            body (str): body of entry
+
+        Returns:
+            Result: Success or failure of creation
+        """
         if not self._validate_data(title, body):
             return Result(succeeded=False, description='Bad data.')
 
@@ -84,6 +94,16 @@ class Entry(object):
         return Result(description='Creation succeeded.')
 
     def update(self, entry_id, title, body):
+        """Update entry
+
+        Args:
+            entry_id (int): id of entry to update
+            title (str): title of entry
+            body (str): body of entry
+
+        Returns:
+            Result: Success or failure of update
+        """
         if not self._validate_data(title, body):
             return Result(succeeded=False, description='Bad data.')
 
@@ -103,6 +123,14 @@ class Entry(object):
         return Result(description='Update succeeded.')
 
     def delete(self, entry_id):
+        """Delete entry
+
+        Args:
+            entry_id (int): id of entry to delete
+
+        Returns:
+            Result: Success or failure of delete
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
