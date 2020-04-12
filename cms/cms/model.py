@@ -210,6 +210,15 @@ class User(object):
         return Result(value=user)
 
     def auth(self, username, password):
+        """Auth user
+
+        Args:
+            username (str): user's name
+            password (str): user's password
+
+        Returns:
+            Result: user info
+        """
         fetch_user_result = self._fetch_by_username(username)
         if not fetch_user_result.succeeded:
             return Result(
@@ -228,6 +237,16 @@ class User(object):
         return Result(value=user)
 
     def create(self, role, username, password):
+        """Create user
+
+        Args:
+            role (str): user's role
+            username (str): user's name
+            password (str): user's password
+
+        Returns:
+            Result: Success or failure of creation
+        """
         if role not in ROLE_PRIV:
             return Result(
                 succeeded=False,
@@ -265,6 +284,16 @@ class User(object):
         return Result(description='Creation succeeded.')
 
     def update(self, user_id, role, username):
+        """Update user
+
+        Args:
+            user_id (int): id of user to update
+            role (str): user's role
+            username (str): user's name
+
+        Returns:
+            Result: Success or failure of update
+        """
         if role not in ROLE_PRIV:
             return Result(
                 succeeded=False,
@@ -301,6 +330,14 @@ class User(object):
         return Result(description='Update succeeded.')
 
     def delete(self, user_id):
+        """Delete user
+
+        Args:
+            user_id (int): id of user to delete
+
+        Returns:
+            Result: Success or failure of delete
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
