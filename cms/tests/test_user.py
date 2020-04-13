@@ -106,7 +106,7 @@ def test_create(client, auth, app):
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute(
-                'select * from user where username = %s',
+                'SELECT * FROM user WHERE username = %s',
                 (username,)
             )
             user = cursor.fetchone()
@@ -147,7 +147,7 @@ def test_update(client, auth, app):
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute(
-                'select * from user where id = %s',
+                'SELECT * FROM user WHERE id = %s',
                 (user_id,)
             )
             user = cursor.fetchone()

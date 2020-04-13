@@ -9,7 +9,7 @@
   {% for entry in entries %}
     <div class="entry">
       <h2>{{ entry['title'] }}</h1>
-      <div class="abou">created on {{ entry['created'].strftime('%Y-%m-%d') }} by {{ entry['username'] }}</div>
+      <div class="about">created on {{ entry['created'].strftime('%Y-%m-%d') }} by {{ entry['username'] }}</div>
       {% if can_update_all_enrty or g.user['id'] == entry['author_id'] %}
         <a class="pure-button button-secondary" href="{{ url_for('blog.update', entry_id=entry['id']) }}">update</a>
       {% endif %}

@@ -14,12 +14,17 @@ class Entry(object):
         self._db = get_db()
 
     def fetch_all(self):
+        """Fetch entries
+
+        Returns:
+            Result: entries info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
                 cursor.execute(
                     'SELECT e.id, title, created, author_id, username'
-                    ' FROM entry e JOIN user u ON e.author_id = u.id'
+                    ' FROM entry e LEFT JOIN user u ON e.author_id = u.id'
                     ' ORDER BY created DESC'
                 )
                 entries = cursor.fetchall()
@@ -27,9 +32,22 @@ class Entry(object):
             current_app.logger.error('fetching entries: {0}'.format(e))
             return Result(succeeded=False)
 
+        for entry in entries:
+            if entry['author_id'] is None:
+                entry['author_id'] = -1
+                entry['username'] = 'deleted-user'
+
         return Result(value=entries)
 
     def fetch(self, entry_id):
+        """Fetch entry
+
+        Args:
+            entry_id (int): id of entry to fetch
+
+        Returns:
+            Result: entry info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -46,6 +64,16 @@ class Entry(object):
         return Result(value=entry)
 
     def create(self, author_id, title, body):
+        """Create entry
+
+        Args:
+            author_id (int): author's id
+            title (str): title of entry
+            body (str): body of entry
+
+        Returns:
+            Result: Success or failure of creation
+        """
         if not self._validate_data(title, body):
             return Result(succeeded=False, description='Bad data.')
 
@@ -66,6 +94,16 @@ class Entry(object):
         return Result(description='Creation succeeded.')
 
     def update(self, entry_id, title, body):
+        """Update entry
+
+        Args:
+            entry_id (int): id of entry to update
+            title (str): title of entry
+            body (str): body of entry
+
+        Returns:
+            Result: Success or failure of update
+        """
         if not self._validate_data(title, body):
             return Result(succeeded=False, description='Bad data.')
 
@@ -85,6 +123,14 @@ class Entry(object):
         return Result(description='Update succeeded.')
 
     def delete(self, entry_id):
+        """Delete entry
+
+        Args:
+            entry_id (int): id of entry to delete
+
+        Returns:
+            Result: Success or failure of delete
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -101,6 +147,15 @@ class Entry(object):
         return Result(description='Deletion succeeded.')
 
     def _validate_data(self, title, body):
+        """Validate input data for creation or update
+
+        Args:
+            title (str): title of entry
+            body (str): body of entry
+
+        Returns:
+            bool: True if data is ok
+        """
         title_max = 100
         body_max = 10000
         return len(title) <= title_max and len(body) <= body_max
@@ -111,6 +166,11 @@ class User(object):
         self._db = get_db()
 
     def fetch_all(self):
+        """Fetch users
+
+        Returns:
+            Result: users info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -126,6 +186,14 @@ class User(object):
         return Result(value=users)
 
     def fetch(self, user_id):
+        """Fetch user
+
+        Args:
+            user_id (int): id of user to fetch
+
+        Returns:
+            Result: user info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -142,6 +210,15 @@ class User(object):
         return Result(value=user)
 
     def auth(self, username, password):
+        """Auth user
+
+        Args:
+            username (str): user's name
+            password (str): user's password
+
+        Returns:
+            Result: user info
+        """
         fetch_user_result = self._fetch_by_username(username)
         if not fetch_user_result.succeeded:
             return Result(
@@ -160,6 +237,16 @@ class User(object):
         return Result(value=user)
 
     def create(self, role, username, password):
+        """Create user
+
+        Args:
+            role (str): user's role
+            username (str): user's name
+            password (str): user's password
+
+        Returns:
+            Result: Success or failure of creation
+        """
         if role not in ROLE_PRIV:
             return Result(
                 succeeded=False,
@@ -197,6 +284,16 @@ class User(object):
         return Result(description='Creation succeeded.')
 
     def update(self, user_id, role, username):
+        """Update user
+
+        Args:
+            user_id (int): id of user to update
+            role (str): user's role
+            username (str): user's name
+
+        Returns:
+            Result: Success or failure of update
+        """
         if role not in ROLE_PRIV:
             return Result(
                 succeeded=False,
@@ -233,6 +330,14 @@ class User(object):
         return Result(description='Update succeeded.')
 
     def delete(self, user_id):
+        """Delete user
+
+        Args:
+            user_id (int): id of user to delete
+
+        Returns:
+            Result: Success or failure of delete
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -283,6 +388,14 @@ class User(object):
         return Result(description='Password Changed.')
 
     def _validate_username(self, username):
+        """Validate username for creation or update
+
+        Args:
+            username (str): user's name
+
+        Returns:
+            bool: True if username is ok
+        """
         max_length = 20
         if len(username) > max_length:
             return False
@@ -292,6 +405,14 @@ class User(object):
         return True
 
     def _validate_password(self, password):
+        """Validate password for creation or update
+
+        Args:
+            password(str): user's password
+
+        Returns:
+            bool: True if password is ok
+        """
         max_length = 30
         if len(password) > max_length:
             return False
@@ -301,6 +422,14 @@ class User(object):
         return True
 
     def _fetch_by_username(self, username):
+        """Fetch user by name
+
+        Args:
+            username (str): name of user to fetch
+
+        Returns:
+            Result: user info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -325,6 +454,11 @@ class Result(object):
 
 
 def make_sorted_roles():
+        """Fetch user
+
+        Returns:
+            list: roles
+        """
     role_priv_pairs = [(k, v) for k, v in ROLE_PRIV.items()]
     role_priv_pairs.sort(key=itemgetter(1))
     roles = [role for role, _ in role_priv_pairs]
