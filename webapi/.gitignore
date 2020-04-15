@@ -1,8 +1,11 @@
 *.py[cod]
 __pycache__/
 
+.venv/
+
 htmlcov/
 .coverage
 .pytest_cache/
 
 instance/
+
