@@ -356,6 +356,17 @@ class User(object):
     def change_password(
             self, user_id, new_password,
             old_password=None, old_required=True):
+        """Update password
+
+        Args:
+            user_id (int): id of user to update
+            new_password (str): password after change
+            old_password (str): current password
+            old_required (bool): True if current password must be checked
+
+        Returns:
+            Result: Success or failure of update
+        """
         default_err_msg = 'Incorrect password.'
         if old_required and old_password is None:
             return Result(succeeded=False, description=default_err_msg)
@@ -454,11 +465,11 @@ class Result(object):
 
 
 def make_sorted_roles():
-        """Fetch user
+    """Fetch user
 
-        Returns:
-            list: roles
-        """
+    Returns:
+        list: roles
+    """
     role_priv_pairs = [(k, v) for k, v in ROLE_PRIV.items()]
     role_priv_pairs.sort(key=itemgetter(1))
     roles = [role for role, _ in role_priv_pairs]
