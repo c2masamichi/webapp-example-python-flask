@@ -17,6 +17,11 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
+    """Show entries
+
+    Returns:
+        template
+    """
     result = Entry().fetch_all()
     if not result.succeeded:
         abort(500)
