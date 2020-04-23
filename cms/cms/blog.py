@@ -17,7 +17,7 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
-    """Show entries
+    """Show entries for readers
 
     Returns:
         template
@@ -30,6 +30,11 @@ def index():
 
 @bp.route('/entry/<int:entry_id>')
 def get_entry(entry_id):
+    """Show entry
+
+    Returns:
+        template
+    """
     entry = fetch_entry_wrapper(entry_id)
     return render_template('blog/detail.html', entry=entry)
 
@@ -37,6 +42,11 @@ def get_entry(entry_id):
 @bp.route('/edit/')
 @login_required
 def edit_top():
+    """Show entries for editors
+
+    Returns:
+        template
+    """
     result = Entry().fetch_all()
     if not result.succeeded:
         abort(500)
