@@ -20,7 +20,7 @@ def index():
     """Show entries for readers
 
     Returns:
-        template
+        str: template
     """
     result = Entry().fetch_all()
     if not result.succeeded:
@@ -33,7 +33,7 @@ def get_entry(entry_id):
     """Show entry
 
     Returns:
-        template
+        str: template
     """
     entry = fetch_entry_wrapper(entry_id)
     return render_template('blog/detail.html', entry=entry)
@@ -45,7 +45,7 @@ def edit_top():
     """Show entries for editors
 
     Returns:
-        template
+        str: template
     """
     result = Entry().fetch_all()
     if not result.succeeded:
