@@ -32,6 +32,9 @@ def index():
 def get_entry(entry_id):
     """Show entry
 
+    Args:
+        entry_id (int): id of entry to fetch
+
     Returns:
         str: template
     """
@@ -64,6 +67,15 @@ def edit_top():
 @bp.route('/edit/create', methods=['GET', 'POST'])
 @login_required
 def create():
+    """Create entry
+
+    Args:
+        title (str): title of entry
+        body (str): body of entry
+
+    Returns:
+        str: template
+    """
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
@@ -84,6 +96,16 @@ def create():
 @bp.route('/edit/update/<int:entry_id>', methods=['GET', 'POST'])
 @login_required
 def update(entry_id):
+    """Update entry
+
+    Args:
+        entry_id (int): id of entry to update
+        title (str): title of entry
+        body (str): body of entry
+
+    Returns:
+        str: template
+    """
     entry = fetch_entry_wrapper(entry_id)
 
     if (ROLE_PRIV[g.user['role']] < Privilege.EDITOR and
@@ -110,6 +132,14 @@ def update(entry_id):
 @bp.route('/edit/delete/<int:entry_id>', methods=['POST'])
 @login_required
 def delete(entry_id):
+    """Delete entry
+
+    Args:
+        entry_id (int): id of entry to delete
+
+    Returns:
+        str: template
+    """
     entry = fetch_entry_wrapper(entry_id)
     if (ROLE_PRIV[g.user['role']] < Privilege.EDITOR and
             entry['author_id'] != g.user['id']):
