@@ -155,6 +155,14 @@ def delete(entry_id):
 
 
 def fetch_entry_wrapper(entry_id):
+    """Fetch entry
+
+    Args:
+        entry_id (int): id of entry to fetch
+
+    Returns:
+        dict: entry info
+    """
     result = Entry().fetch(entry_id)
     if not result.succeeded:
         abort(500)
