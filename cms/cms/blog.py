@@ -17,7 +17,7 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
-    """Show entries for readers
+    """Show entries for readers.
 
     Returns:
         str: template
@@ -30,7 +30,7 @@ def index():
 
 @bp.route('/entry/<int:entry_id>')
 def get_entry(entry_id):
-    """Show entry
+    """Show entry.
 
     Args:
         entry_id (int): id of entry to fetch
@@ -45,7 +45,7 @@ def get_entry(entry_id):
 @bp.route('/edit/')
 @login_required
 def edit_top():
-    """Show entries for editors
+    """Show entries for editors.
 
     Returns:
         str: template
@@ -67,7 +67,7 @@ def edit_top():
 @bp.route('/edit/create', methods=['GET', 'POST'])
 @login_required
 def create():
-    """Create entry
+    """Create entry.
 
     Args:
         title (str): title of entry
@@ -96,7 +96,7 @@ def create():
 @bp.route('/edit/update/<int:entry_id>', methods=['GET', 'POST'])
 @login_required
 def update(entry_id):
-    """Update entry
+    """Update entry.
 
     Args:
         entry_id (int): id of entry to update
@@ -132,7 +132,7 @@ def update(entry_id):
 @bp.route('/edit/delete/<int:entry_id>', methods=['POST'])
 @login_required
 def delete(entry_id):
-    """Delete entry
+    """Delete entry.
 
     Args:
         entry_id (int): id of entry to delete
@@ -155,7 +155,7 @@ def delete(entry_id):
 
 
 def fetch_entry_wrapper(entry_id):
-    """Fetch entry
+    """Fetch entry.
 
     Args:
         entry_id (int): id of entry to fetch
