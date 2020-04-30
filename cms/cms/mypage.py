@@ -1,14 +1,10 @@
 from flask import Blueprint
 from flask import g
-from flask import redirect
 from flask import render_template
 from flask import request
-from flask import url_for
-from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.model import User
-from cms.user import fetch_user_wrapper
 from cms.utils import flash_error, flash_success
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
