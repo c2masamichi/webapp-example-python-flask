@@ -113,7 +113,6 @@ class Product(object):
         return Result(value={'result': 'Successfully Updated.'})
 
     def delete(self, product_id):
-        result = Result()
         db = self._db
         try:
             with db.cursor() as cursor:
