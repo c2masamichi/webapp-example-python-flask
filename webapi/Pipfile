@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 coverage = "*"
+pylint = "*"
 pytest = "*"
 
 [packages]
@@ -12,4 +13,4 @@ flask = "*"
 pymysql = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
