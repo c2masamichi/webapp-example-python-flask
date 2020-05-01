@@ -35,7 +35,6 @@ def create_product():
     data = request.get_json()
     name = data.get('name')
     price = data.get('price')
-    error_msg = ''
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
