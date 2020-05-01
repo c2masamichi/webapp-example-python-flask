@@ -14,7 +14,7 @@ class Entry(object):
         self._db = get_db()
 
     def fetch_all(self):
-        """Fetch entries
+        """Fetch entries.
 
         Returns:
             Result: entries info
@@ -40,7 +40,7 @@ class Entry(object):
         return Result(value=entries)
 
     def fetch(self, entry_id):
-        """Fetch entry
+        """Fetch entry.
 
         Args:
             entry_id (int): id of entry to fetch
@@ -64,7 +64,7 @@ class Entry(object):
         return Result(value=entry)
 
     def create(self, author_id, title, body):
-        """Create entry
+        """Create entry.
 
         Args:
             author_id (int): author's id
@@ -94,7 +94,7 @@ class Entry(object):
         return Result(description='Creation succeeded.')
 
     def update(self, entry_id, title, body):
-        """Update entry
+        """Update entry.
 
         Args:
             entry_id (int): id of entry to update
@@ -123,7 +123,7 @@ class Entry(object):
         return Result(description='Update succeeded.')
 
     def delete(self, entry_id):
-        """Delete entry
+        """Delete entry.
 
         Args:
             entry_id (int): id of entry to delete
@@ -147,7 +147,7 @@ class Entry(object):
         return Result(description='Deletion succeeded.')
 
     def _validate_data(self, title, body):
-        """Validate input data for creation or update
+        """Validate input data for creation or update.
 
         Args:
             title (str): title of entry
@@ -166,7 +166,7 @@ class User(object):
         self._db = get_db()
 
     def fetch_all(self):
-        """Fetch users
+        """Fetch users.
 
         Returns:
             Result: users info
@@ -186,7 +186,7 @@ class User(object):
         return Result(value=users)
 
     def fetch(self, user_id):
-        """Fetch user
+        """Fetch user.
 
         Args:
             user_id (int): id of user to fetch
@@ -210,7 +210,7 @@ class User(object):
         return Result(value=user)
 
     def auth(self, username, password):
-        """Auth user
+        """Auth user.
 
         Args:
             username (str): user's name
@@ -237,7 +237,7 @@ class User(object):
         return Result(value=user)
 
     def create(self, role, username, password):
-        """Create user
+        """Create user.
 
         Args:
             role (str): user's role
@@ -284,7 +284,7 @@ class User(object):
         return Result(description='Creation succeeded.')
 
     def update(self, user_id, role, username):
-        """Update user
+        """Update user.
 
         Args:
             user_id (int): id of user to update
@@ -330,7 +330,7 @@ class User(object):
         return Result(description='Update succeeded.')
 
     def delete(self, user_id):
-        """Delete user
+        """Delete user.
 
         Args:
             user_id (int): id of user to delete
@@ -356,7 +356,7 @@ class User(object):
     def change_password(
             self, user_id, new_password,
             old_password=None, old_required=True):
-        """Update password
+        """Update password.
 
         Args:
             user_id (int): id of user to update
@@ -399,7 +399,7 @@ class User(object):
         return Result(description='Password Changed.')
 
     def _validate_username(self, username):
-        """Validate username for creation or update
+        """Validate username for creation or update.
 
         Args:
             username (str): user's name
@@ -416,7 +416,7 @@ class User(object):
         return True
 
     def _validate_password(self, password):
-        """Validate password for creation or update
+        """Validate password for creation or update.
 
         Args:
             password(str): user's password
@@ -433,7 +433,7 @@ class User(object):
         return True
 
     def _fetch_by_username(self, username):
-        """Fetch user by name
+        """Fetch user by name.
 
         Args:
             username (str): name of user to fetch
@@ -465,7 +465,7 @@ class Result(object):
 
 
 def make_sorted_roles():
-    """Fetch user
+    """Fetch user.
 
     Returns:
         list: roles
