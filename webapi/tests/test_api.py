@@ -204,6 +204,6 @@ def test_delete_product(client, app):
         assert product is None
 
 
-def test_delete_product_exists_required(client, app):
+def test_delete_product_exists_required(client):
     response = client.delete('/products/10')
     assert response.status_code == 404
