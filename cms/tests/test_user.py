@@ -179,6 +179,7 @@ def test_chpasswd(client, auth, app):
         '/user/chpasswd/{0}'.format(user_id),
         data={'new_password': new_password}
     )
+    assert response.status_code == 200
 
     with app.app_context():
         db = get_db()
