@@ -21,10 +21,6 @@ def create_app():
         app.logger.error('config file must exist.')
         sys.exit(1)
 
-    @app.route('/healthcheck')
-    def healthcheck():
-        return 'app running'
-
     from webapi import error_handler as eh
 
     app.register_error_handler(400, eh.bad_request)
