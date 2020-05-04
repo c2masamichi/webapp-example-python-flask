@@ -2,8 +2,6 @@ import pytest
 from flask import g
 from flask import session
 
-from cms.db import get_db
-
 
 def test_login(client, auth):
     assert client.get('/auth/login').status_code == 200

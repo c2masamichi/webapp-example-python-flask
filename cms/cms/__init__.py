@@ -21,10 +21,6 @@ def create_app():
         app.logger.error('config file must exist.')
         sys.exit(1)
 
-    @app.route('/healthcheck')
-    def healthcheck():
-        return 'app running'
-
     from cms import db
 
     db.init_app(app)

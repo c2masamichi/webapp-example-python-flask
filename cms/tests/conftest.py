@@ -6,12 +6,12 @@ from cms.db import init_db
 
 @pytest.fixture
 def app():
-    app = create_app()
+    new_app = create_app()
 
-    with app.app_context():
+    with new_app.app_context():
         init_db(withdata=True)
 
-    yield app
+    yield new_app
 
 
 @pytest.fixture
