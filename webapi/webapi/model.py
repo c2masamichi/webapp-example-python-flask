@@ -11,6 +11,11 @@ class Product(object):
         self._db = get_db()
 
     def fetch_all(self):
+        """Fetch products.
+
+        Returns:
+            Result: products info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -36,6 +41,14 @@ class Product(object):
         return Result(value=value)
 
     def fetch(self, product_id):
+        """Fetch product.
+
+        Args:
+            product_id (int): id of product to fetch
+
+        Returns:
+            Result: product info
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -63,6 +76,15 @@ class Product(object):
         return Result(value=value)
 
     def create(self, name, price):
+        """Create product.
+
+        Args:
+            name (str): name of product
+            price (int): price of product
+
+        Returns:
+            Result: Success or failure of creation
+        """
         if not self._validate_data(name, price):
             return Result(
                 code=Code.BAD_REQUEST,
@@ -88,6 +110,16 @@ class Product(object):
         return Result(value={'result': 'Successfully Created.'})
 
     def update(self, product_id, name, price):
+        """Update product.
+
+        Args:
+            product_id (int): id of product to update
+            name (str): name of product
+            price (int): price of product
+
+        Returns:
+            Result: Success or failure of update
+        """
         if not self._validate_data(name, price):
             return Result(
                 code=Code.BAD_REQUEST,
@@ -113,6 +145,14 @@ class Product(object):
         return Result(value={'result': 'Successfully Updated.'})
 
     def delete(self, product_id):
+        """Delete product.
+
+        Args:
+            product_id (int): id of product to delete
+
+        Returns:
+            Result: Success or failure of delete
+        """
         db = self._db
         try:
             with db.cursor() as cursor:
@@ -132,6 +172,15 @@ class Product(object):
         return Result(value={'result': 'Successfully Updated.'})
 
     def _validate_data(self, name, price):
+        """Validate input data for creation or update.
+
+        Args:
+            name (str): name of product
+            price (int): price of product
+
+        Returns:
+            bool: True if data is ok
+        """
         name_len_min = 3
         name_len_max = 20
         price_min = 0
