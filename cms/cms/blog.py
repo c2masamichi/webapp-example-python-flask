@@ -87,8 +87,7 @@ def create():
             if result.succeeded:
                 flash_success(result.description)
                 return redirect(url_for('blog.edit_top'))
-            else:
-                flash_error(result.description)
+            flash_error(result.description)
 
     return render_template('blog/create.html')
 
@@ -123,8 +122,7 @@ def update(entry_id):
             if result.succeeded:
                 flash_success(result.description)
                 return redirect(url_for('blog.update', entry_id=entry_id))
-            else:
-                flash_error(result.description)
+            flash_error(result.description)
 
     return render_template('blog/update.html', entry=entry)
 

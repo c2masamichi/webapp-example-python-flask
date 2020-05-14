@@ -63,8 +63,7 @@ def create():
             if result.succeeded:
                 flash_success(result.description)
                 return redirect(url_for('user.index'))
-            else:
-                flash_error(result.description)
+            flash_error(result.description)
 
     return render_template('user/create.html', roles=roles)
 
@@ -97,8 +96,7 @@ def update(user_id):
                 flash_success(result.description)
                 return redirect(
                     url_for('user.update', user_id=user_id))
-            else:
-                flash_error(result.description)
+            flash_error(result.description)
 
     return render_template('user/update.html', user=user, roles=roles)
 
@@ -145,10 +143,10 @@ def delete(user_id):
     result = User().delete(user_id)
     if result.succeeded:
         flash_success(result.description)
-    else:
-        flash_error(result.description)
-        return render_template('user/update.html', user=user)
-    return redirect(url_for('user.index'))
+        return redirect(url_for('user.index'))
+
+    flash_error(result.description)
+    return render_template('user/update.html', user=user)
 
 
 def fetch_user_wrapper(user_id):
