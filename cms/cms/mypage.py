@@ -24,7 +24,7 @@ def index():
 @bp.route('/chpasswd', methods=['GET', 'POST'])
 @login_required
 def change_my_password():
-    """Update own password.
+    """Change own password.
 
     Args:
         old_password (str): current password

@@ -356,16 +356,16 @@ class User(object):
     def change_password(
             self, user_id, new_password,
             old_password=None, old_required=True):
-        """Update password.
+        """Change password.
 
         Args:
-            user_id (int): id of user to update
+            user_id (int): id of user to change
             new_password (str): password after change
             old_password (str): current password
             old_required (bool): True if current password must be checked
 
         Returns:
-            Result: Success or failure of update
+            Result: Success or failure of change
         """
         default_err_msg = 'Incorrect password.'
         if old_required and old_password is None:
