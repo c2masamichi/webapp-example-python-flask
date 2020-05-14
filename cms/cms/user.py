@@ -20,6 +20,11 @@ roles = make_sorted_roles()
 @login_required
 @admin_required
 def index():
+    """Fetch users.
+
+    Returns:
+        str: template
+    """
     result = User().fetch_all()
     if not result.succeeded:
         abort(500)
@@ -30,6 +35,16 @@ def index():
 @login_required
 @admin_required
 def create():
+    """Create user.
+
+    Args:
+        role (str): user's role
+        username (str): user's name
+        password (str): user's password
+
+    Returns:
+        str: template
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -58,6 +73,16 @@ def create():
 @login_required
 @admin_required
 def update(user_id):
+    """Update user.
+
+    Args:
+        user_id (int): id of user to update
+        role (str): user's role
+        username (str): user's name
+
+    Returns:
+        str: template
+    """
     user = fetch_user_wrapper(user_id)
 
     if request.method == 'POST':
@@ -82,6 +107,15 @@ def update(user_id):
 @login_required
 @admin_required
 def change_password(user_id):
+    """Change password.
+
+    Args:
+        user_id (int): id of user to change
+        new_password (str): password after change
+
+    Returns:
+        str: template
+    """
     user = fetch_user_wrapper(user_id)
 
     new_password = request.form['new_password']
@@ -99,6 +133,14 @@ def change_password(user_id):
 @login_required
 @admin_required
 def delete(user_id):
+    """Delete user.
+
+    Args:
+        user_id (int): id of user to delete
+
+    Returns:
+        str: template
+    """
     user = fetch_user_wrapper(user_id)
     result = User().delete(user_id)
     if result.succeeded:
@@ -110,6 +152,14 @@ def delete(user_id):
 
 
 def fetch_user_wrapper(user_id):
+    """Fetch user.
+
+    Args:
+        user_id (int): id of user to fetch
+
+    Returns:
+        dict: user info
+    """
     result = User().fetch(user_id)
     if not result.succeeded:
         abort(500)
