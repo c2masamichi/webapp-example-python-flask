@@ -5,7 +5,7 @@
 ### Run App
 
 ```
-$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p webapi_dev up -d web
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p webapi_dev up -d
 $ docker exec -it webapi_dev_web_1 flask init-db
 ```
 
@@ -26,7 +26,7 @@ $ docker-compose -p webapi_dev down
 ### Run Test
 
 ```
-$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test up -d web
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p webapi_test up -d
 $ docker exec -it webapi_test_web_1 pytest
 ```
 
