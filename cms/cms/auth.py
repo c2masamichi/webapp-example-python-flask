@@ -54,6 +54,15 @@ def load_logged_in_user():
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """Log in by username and password.
+
+    Args:
+        username (str): user's name
+        password (str): user's password
+
+    Returns:
+        str: template
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -71,6 +80,11 @@ def login():
 
 @bp.route('/logout')
 def logout():
+    """Log out of the site.
+
+    Returns:
+        str: template
+    """
     session.clear()
     flash_success('Logged out.')
     return redirect(url_for('index'))

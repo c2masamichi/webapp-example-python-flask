@@ -87,8 +87,7 @@ def create():
             if result.succeeded:
                 flash_success(result.description)
                 return redirect(url_for('blog.edit_top'))
-            else:
-                flash_error(result.description)
+            flash_error(result.description)
 
     return render_template('blog/create.html')
 
@@ -123,8 +122,7 @@ def update(entry_id):
             if result.succeeded:
                 flash_success(result.description)
                 return redirect(url_for('blog.update', entry_id=entry_id))
-            else:
-                flash_error(result.description)
+            flash_error(result.description)
 
     return render_template('blog/update.html', entry=entry)
 
@@ -148,10 +146,10 @@ def delete(entry_id):
     result = Entry().delete(entry_id)
     if result.succeeded:
         flash_success(result.description)
-    else:
-        flash_error(result.description)
-        render_template('blog/update.html', entry=entry)
-    return redirect(url_for('blog.edit_top'))
+        return redirect(url_for('blog.edit_top'))
+
+    flash_error(result.description)
+    return render_template('blog/update.html', entry=entry)
 
 
 def fetch_entry_wrapper(entry_id):

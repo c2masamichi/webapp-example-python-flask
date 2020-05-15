@@ -13,12 +13,26 @@ bp = Blueprint('mypage', __name__, url_prefix='/mypage')
 @bp.route('/')
 @login_required
 def index():
+    """Show mypage.
+
+    Returns:
+        str: template
+    """
     return render_template('mypage/index.html', user=g.user)
 
 
 @bp.route('/chpasswd', methods=['GET', 'POST'])
 @login_required
 def change_my_password():
+    """Change own password.
+
+    Args:
+        old_password (str): current password
+        new_password (str): password after change
+
+    Returns:
+        str: template
+    """
     if request.method == 'POST':
         old_password = request.form['old_password']
         new_password = request.form['new_password']
