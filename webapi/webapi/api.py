@@ -8,11 +8,6 @@ from webapi.model import Product
 bp = Blueprint('api', __name__)
 
 
-@bp.route('/')
-def index():
-    return 'top'
-
-
 @bp.route('/products')
 def get_products():
     result = Product().fetch_all()

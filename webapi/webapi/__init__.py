@@ -34,6 +34,5 @@ def create_app():
     from webapi import api
 
     app.register_blueprint(api.bp)
-    app.add_url_rule('/', endpoint='index')
 
     return app
