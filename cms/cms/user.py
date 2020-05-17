@@ -20,7 +20,7 @@ roles = make_sorted_roles()
 @login_required
 @admin_required
 def index():
-    """Fetch users.
+    """Show users.
 
     Returns:
         str: template
