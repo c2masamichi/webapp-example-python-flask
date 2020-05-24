@@ -5,11 +5,6 @@ import pytest
 from webapi.db import get_db
 
 
-def test_index(client):
-    response = client.get('/')
-    assert b'top' in response.data
-
-
 def test_get_products(client):
     response = client.get('/products')
     data = response.get_json()
