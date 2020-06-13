@@ -5,7 +5,7 @@ from werkzeug.exceptions import abort
 
 from webapi.model import Product
 
-bp = Blueprint('api', __name__)
+bp = Blueprint('api', __name__, url_prefix='/api/v1')
 
 
 @bp.route('/products')
