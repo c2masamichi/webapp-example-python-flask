@@ -20,17 +20,7 @@ class Product(object):
         try:
             with db.cursor() as cursor:
                 cursor.execute('SELECT * FROM product')
-                data = cursor.fetchall()
-            value = {
-                'result': [
-                    {
-                        'id': row['id'],
-                        'name': row['name'],
-                        'price': row['price'],
-                    }
-                    for row in data
-                ]
-            }
+                products = cursor.fetchall()
         except Exception as e:
             current_app.logger.error('fetching all products: {0}'.format(e))
             return Result(
@@ -38,7 +28,7 @@ class Product(object):
                 description='Fetchting all products failed.'
             )
 
-        return Result(value=value)
+        return Result(value=products)
 
     def fetch(self, product_id):
         """Fetch product.
@@ -56,16 +46,9 @@ class Product(object):
                     'SELECT * FROM product WHERE id = %s',
                     (product_id,),
                 )
-                row = cursor.fetchone()
-            value = {}
-            if row is not None:
-                value = {
-                    'result': {
-                        'id': row['id'],
-                        'name': row['name'],
-                        'price': row['price'],
-                    }
-                }
+                product = cursor.fetchone()
+            if product_id is None:
+                product = {}
         except Exception as e:
             current_app.logger.error('fetching product: {0}'.format(e))
             return Result(
@@ -73,7 +56,7 @@ class Product(object):
                 description='Fetchting a product failed.'
             )
 
-        return Result(value=value)
+        return Result(value=product)
 
     def create(self, name, price):
         """Create product.
@@ -107,7 +90,7 @@ class Product(object):
                 description='Creating a product failed.'
             )
 
-        return Result(value={'result': 'Successfully Created.'})
+        return Result()
 
     def update(self, product_id, name, price):
         """Update product.
@@ -142,7 +125,7 @@ class Product(object):
                 description='Updating a product failed.'
             )
 
-        return Result(value={'result': 'Successfully Updated.'})
+        return Result()
 
     def delete(self, product_id):
         """Delete product.
@@ -169,7 +152,7 @@ class Product(object):
                 description='Deleting a product failed.'
             )
 
-        return Result(value={'result': 'Successfully Updated.'})
+        return Result()
 
     def _validate_data(self, name, price):
         """Validate input data for creation or update.

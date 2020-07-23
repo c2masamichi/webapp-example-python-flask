@@ -9,7 +9,7 @@ def test_fetch_all(app):
         result = Product().fetch_all()
         assert result.code == 200
 
-        products = result.value['result']
+        products = result.value
         assert len(products) == 2
 
 
@@ -21,7 +21,7 @@ def test_fetch(app):
         result = Product().fetch(product_id)
         assert result.code == 200
 
-        product = result.value['result']
+        product = result.value
         assert product['id'] == product_id
         assert product['name'] == name
         assert product['price'] == price
