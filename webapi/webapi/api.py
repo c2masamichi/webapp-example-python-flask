@@ -18,7 +18,18 @@ def get_products():
     result = Product().fetch_all()
     if result.code != 200:
         abort(result.code, description=result.description)
-    return jsonify(result.value)
+
+    data = {
+        'result': [
+            {
+                'id': product['id'],
+                'name': product['name'],
+                'price': product['price'],
+            }
+            for product in result.value
+        ]
+    }
+    return jsonify(data)
 
 
 @bp.route('/products/<int:product_id>')
@@ -32,7 +43,15 @@ def get_product(product_id):
         str: json
     """
     result = fetch_product_wrapper(product_id)
-    return jsonify(result.value)
+    product = result.value
+    data = {
+        'result': {
+            'id': product['id'],
+            'name': product['name'],
+            'price': product['price'],
+        }
+    }
+    return jsonify(data)
 
 
 @bp.route('/products', methods=['POST'])
@@ -58,7 +77,9 @@ def create_product():
     result = Product().create(name, price)
     if result.code != 200:
         abort(result.code, description=result.description)
-    return jsonify(result.value)
+
+    data = {'result': 'Successfully Created.'}
+    return jsonify(data)
 
 
 @bp.route('/products/<int:product_id>', methods=['PUT'])
@@ -87,7 +108,9 @@ def update_product(product_id):
     result = Product().update(product_id, name, price)
     if result.code != 200:
         abort(result.code, description=result.description)
-    return jsonify(result.value)
+
+    data = {'result': 'Successfully Updated.'}
+    return jsonify(data)
 
 
 @bp.route('/products/<int:product_id>', methods=['DELETE'])
@@ -105,7 +128,9 @@ def delete_product(product_id):
     result = Product().delete(product_id)
     if result.code != 200:
         abort(result.code, description=result.description)
-    return jsonify(result.value)
+
+    data = {'result': 'Successfully Deleted.'}
+    return jsonify(data)
 
 
 def fetch_product_wrapper(product_id):
