@@ -26,7 +26,7 @@ def test_get_entry_exists_required(client):
 @pytest.mark.parametrize(
     'path',
     (
-        '/edit/',
+        '/admin/blog/entry/',
         '/edit/create',
         '/edit/update/2',
     )
@@ -63,7 +63,7 @@ def test_exists_required_post(client, auth, path):
 
 def test_edit_top(client, auth):
     auth.login()
-    response = client.get('/edit/')
+    response = client.get('/admin/blog/entry/')
     assert response.status_code == 200
     assert b'Test Title 2' in response.data
     assert b'2019-01-01' in response.data
@@ -81,7 +81,7 @@ def test_create(client, auth, app):
         data={'title': title, 'body': body}
     )
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/edit/'
+    assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
 
     with app.app_context():
         db = get_db()
@@ -141,7 +141,7 @@ def test_delete(client, auth, app):
     auth.login()
     response = client.post('/edit/delete/{0}'.format(entry_id))
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/edit/'
+    assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
 
     with app.app_context():
         db = get_db()

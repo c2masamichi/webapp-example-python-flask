@@ -42,7 +42,7 @@ def get_entry(entry_id):
     return render_template('blog/detail.html', entry=entry)
 
 
-@bp.route('/edit/')
+@bp.route('/admin/blog/entry/')
 @login_required
 def edit_top():
     """Show entries for editors.
