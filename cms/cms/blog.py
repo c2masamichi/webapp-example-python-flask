@@ -64,7 +64,7 @@ def edit_top():
     )
 
 
-@bp.route('/edit/create', methods=['GET', 'POST'])
+@bp.route('/admin/blog/entry/add/', methods=['GET', 'POST'])
 @login_required
 def create():
     """Create entry.

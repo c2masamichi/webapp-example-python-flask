@@ -27,7 +27,7 @@ def test_get_entry_exists_required(client):
     'path',
     (
         '/admin/blog/entry/',
-        '/edit/create',
+        '/admin/blog/entry/add/',
         '/edit/update/2',
     )
 )
@@ -39,7 +39,7 @@ def test_login_required_get(client, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/edit/create',
+        '/admin/blog/entry/add/',
         '/edit/update/2',
         '/edit/delete/2',
     )
@@ -71,13 +71,14 @@ def test_edit_top(client, auth):
 
 
 def test_create(client, auth, app):
+    path = '/admin/blog/entry/add/'
     auth.login()
-    assert client.get('/edit/create').status_code == 200
+    assert client.get(path).status_code == 200
 
     title = 'created'
     body = 'created on test'
     response = client.post(
-        '/edit/create',
+        path,
         data={'title': title, 'body': body}
     )
     assert response.status_code == 302
@@ -123,7 +124,7 @@ def test_update(client, auth, app):
 @pytest.mark.parametrize(
     'path',
     (
-        '/edit/create',
+        '/admin/blog/entry/add/',
         '/edit/update/2',
     )
 )
