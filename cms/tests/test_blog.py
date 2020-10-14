@@ -28,7 +28,7 @@ def test_get_entry_exists_required(client):
     (
         '/admin/blog/entry/',
         '/admin/blog/entry/add/',
-        '/edit/update/2',
+        '/admin/blog/entry/2/change',
     )
 )
 def test_login_required_get(client, path):
@@ -40,7 +40,7 @@ def test_login_required_get(client, path):
     'path',
     (
         '/admin/blog/entry/add/',
-        '/edit/update/2',
+        '/admin/blog/entry/2/change',
         '/edit/delete/2',
     )
 )
@@ -52,7 +52,7 @@ def test_login_required_post(client, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/edit/update/10',
+        '/admin/blog/entry/10/change',
         '/edit/delete/10',
     )
 )
@@ -98,7 +98,7 @@ def test_update(client, auth, app):
     entry_id = 2
     title = 'updated'
     body = 'updated on test'
-    path = '/edit/update/{0}'.format(entry_id)
+    path = '/admin/blog/entry/{0}/change'.format(entry_id)
 
     auth.login()
     assert client.get(path).status_code == 200
@@ -125,7 +125,7 @@ def test_update(client, auth, app):
     'path',
     (
         '/admin/blog/entry/add/',
-        '/edit/update/2',
+        '/admin/blog/entry/2/change',
     )
 )
 def test_create_update_validate(client, auth, path):
@@ -163,7 +163,7 @@ def test_update_own_entry(client, auth, app):
 
     # role=author: can update own entries, but not others' entries
     auth.login(role='author')
-    path = '/edit/update/{0}'.format(own_entry_id)
+    path = '/admin/blog/entry/{0}/change'.format(own_entry_id)
     assert client.get(path).status_code == 200
     response = client.post(
         path,
@@ -171,7 +171,7 @@ def test_update_own_entry(client, auth, app):
     )
     assert response.status_code == 302
 
-    path = '/edit/update/{0}'.format(others_entry_id)
+    path = '/admin/blog/entry/{0}/change'.format(others_entry_id)
     assert client.get(path).status_code == 403
     response = client.post(
         path,
@@ -181,7 +181,7 @@ def test_update_own_entry(client, auth, app):
 
     # role=editor: can update others' entries
     auth.login(role='editor')
-    path = '/edit/update/{0}'.format(others_entry_id)
+    path = '/admin/blog/entry/{0}/change'.format(others_entry_id)
     assert client.get(path).status_code == 200
     response = client.post(
         path,

@@ -92,7 +92,7 @@ def create():
     return render_template('blog/create.html')
 
 
-@bp.route('/edit/update/<int:entry_id>', methods=['GET', 'POST'])
+@bp.route('/admin/blog/entry/<int:entry_id>/change', methods=['GET', 'POST'])
 @login_required
 def update(entry_id):
     """Update entry.
