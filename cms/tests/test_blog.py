@@ -41,7 +41,7 @@ def test_login_required_get(client, path):
     (
         '/admin/blog/entry/add/',
         '/admin/blog/entry/2/change',
-        '/edit/delete/2',
+        '/admin/blog/entry/2/delete',
     )
 )
 def test_login_required_post(client, path):
@@ -53,7 +53,7 @@ def test_login_required_post(client, path):
     'path',
     (
         '/admin/blog/entry/10/change',
-        '/edit/delete/10',
+        '/admin/blog/entry/10/delete',
     )
 )
 def test_exists_required_post(client, auth, path):
@@ -140,7 +140,7 @@ def test_create_update_validate(client, auth, path):
 def test_delete(client, auth, app):
     entry_id = 2
     auth.login()
-    response = client.post('/edit/delete/{0}'.format(entry_id))
+    response = client.post('/admin/blog/entry/{0}/delete'.format(entry_id))
     assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
 
@@ -196,13 +196,16 @@ def test_delete_own_entry(client, auth, app):
 
     # role=author: can delete own entries, but not others' entries
     auth.login(role='author')
-    response = client.post('/edit/delete/{0}'.format(own_entry_id))
+    response = client.post(
+        '/admin/blog/entry/{0}/delete'.format(own_entry_id))
     assert response.status_code == 302
 
-    response = client.post('/edit/delete/{0}'.format(others_entry_id))
+    response = client.post(
+        '/admin/blog/entry/{0}/delete'.format(others_entry_id))
     assert response.status_code == 403
 
     # role=editor: can delete others' entries
     auth.login(role='editor')
-    response = client.post('/edit/delete/{0}'.format(others_entry_id))
+    response = client.post(
+        '/admin/blog/entry/{0}/delete'.format(others_entry_id))
     assert response.status_code == 302

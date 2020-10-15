@@ -127,7 +127,7 @@ def update(entry_id):
     return render_template('blog/update.html', entry=entry)
 
 
-@bp.route('/edit/delete/<int:entry_id>', methods=['POST'])
+@bp.route('/admin/blog/entry/<int:entry_id>//delete', methods=['POST'])
 @login_required
 def delete(entry_id):
     """Delete entry.
