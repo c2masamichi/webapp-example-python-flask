@@ -8,7 +8,7 @@ from cms.db import get_db
     'path',
     (
         '/mypage/',
-        '/mypage/chpasswd',
+        '/admin/password_change/',
     )
 )
 def test_login_required_get(client, path):
@@ -25,13 +25,14 @@ def test_list_for_editors(client, auth):
 
 
 def test_chpasswd(client, auth, app):
+    path = '/admin/password_change/'
     auth.login()
-    assert client.get('/mypage/chpasswd').status_code == 200
+    assert client.get(path).status_code == 200
 
     old_password = 'testpass'
     new_password = 'updated-pass_01'
     response = client.post(
-        '/mypage/chpasswd',
+        path,
         data={'old_password': old_password, 'new_password': new_password}
     )
     assert response.status_code == 200
@@ -45,11 +46,12 @@ def test_chpasswd(client, auth, app):
 
 
 def test_chpasswd_validate(client, auth, app):
+    path = '/admin/password_change/'
     auth.login()
     old_password = 'aaaa'
     new_password = 'updated-pass_01'
     response = client.post(
-        '/mypage/chpasswd',
+        path,
         data={'old_password': old_password, 'new_password': new_password}
     )
     assert b'Incorrect password.' in response.data
