@@ -7,9 +7,9 @@ from cms.db import get_db
 @pytest.mark.parametrize(
     'path',
     (
-        '/user/',
-        '/user/create',
-        '/user/update/2',
+        '/admin/auth/user/',
+        '/admin/auth/user/create',
+        '/admin/auth/user/update/2',
     )
 )
 def test_login_required_get(client, path):
@@ -20,10 +20,10 @@ def test_login_required_get(client, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/user/create',
-        '/user/update/2',
-        '/user/chpasswd/2',
-        '/user/delete/2',
+        '/admin/auth/user/create',
+        '/admin/auth/user/update/2',
+        '/admin/auth/user/chpasswd/2',
+        '/admin/auth/user/delete/2',
     )
 )
 def test_login_required_post(client, path):
@@ -34,9 +34,9 @@ def test_login_required_post(client, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/user/',
-        '/user/create',
-        '/user/update/2',
+        '/admin/auth/user/',
+        '/admin/auth/user/create',
+        '/admin/auth/user/update/2',
     )
 )
 def test_admin_required_get(client, auth, path):
@@ -52,10 +52,10 @@ def test_admin_required_get(client, auth, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/user/create',
-        '/user/update/2',
-        '/user/chpasswd/2',
-        '/user/delete/2',
+        '/admin/auth/user/create',
+        '/admin/auth/user/update/2',
+        '/admin/auth/user/chpasswd/2',
+        '/admin/auth/user/delete/2',
     )
 )
 def test_admin_required_post(client, auth, path):
@@ -71,9 +71,9 @@ def test_admin_required_post(client, auth, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/user/update/10',
-        '/user/chpasswd/10',
-        '/user/delete/10'
+        '/admin/auth/user/update/10',
+        '/admin/auth/user/chpasswd/10',
+        '/admin/auth/user/delete/10'
     )
 )
 def test_exists_required(client, auth, path):
@@ -83,24 +83,24 @@ def test_exists_required(client, auth, path):
 
 def test_index(client, auth):
     auth.login()
-    response = client.get('/user/')
+    response = client.get('/admin/auth/user/')
     assert response.status_code == 200
     assert b'user-admin01' in response.data
 
 
 def test_create(client, auth, app):
     auth.login()
-    assert client.get('/user/create').status_code == 200
+    assert client.get('/admin/auth/user/create').status_code == 200
 
     role = 'administrator'
     username = 'added-user_01'
     password = 'ab-cd_1234'
     response = client.post(
-        '/user/create',
+        '/admin/auth/user/create',
         data={'role': role, 'username': username, 'password': password}
     )
     assert response.status_code == 302
-    assert 'http://localhost/user/' == response.headers['Location']
+    assert 'http://localhost/admin/auth/user/' == response.headers['Location']
 
     with app.app_context():
         db = get_db()
@@ -125,7 +125,7 @@ def test_create_validate(client, auth, username, password, message):
     role = 'administrator'
     auth.login()
     response = client.post(
-        '/user/create',
+        '/admin/auth/user/create',
         data={'role': role, 'username': username, 'password': password}
     )
     assert message in response.data
@@ -135,7 +135,7 @@ def test_update(client, auth, app):
     user_id = 2
     role = 'author'
     username = 'updated-to-author02'
-    path = '/user/update/{0}'.format(user_id)
+    path = '/admin/auth/user/update/{0}'.format(user_id)
 
     auth.login()
     assert client.get(path).status_code == 200
@@ -165,7 +165,7 @@ def test_update(client, auth, app):
 def test_update_validate(client, auth, username, message):
     user_id = 2
     role = 'administrator'
-    path = '/user/update/{0}'.format(user_id)
+    path = '/admin/auth/user/update/{0}'.format(user_id)
     auth.login()
     response = client.post(path, data={'role': role, 'username': username})
     assert message in response.data
@@ -176,7 +176,7 @@ def test_chpasswd(client, auth, app):
     new_password = 'updated-pass_01'
     auth.login()
     response = client.post(
-        '/user/chpasswd/{0}'.format(user_id),
+        '/admin/auth/user/chpasswd/{0}'.format(user_id),
         data={'new_password': new_password}
     )
     assert response.status_code == 200
@@ -203,7 +203,7 @@ def test_chpasswd_validate(client, auth, new_password, message):
     user_id = 2
     auth.login()
     response = client.post(
-        '/user/chpasswd/{0}'.format(user_id),
+        '/admin/auth/user/chpasswd/{0}'.format(user_id),
         data={'new_password': new_password}
     )
     assert message in response.data
@@ -212,9 +212,9 @@ def test_chpasswd_validate(client, auth, new_password, message):
 def test_delete(client, auth, app):
     user_id = 2
     auth.login()
-    response = client.post('/user/delete/{0}'.format(user_id))
+    response = client.post('/admin/auth/user/delete/{0}'.format(user_id))
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/user/'
+    assert response.headers['Location'] == 'http://localhost/admin/auth/user/'
 
     with app.app_context():
         db = get_db()

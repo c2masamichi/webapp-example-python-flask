@@ -11,7 +11,7 @@ from cms.model import User
 from cms.model import make_sorted_roles
 from cms.utils import flash_error, flash_success
 
-bp = Blueprint('user', __name__, url_prefix='/user')
+bp = Blueprint('user', __name__, url_prefix='/admin/auth/user')
 
 roles = make_sorted_roles()
 
