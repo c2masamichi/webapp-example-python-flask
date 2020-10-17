@@ -8,7 +8,7 @@ from cms.db import get_db
     'path',
     (
         '/admin/auth/user/',
-        '/admin/auth/user/create',
+        '/admin/auth/user/add/',
         '/admin/auth/user/update/2',
     )
 )
@@ -20,7 +20,7 @@ def test_login_required_get(client, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/admin/auth/user/create',
+        '/admin/auth/user/add/',
         '/admin/auth/user/update/2',
         '/admin/auth/user/chpasswd/2',
         '/admin/auth/user/delete/2',
@@ -35,7 +35,7 @@ def test_login_required_post(client, path):
     'path',
     (
         '/admin/auth/user/',
-        '/admin/auth/user/create',
+        '/admin/auth/user/add/',
         '/admin/auth/user/update/2',
     )
 )
@@ -52,7 +52,7 @@ def test_admin_required_get(client, auth, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/admin/auth/user/create',
+        '/admin/auth/user/add/',
         '/admin/auth/user/update/2',
         '/admin/auth/user/chpasswd/2',
         '/admin/auth/user/delete/2',
@@ -89,14 +89,15 @@ def test_index(client, auth):
 
 
 def test_create(client, auth, app):
+    path = '/admin/auth/user/add/'
     auth.login()
-    assert client.get('/admin/auth/user/create').status_code == 200
+    assert client.get(path).status_code == 200
 
     role = 'administrator'
     username = 'added-user_01'
     password = 'ab-cd_1234'
     response = client.post(
-        '/admin/auth/user/create',
+        path,
         data={'role': role, 'username': username, 'password': password}
     )
     assert response.status_code == 302
@@ -122,10 +123,11 @@ def test_create(client, auth, app):
     ),
 )
 def test_create_validate(client, auth, username, password, message):
+    path = '/admin/auth/user/add/'
     role = 'administrator'
     auth.login()
     response = client.post(
-        '/admin/auth/user/create',
+        path,
         data={'role': role, 'username': username, 'password': password}
     )
     assert message in response.data

@@ -31,7 +31,7 @@ def index():
     return render_template('user/index.html', users=result.value)
 
 
-@bp.route('/create', methods=['GET', 'POST'])
+@bp.route('/add/', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def create():
