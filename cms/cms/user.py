@@ -68,7 +68,7 @@ def create():
     return render_template('user/create.html', roles=roles)
 
 
-@bp.route('/update/<int:user_id>', methods=['GET', 'POST'])
+@bp.route('<int:user_id>/change/', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def update(user_id):

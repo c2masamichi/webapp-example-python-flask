@@ -9,7 +9,7 @@ from cms.db import get_db
     (
         '/admin/auth/user/',
         '/admin/auth/user/add/',
-        '/admin/auth/user/update/2',
+        '/admin/auth/user/2/change/',
     )
 )
 def test_login_required_get(client, path):
@@ -21,7 +21,7 @@ def test_login_required_get(client, path):
     'path',
     (
         '/admin/auth/user/add/',
-        '/admin/auth/user/update/2',
+        '/admin/auth/user/2/change/',
         '/admin/auth/user/chpasswd/2',
         '/admin/auth/user/delete/2',
     )
@@ -36,7 +36,7 @@ def test_login_required_post(client, path):
     (
         '/admin/auth/user/',
         '/admin/auth/user/add/',
-        '/admin/auth/user/update/2',
+        '/admin/auth/user/2/change/',
     )
 )
 def test_admin_required_get(client, auth, path):
@@ -53,7 +53,7 @@ def test_admin_required_get(client, auth, path):
     'path',
     (
         '/admin/auth/user/add/',
-        '/admin/auth/user/update/2',
+        '/admin/auth/user/2/change/',
         '/admin/auth/user/chpasswd/2',
         '/admin/auth/user/delete/2',
     )
@@ -71,7 +71,7 @@ def test_admin_required_post(client, auth, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/admin/auth/user/update/10',
+        '/admin/auth/user/10/change/',
         '/admin/auth/user/chpasswd/10',
         '/admin/auth/user/delete/10'
     )
@@ -137,7 +137,7 @@ def test_update(client, auth, app):
     user_id = 2
     role = 'author'
     username = 'updated-to-author02'
-    path = '/admin/auth/user/update/{0}'.format(user_id)
+    path = '/admin/auth/user/{0}/change/'.format(user_id)
 
     auth.login()
     assert client.get(path).status_code == 200
@@ -167,7 +167,7 @@ def test_update(client, auth, app):
 def test_update_validate(client, auth, username, message):
     user_id = 2
     role = 'administrator'
-    path = '/admin/auth/user/update/{0}'.format(user_id)
+    path = '/admin/auth/user/{0}/change/'.format(user_id)
     auth.login()
     response = client.post(path, data={'role': role, 'username': username})
     assert message in response.data
