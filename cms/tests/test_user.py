@@ -22,7 +22,7 @@ def test_login_required_get(client, path):
     (
         '/admin/auth/user/add/',
         '/admin/auth/user/2/change/',
-        '/admin/auth/user/chpasswd/2',
+        '/admin/auth/user/2/password/',
         '/admin/auth/user/delete/2',
     )
 )
@@ -54,7 +54,7 @@ def test_admin_required_get(client, auth, path):
     (
         '/admin/auth/user/add/',
         '/admin/auth/user/2/change/',
-        '/admin/auth/user/chpasswd/2',
+        '/admin/auth/user/2/password/',
         '/admin/auth/user/delete/2',
     )
 )
@@ -72,7 +72,7 @@ def test_admin_required_post(client, auth, path):
     'path',
     (
         '/admin/auth/user/10/change/',
-        '/admin/auth/user/chpasswd/10',
+        '/admin/auth/user/10/password/',
         '/admin/auth/user/delete/10'
     )
 )
@@ -176,9 +176,10 @@ def test_update_validate(client, auth, username, message):
 def test_chpasswd(client, auth, app):
     user_id = 2
     new_password = 'updated-pass_01'
+    path = '/admin/auth/user/{0}/password/'.format(user_id)
     auth.login()
     response = client.post(
-        '/admin/auth/user/chpasswd/{0}'.format(user_id),
+        path,
         data={'new_password': new_password}
     )
     assert response.status_code == 200
@@ -203,9 +204,10 @@ def test_chpasswd(client, auth, app):
 )
 def test_chpasswd_validate(client, auth, new_password, message):
     user_id = 2
+    path = '/admin/auth/user/{0}/password/'.format(user_id)
     auth.login()
     response = client.post(
-        '/admin/auth/user/chpasswd/{0}'.format(user_id),
+        path,
         data={'new_password': new_password}
     )
     assert message in response.data

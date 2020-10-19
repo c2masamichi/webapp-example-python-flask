@@ -101,7 +101,7 @@ def update(user_id):
     return render_template('user/update.html', user=user, roles=roles)
 
 
-@bp.route('/chpasswd/<int:user_id>', methods=['POST'])
+@bp.route('/<int:user_id>/password/', methods=['POST'])
 @login_required
 @admin_required
 def change_password(user_id):
