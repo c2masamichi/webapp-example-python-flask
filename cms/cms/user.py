@@ -127,7 +127,7 @@ def change_password(user_id):
     return render_template('user/update.html', user=user)
 
 
-@bp.route('/delete/<int:user_id>', methods=['POST'])
+@bp.route('/<int:user_id>/delete/', methods=['POST'])
 @login_required
 @admin_required
 def delete(user_id):

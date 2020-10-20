@@ -23,7 +23,7 @@ def test_login_required_get(client, path):
         '/admin/auth/user/add/',
         '/admin/auth/user/2/change/',
         '/admin/auth/user/2/password/',
-        '/admin/auth/user/delete/2',
+        '/admin/auth/user/2/delete/',
     )
 )
 def test_login_required_post(client, path):
@@ -55,7 +55,7 @@ def test_admin_required_get(client, auth, path):
         '/admin/auth/user/add/',
         '/admin/auth/user/2/change/',
         '/admin/auth/user/2/password/',
-        '/admin/auth/user/delete/2',
+        '/admin/auth/user/2/delete/',
     )
 )
 def test_admin_required_post(client, auth, path):
@@ -73,7 +73,7 @@ def test_admin_required_post(client, auth, path):
     (
         '/admin/auth/user/10/change/',
         '/admin/auth/user/10/password/',
-        '/admin/auth/user/delete/10'
+        '/admin/auth/user/10/delete/'
     )
 )
 def test_exists_required(client, auth, path):
@@ -215,8 +215,9 @@ def test_chpasswd_validate(client, auth, new_password, message):
 
 def test_delete(client, auth, app):
     user_id = 2
+    path = '/admin/auth/user/{0}/delete/'.format(user_id)
     auth.login()
-    response = client.post('/admin/auth/user/delete/{0}'.format(user_id))
+    response = client.post(path)
     assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/admin/auth/user/'
 
