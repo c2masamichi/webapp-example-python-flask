@@ -11,7 +11,7 @@ from cms.model import User
 from cms.model import make_sorted_roles
 from cms.utils import flash_error, flash_success
 
-bp = Blueprint('user', __name__, url_prefix='/user')
+bp = Blueprint('user', __name__, url_prefix='/admin/auth/user')
 
 roles = make_sorted_roles()
 
@@ -31,7 +31,7 @@ def index():
     return render_template('user/index.html', users=result.value)
 
 
-@bp.route('/create', methods=['GET', 'POST'])
+@bp.route('/add/', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def create():
@@ -68,7 +68,7 @@ def create():
     return render_template('user/create.html', roles=roles)
 
 
-@bp.route('/update/<int:user_id>', methods=['GET', 'POST'])
+@bp.route('<int:user_id>/change/', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def update(user_id):
@@ -101,7 +101,7 @@ def update(user_id):
     return render_template('user/update.html', user=user, roles=roles)
 
 
-@bp.route('/chpasswd/<int:user_id>', methods=['POST'])
+@bp.route('/<int:user_id>/password/', methods=['POST'])
 @login_required
 @admin_required
 def change_password(user_id):
@@ -127,7 +127,7 @@ def change_password(user_id):
     return render_template('user/update.html', user=user)
 
 
-@bp.route('/delete/<int:user_id>', methods=['POST'])
+@bp.route('/<int:user_id>/delete/', methods=['POST'])
 @login_required
 @admin_required
 def delete(user_id):

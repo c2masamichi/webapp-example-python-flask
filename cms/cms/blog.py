@@ -42,7 +42,7 @@ def get_entry(entry_id):
     return render_template('blog/detail.html', entry=entry)
 
 
-@bp.route('/edit/')
+@bp.route('/admin/blog/entry/')
 @login_required
 def edit_top():
     """Show entries for editors.
@@ -64,7 +64,7 @@ def edit_top():
     )
 
 
-@bp.route('/edit/create', methods=['GET', 'POST'])
+@bp.route('/admin/blog/entry/add/', methods=['GET', 'POST'])
 @login_required
 def create():
     """Create entry.
@@ -92,7 +92,7 @@ def create():
     return render_template('blog/create.html')
 
 
-@bp.route('/edit/update/<int:entry_id>', methods=['GET', 'POST'])
+@bp.route('/admin/blog/entry/<int:entry_id>/change', methods=['GET', 'POST'])
 @login_required
 def update(entry_id):
     """Update entry.
@@ -127,7 +127,7 @@ def update(entry_id):
     return render_template('blog/update.html', entry=entry)
 
 
-@bp.route('/edit/delete/<int:entry_id>', methods=['POST'])
+@bp.route('/admin/blog/entry/<int:entry_id>//delete', methods=['POST'])
 @login_required
 def delete(entry_id):
     """Delete entry.

@@ -7,10 +7,10 @@ from cms.auth import login_required
 from cms.model import User
 from cms.utils import flash_error, flash_success
 
-bp = Blueprint('mypage', __name__, url_prefix='/mypage')
+bp = Blueprint('mypage', __name__)
 
 
-@bp.route('/')
+@bp.route('/mypage/')
 @login_required
 def index():
     """Show mypage.
@@ -21,7 +21,7 @@ def index():
     return render_template('mypage/index.html', user=g.user)
 
 
-@bp.route('/chpasswd', methods=['GET', 'POST'])
+@bp.route('/admin/password_change/', methods=['GET', 'POST'])
 @login_required
 def change_my_password():
     """Change own password.
