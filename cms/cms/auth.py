@@ -14,7 +14,7 @@ from cms.role import Privilege
 from cms.role import ROLE_PRIV
 from cms.utils import flash_error, flash_success
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__)
 
 
 def login_required(view):
@@ -52,7 +52,7 @@ def load_logged_in_user():
         g.user = result.value
 
 
-@bp.route('/login', methods=['GET', 'POST'])
+@bp.route('/auth/login', methods=['GET', 'POST'])
 def login():
     """Log in by username and password.
 
