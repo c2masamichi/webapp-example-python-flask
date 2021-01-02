@@ -13,7 +13,7 @@ from cms.db import get_db
 )
 def test_login_required_get(client, path):
     response = client.get(path)
-    assert response.headers['Location'] == 'http://localhost/auth/login'
+    assert response.headers['Location'] == 'http://localhost/admin/login'
 
 
 def test_list_for_editors(client, auth):

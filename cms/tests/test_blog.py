@@ -33,7 +33,7 @@ def test_get_entry_exists_required(client):
 )
 def test_login_required_get(client, path):
     response = client.get(path)
-    assert response.headers['Location'] == 'http://localhost/auth/login'
+    assert response.headers['Location'] == 'http://localhost/admin/login'
 
 
 @pytest.mark.parametrize(
@@ -46,7 +46,7 @@ def test_login_required_get(client, path):
 )
 def test_login_required_post(client, path):
     response = client.post(path)
-    assert response.headers['Location'] == 'http://localhost/auth/login'
+    assert response.headers['Location'] == 'http://localhost/admin/login'
 
 
 @pytest.mark.parametrize(

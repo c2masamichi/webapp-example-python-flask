@@ -4,7 +4,7 @@ from flask import session
 
 
 def test_login(client, auth):
-    assert client.get('/auth/login').status_code == 200
+    assert client.get('/admin/login').status_code == 200
 
     response = auth.login()
     assert response.headers['Location'] == 'http://localhost/'
@@ -24,7 +24,7 @@ def test_login(client, auth):
 )
 def test_login_validate(client, username, password):
     response = client.post(
-        '/auth/login',
+        '/admin/login',
         data={'username': username, 'password': password}
     )
     message = b'Incorrect username or password.'

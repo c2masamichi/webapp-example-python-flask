@@ -33,7 +33,7 @@ class AuthActions(object):
         username = role_user[role]
         password = 'testpass'
         return self._client.post(
-            '/auth/login',
+            '/admin/login',
             data={'username': username, 'password': password}
         )
 

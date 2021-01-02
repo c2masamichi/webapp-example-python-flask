@@ -52,7 +52,7 @@ def load_logged_in_user():
         g.user = result.value
 
 
-@bp.route('/auth/login', methods=['GET', 'POST'])
+@bp.route('/admin/login', methods=['GET', 'POST'])
 def login():
     """Log in by username and password.
 
