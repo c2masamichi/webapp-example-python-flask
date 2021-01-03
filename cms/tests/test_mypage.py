@@ -7,21 +7,12 @@ from cms.db import get_db
 @pytest.mark.parametrize(
     'path',
     (
-        '/mypage/',
         '/admin/password_change/',
     )
 )
 def test_login_required_get(client, path):
     response = client.get(path)
     assert response.headers['Location'] == 'http://localhost/admin/login'
-
-
-def test_list_for_editors(client, auth):
-    auth.login()
-    response = client.get('/mypage/')
-    assert response.status_code == 200
-    assert b'user-admin01' in response.data
-    assert b'administrator' in response.data
 
 
 def test_chpasswd(client, auth, app):
