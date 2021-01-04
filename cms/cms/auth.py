@@ -88,3 +88,29 @@ def logout():
     session.clear()
     flash_success('Logged out.')
     return redirect(url_for('index'))
+
+
+@bp.route('/admin/password_change/', methods=['GET', 'POST'])
+@login_required
+def change_my_password():
+    """Change own password.
+
+    Args:
+        old_password (str): current password
+        new_password (str): password after change
+
+    Returns:
+        str: template
+    """
+    if request.method == 'POST':
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+
+        result = User().change_password(
+            g.user['id'], new_password, old_password)
+        if result.succeeded:
+            flash_success(result.description)
+        else:
+            flash_error(result.description)
+
+    return render_template('auth/chpasswd.html', user=g.user)
