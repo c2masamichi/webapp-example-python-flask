@@ -21,9 +21,10 @@ def create_app():
         app.logger.error('config file must exist.')
         sys.exit(1)
 
-    from cms import db
+    from cms import db, cli
 
     db.init_app(app)
+    cli.add_cli(app)
 
     from cms import auth, blog, user
 
