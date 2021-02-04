@@ -15,6 +15,11 @@ Init DB wth test data
 $ docker exec -it flask_cms_dev_web_1 flask init-db --withdata
 ```
 
+create superuser
+
+```
+$ docker exec -it flask_cms_dev_web_1 flask create-superuser --username dev-user
+```
 
 ### Clear
 

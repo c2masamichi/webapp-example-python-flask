@@ -25,6 +25,10 @@ def create_app():
 
     db.init_app(app)
 
+    from cms.cli import create_superuser
+
+    app.cli.add_command(create_superuser)
+
     from cms import auth, blog, user
 
     app.register_blueprint(auth.bp)
