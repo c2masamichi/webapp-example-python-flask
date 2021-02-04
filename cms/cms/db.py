@@ -1,7 +1,5 @@
-import click
 from flask import current_app
 from flask import g
-from flask.cli import with_appcontext
 import pymysql
 
 from cms.schema import SCHEMA_STATEMENTS
@@ -44,14 +42,5 @@ def init_db(withdata):
         db.commit()
 
 
-@click.command('init-db')
-@click.option('--withdata', is_flag=True)
-@with_appcontext
-def init_db_command(withdata):
-    init_db(withdata)
-    click.echo('Initialized the database.')
-
-
 def init_app(app):
     app.teardown_appcontext(close_db)
-    app.cli.add_command(init_db_command)
