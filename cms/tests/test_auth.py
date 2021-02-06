@@ -10,7 +10,7 @@ def test_login(client, auth):
     assert client.get('/admin/login').status_code == 200
 
     response = auth.login()
-    assert response.headers['Location'] == 'http://localhost/'
+    assert response.headers['Location'] == 'http://localhost/admin/'
 
     with client:
         client.get('/')

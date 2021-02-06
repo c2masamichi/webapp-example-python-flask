@@ -71,7 +71,7 @@ def login():
         if result.succeeded:
             session.clear()
             session['user_id'] = result.value['id']
-            return redirect(url_for('index'))
+            return redirect(url_for('auth.admin_top'))
 
         flash_error(result.description)
 
