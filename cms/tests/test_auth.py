@@ -45,12 +45,33 @@ def test_logout(client, auth):
 @pytest.mark.parametrize(
     'path',
     (
+        '/admin/',
         '/admin/password_change/',
     )
 )
 def test_login_required_get(client, path):
     response = client.get(path)
     assert response.headers['Location'] == 'http://localhost/admin/login'
+
+
+def test_admin_top(client, auth):
+    auth.login()
+    response = client.get('/admin/')
+    assert response.status_code == 200
+    assert b'Users' in response.data
+    assert b'Edit' in response.data
+
+    auth.login(role='editor')
+    response = client.get('/admin/')
+    assert response.status_code == 200
+    assert b'Users' not in response.data
+    assert b'Edit' in response.data
+
+    auth.login(role='author')
+    response = client.get('/admin/')
+    assert response.status_code == 200
+    assert b'Users' not in response.data
+    assert b'Edit' in response.data
 
 
 def test_chpasswd(client, auth, app):

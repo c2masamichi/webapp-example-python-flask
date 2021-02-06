@@ -90,6 +90,17 @@ def logout():
     return redirect(url_for('index'))
 
 
+@bp.route('/admin/')
+@login_required
+def admin_top():
+    """Site administration top page.
+
+    Returns:
+        str: template
+    """
+    return render_template('auth/admin_top.html')
+
+
 @bp.route('/admin/password_change/', methods=['GET', 'POST'])
 @login_required
 def change_my_password():
