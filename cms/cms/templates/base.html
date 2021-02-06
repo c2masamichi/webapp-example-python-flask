@@ -16,10 +16,7 @@
         <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
           <a href="#" id="menuLink1" class="pure-menu-link">menu</a>
           <ul class="pure-menu-children">
-            {% if g.user['role'] == 'administrator' %}
-              <li class="pure-menu-item"><a href="{{ url_for('user.index') }}" class="pure-menu-link">Users</a></li>
-            {% endif %}
-            <li class="pure-menu-item"><a href="{{ url_for('blog.edit_top') }}" class="pure-menu-link">Edit</a></li>
+            <li class="pure-menu-item"><a href="{{ url_for('auth.admin_top') }}" class="pure-menu-link">Admin page</a></li>
             <li class="pure-menu-item"><a href="{{ url_for('auth.change_my_password') }}" class="pure-menu-link">change password</a></li>
             <li class="pure-menu-item"><a href="{{ url_for('auth.logout') }}" class="pure-menu-link">Logout</a></li>
           </ul>
