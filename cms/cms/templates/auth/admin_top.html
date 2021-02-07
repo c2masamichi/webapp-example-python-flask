@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Site administration{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% if g.user['role'] == 'administrator' %}
+    <a href="{{ url_for('user.index') }}">Users</a>
+    <hr>
+  {% endif %}
+  <a href="{{ url_for('blog.edit_top') }}">Edit</a>
+{% endblock %}

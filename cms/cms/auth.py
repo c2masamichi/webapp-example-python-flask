@@ -71,7 +71,7 @@ def login():
         if result.succeeded:
             session.clear()
             session['user_id'] = result.value['id']
-            return redirect(url_for('index'))
+            return redirect(url_for('auth.admin_top'))
 
         flash_error(result.description)
 
@@ -88,6 +88,17 @@ def logout():
     session.clear()
     flash_success('Logged out.')
     return redirect(url_for('index'))
+
+
+@bp.route('/admin/')
+@login_required
+def admin_top():
+    """Site administration top page.
+
+    Returns:
+        str: template
+    """
+    return render_template('auth/admin_top.html')
 
 
 @bp.route('/admin/password_change/', methods=['GET', 'POST'])
