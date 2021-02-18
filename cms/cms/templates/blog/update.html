@@ -5,23 +5,29 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post" class="entry pure-form pure-form-stacked">
-    <fieldset>
-      <label for="title">Title</label>
-      <input name="title" id="title" value="{{ request.form['title'] or entry['title'] }}" required>
+  <div class="row">
+    <form method="post" class="col s12 entry">
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="text" name="title" id="title" class="validate" value="{{ request.form['title'] or entry['title'] }}" required>
+          <label for="title">Title</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea name="body" id="body" class="materialize-textarea validate" required>{{ request.form['body'] or entry['body'] }}</textarea>
+          <label for="body">Body</label>
+        </div>
+      </div>
+      <button type="submit" class="btn waves-effect waves-light blue darken-1">Update entry</button>
+    </form>
+  </div>
 
-      <label for="body">Body</label>
-      <textarea name="body" id="body" required>{{ request.form['body'] or entry['body'] }}</textarea>
+  <div class="divider"></div>
 
-      <button type="submit" class="pure-button pure-button-primary">Update entry</button>
-    </fieldset>
-
-  </form>
-  <hr>
-
-  <form action="{{ url_for('blog.delete', entry_id=entry['id']) }}" method="post" class="entry pure-form">
-    <fieldset>
-      <button type="submit" class="pure-button button-error" onclick="return confirm('Are you sure?');">Delete entry</button>
-    </fieldset>
-  </form>
+  <div class="row">
+    <form action="{{ url_for('blog.delete', entry_id=entry['id']) }}" method="post" class="col s12 entry">
+      <button type="submit" class="btn waves-effect waves-light red" onclick="return confirm('Are you sure?');">Delete entry</button>
+    </form>
+  </div>
 {% endblock %}
