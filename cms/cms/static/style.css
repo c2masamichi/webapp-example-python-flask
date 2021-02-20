@@ -13,10 +13,6 @@
   background: rgb(202, 60, 60);
 }
 
-form label {
-  font-weight: bold;
-}
-
 .entry .body {
   white-space: pre-line;
 }
