@@ -5,36 +5,47 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post" class="user pure-form pure-form-stacked">
-    <fieldset>
-      <label for="role">Role</label>
-      <select name="role" id="role" required>
-        {% for role in roles %}
-          <option value="{{ role }}" {% if user['role'] == role %}selected{% endif %}>{{ role }}</option>
-        {% endfor %}
-      </select>
+  <div class="row">
+    <form method="post" class="col s12 user">
+      <div class="row">
+        <div class="input-field col s12">
+          <select name="role" id="role" class="browser-default" required>
+            {% for role in roles %}
+              <option value="{{ role }}" {% if user['role'] == role %}selected{% endif %}>{{ role }}</option>
+            {% endfor %}
+          </select>
+          <label for="role">Role</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="text" name="username" id="username" class="validate" value="{{ request.form['username'] or user['username'] }}" required>
+          <label for="username">Username</label>
+        </div>
+      </div>
+      <button type="submit" class="btn waves-effect waves-light blue darken-1">Update user</button>
+    </form>
+  </div>
 
-      <label for="username">Username</label>
-      <input name="username" id="username" value="{{ request.form['username'] or user['username'] }}" required>
+  <div class="divider"></div>
 
-      <button type="submit" class="pure-button pure-button-primary">Update user</button>
-    </fieldset>
-  </form>
-  <hr>
+  <div class="row">
+    <form action="{{ url_for('user.change_password', user_id=user['id']) }}" method="post" class="col s12 user">
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="password" name="new_password" id="new_password" class="validate" required>
+          <label for="password">Password</label>
+        </div>
+      </div>
+      <button type="submit" class="btn waves-effect waves-light blue darken-1">Update password</button>
+    </form>
+  </div>
 
-  <form action="{{ url_for('user.change_password', user_id=user['id']) }}" method="post" class="user pure-form pure-form-stacked">
-    <fieldset>
-      <label for="password">Password</label>
-      <input type="password" name="new_password" id="new_password" required>
+  <div class="divider"></div>
 
-      <button type="submit" class="pure-button pure-button-primary">Update password</button>
-    </fieldset>
-  </form>
-  <hr>
-
-  <form action="{{ url_for('user.delete', user_id=user['id']) }}" method="post" class="user pure-form">
-    <fieldset>
-      <button type="submit" class="pure-button button-error" onclick="return confirm('Are you sure?');">Delete user</button>
-    </fieldset>
-  </form>
+  <div class="row">
+    <form action="{{ url_for('user.delete', user_id=user['id']) }}" method="post" class="col s12 user">
+      <button type="submit" class="btn waves-effect waves-light red" onclick="return confirm('Are you sure?');">Delete user</button>
+    </form>
+  </div>
 {% endblock %}
