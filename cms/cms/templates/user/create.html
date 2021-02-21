@@ -5,22 +5,32 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post" class="user pure-form pure-form-stacked">
-    <fieldset>
-      <label for="role">Role</label>
-      <select name="role" id="role" required>
-        {% for role in roles %}
-          <option value="{{ role }}">{{ role }}</option>
-        {% endfor %}
-      </select>
-
-      <label for="username">Username</label>
-      <input name="username" id="username" required>
-
-      <label for="password">Password</label>
-      <input type="password" name="password" id="password" required>
-
-      <button type="submit" class="pure-button pure-button-primary">Create</button>
-    </fieldset>
-  </form>
+  <div class="row">
+    <form method="post" class="col s12 user">
+      <div class="row">
+        <div class="input-field col s12">
+          <label for="role">Role</label>
+          <select name="role" id="role" class="browser-default" required>
+            <option value="" disabled selected>Choose role</option>
+            {% for role in roles %}
+              <option value="{{ role }}">{{ role }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="text" name="username" id="username" class="validate" required>
+          <label for="username">Username</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="password" name="password" id="password" class="validate" required>
+          <label for="password">Password</label>
+        </div>
+      </div>
+      <button type="submit" class="btn waves-effect waves-light blue darken-1">Create</button>
+    </form>
+  </div>
 {% endblock %}

@@ -5,16 +5,22 @@
 {% endblock %}
 
 {% block content %}
-  <h2 id="username"></h2>{{ user['username'] }}</h2>
-  <form method="post" class="user pure-form pure-form-stacked">
-    <fieldset>
-      <label for="old_password">Old Password</label>
-      <input type="password" name="old_password" id="old_password" required>
-
-      <label for="new_password">New Password</label>
-      <input type="password" name="new_password" id="new_password" required>
-
-      <button type="submit" class="pure-button pure-button-primary">Update password</button>
-    </fieldset>
-  </form>
+  <h2 id="username">{{ user['username'] }}</h2>
+  <div class="row">
+    <form method="post" class="col s12">
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="password" name="old_password" id="old_password" class="validate" required>
+          <label for="old_password">Old Password</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="password" name="new_password" id="new_password" class="validate" required>
+          <label for="new_password">New Password</label>
+        </div>
+      </div>
+      <button type="submit" class="btn waves-effect waves-light blue darken-1">Update password</button>
+    </form>
+  </div>
 {% endblock %}
