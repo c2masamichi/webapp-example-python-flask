@@ -2,15 +2,22 @@ import click
 from flask.cli import with_appcontext
 
 from cms.db import init_db
+from cms.db import load_data
 from cms.model import User
 
 
 @click.command('init-db')
-@click.option('--withdata', is_flag=True)
 @with_appcontext
-def init_db_command(withdata):
-    init_db(withdata)
+def init_db_command():
+    init_db()
     click.echo('Initialized the database.')
+
+
+@click.command('load-data')
+@with_appcontext
+def load_data_command():
+    load_data()
+    click.echo('Loaded data.')
 
 
 @click.command('create-superuser')
@@ -27,4 +34,5 @@ def create_superuser(username, password):
 
 def add_cli(app):
     app.cli.add_command(init_db_command)
+    app.cli.add_command(load_data_command)
     app.cli.add_command(create_superuser)

@@ -28,18 +28,20 @@ def close_db(e=None):
         db.close()
 
 
-def init_db(withdata):
+def init_db():
     db = get_db()
     with db.cursor() as cursor:
         for statement in SCHEMA_STATEMENTS:
             cursor.execute(statement)
     db.commit()
 
-    if withdata:
-        with db.cursor() as cursor:
-            for statement in TEST_DATA_STATEMENTS:
-                cursor.execute(statement)
-        db.commit()
+
+def load_data():
+    db = get_db()
+    with db.cursor() as cursor:
+        for statement in TEST_DATA_STATEMENTS:
+            cursor.execute(statement)
+    db.commit()
 
 
 def init_app(app):

@@ -1,6 +1,7 @@
 import pytest
 
 from cms import create_app
+from cms.db import load_data
 from cms.db import init_db
 
 
@@ -9,7 +10,8 @@ def app():
     new_app = create_app()
 
     with new_app.app_context():
-        init_db(withdata=True)
+        init_db()
+        load_data()
 
     yield new_app
 
