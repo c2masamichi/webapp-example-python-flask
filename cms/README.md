@@ -9,10 +9,10 @@ $ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p flask_cms_de
 $ docker exec -it flask_cms_dev_web_1 flask init-db
 ```
 
-Init DB wth test data
+load test data
 
 ```
-$ docker exec -it flask_cms_dev_web_1 flask init-db --withdata
+$ docker exec -it flask_cms_dev_web_1 flask load-data
 ```
 
 create superuser
