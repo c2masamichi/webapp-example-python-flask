@@ -1,7 +1,5 @@
-import click
 from flask import current_app
 from flask import g
-from flask.cli import with_appcontext
 import pymysql
 
 from webapi.schema import SCHEMA_STATEMENTS
@@ -30,28 +28,21 @@ def close_db(e=None):
         db.close()
 
 
-def init_db(withdata):
+def init_db():
     db = get_db()
     with db.cursor() as cursor:
         for statement in SCHEMA_STATEMENTS:
             cursor.execute(statement)
     db.commit()
 
-    if withdata:
-        with db.cursor() as cursor:
-            for statement in TEST_DATA_STATEMENTS:
-                cursor.execute(statement)
-        db.commit()
 
-
-@click.command('init-db')
-@click.option('--withdata', is_flag=True)
-@with_appcontext
-def init_db_command(withdata):
-    init_db(withdata)
-    click.echo('Initialized the database.')
+def load_data():
+    db = get_db()
+    with db.cursor() as cursor:
+        for statement in TEST_DATA_STATEMENTS:
+            cursor.execute(statement)
+    db.commit()
 
 
 def init_app(app):
     app.teardown_appcontext(close_db)
-    app.cli.add_command(init_db_command)
