@@ -3,7 +3,7 @@ from flask import jsonify
 from flask import request
 from werkzeug.exceptions import abort
 
-from webapi.model import Product
+from webapi.models import Product
 
 bp = Blueprint('api', __name__, url_prefix='/api/v1')
 

@@ -1,7 +1,7 @@
 import pytest
 
 from webapi.db import get_db
-from webapi.model import Product
+from webapi.models import Product
 
 
 def test_fetch_all(app):
