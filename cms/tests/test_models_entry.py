@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from cms.db import get_db
-from cms.model import Entry
+from cms.models import Entry
 
 
 def test_fetch_all(app):
