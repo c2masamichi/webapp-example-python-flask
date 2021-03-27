@@ -9,7 +9,7 @@ from flask import session
 from flask import url_for
 from werkzeug.exceptions import abort
 
-from cms.model import User
+from cms.models import User
 from cms.role import Privilege
 from cms.role import ROLE_PRIV
 from cms.utils import flash_error, flash_success

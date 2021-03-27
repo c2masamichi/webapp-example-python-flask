@@ -7,7 +7,7 @@ from flask import url_for
 from werkzeug.exceptions import abort
 
 from cms.auth import login_required
-from cms.model import Entry
+from cms.models import Entry
 from cms.role import Privilege
 from cms.role import ROLE_PRIV
 from cms.utils import flash_error, flash_success

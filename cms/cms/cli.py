@@ -3,7 +3,7 @@ from flask.cli import with_appcontext
 
 from cms.db import init_db
 from cms.db import load_data
-from cms.model import User
+from cms.models import User
 
 
 @click.command('init-db')
