@@ -27,10 +27,11 @@ def create_app():
     app.register_error_handler(404, eh.not_found)
     app.register_error_handler(500, eh.internal_server_error)
 
-    from webapi import db, cli
+    from webapi.db import init_app
+    from webapi.cli import add_cli
 
-    db.init_app(app)
-    cli.add_cli(app)
+    init_app(app)
+    add_cli(app)
 
     from webapi import api
 
