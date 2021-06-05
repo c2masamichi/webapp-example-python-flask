@@ -21,6 +21,17 @@ def create_app():
         app.logger.error('config file must exist.')
         sys.exit(1)
 
+    app.config.from_mapping(
+        SQLALCHEMY_DATABASE_URI='mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
+            app.config['DB_USER'],
+            app.config['DB_PASSWORD'],
+            app.config['DB_HOST'],
+            app.config['DB_PORT'],
+            app.config['DATABASE'],
+        ),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    )
+
     from webapi import error_handler as eh
 
     app.register_error_handler(400, eh.bad_request)
