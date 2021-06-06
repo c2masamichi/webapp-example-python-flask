@@ -3,6 +3,8 @@ import sys
 
 from flask import Flask
 
+from webapi.models import Product
+
 
 CONFIGS = {
     'production': 'config-production.py',
