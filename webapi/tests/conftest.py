@@ -1,8 +1,8 @@
 import pytest
 
 from webapi import create_app
-from webapi.db import init_db
-from webapi.db import load_data
+from webapi.database import init_db
+from webapi.utils import load_data
 
 
 @pytest.fixture
