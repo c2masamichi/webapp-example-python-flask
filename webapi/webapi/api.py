@@ -39,13 +39,15 @@ def get_product(product_id):
     Returns:
         str: json
     """
-    result = fetch_product_wrapper(product_id)
-    product = result.value
+    product = Product.query.get(product_id)
+    if product is None:
+        abort(404, description='product {0}'.format(product_id))
+
     data = {
         'result': {
-            'id': product['id'],
-            'name': product['name'],
-            'price': product['price'],
+            'id': product.id,
+            'name': product.name,
+            'price': product.price,
         }
     }
     return jsonify(data)
