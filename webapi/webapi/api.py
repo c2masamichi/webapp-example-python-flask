@@ -15,18 +15,15 @@ def get_products():
     Returns:
         str: json
     """
-    result = Product().fetch_all()
-    if result.code != 200:
-        abort(result.code, description=result.description)
-
+    result = Product.query.all()
     data = {
         'result': [
             {
-                'id': product['id'],
-                'name': product['name'],
-                'price': product['price'],
+                'id': product.id,
+                'name': product.name,
+                'price': product.price,
             }
-            for product in result.value
+            for product in result
         ]
     }
     return jsonify(data)
