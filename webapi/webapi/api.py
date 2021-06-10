@@ -3,6 +3,7 @@ from flask import jsonify
 from flask import request
 from werkzeug.exceptions import abort
 
+from webapi.database import db
 from webapi.models import Product
 
 bp = Blueprint('api', __name__, url_prefix='/api/v1')
@@ -122,12 +123,12 @@ def delete_product(product_id):
     Returns:
         str: json
     """
-    fetch_product_wrapper(product_id)
+    product = Product.query.get(product_id)
+    if product is None:
+        abort(404, description='product {0}'.format(product_id))
 
-    result = Product().delete(product_id)
-    if result.code != 200:
-        abort(result.code, description=result.description)
-
+    db.session.delete(product)
+    db.session.commit()
     data = {'result': 'Successfully Deleted.'}
     return jsonify(data)
 
