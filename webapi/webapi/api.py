@@ -74,9 +74,9 @@ def create_product():
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    result = Product().create(name, price)
-    if result.code != 200:
-        abort(result.code, description=result.description)
+    product = Product(name=name, price=price)
+    db.session.add(product)
+    db.session.commit()
 
     data = {'result': 'Successfully Created.'}
     return jsonify(data)

@@ -54,8 +54,8 @@ def test_create_product(client, app):
 
     with app.app_context():
         product = Product.query.get(3)
-        assert product['name'] == post_data['name']
-        assert product['price'] == post_data['price']
+        assert product.name == post_data['name']
+        assert product.price == post_data['price']
 
 
 def test_create_product_validate01(client):
