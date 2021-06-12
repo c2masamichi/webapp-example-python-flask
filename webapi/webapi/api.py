@@ -72,9 +72,12 @@ def create_product():
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    product = Product(name=name, price=price)
-    db.session.add(product)
-    db.session.commit()
+    try:
+        product = Product(name=name, price=price)
+        db.session.add(product)
+        db.session.commit()
+    except AssertionError:
+        abort(400, description='Bad data.')
 
     data = {'result': 'Successfully Created.'}
     return jsonify(data)
@@ -103,9 +106,12 @@ def update_product(product_id):
 
     product = Product.query.get_or_404(product_id)
 
-    product.name = name
-    product.price = price
-    db.session.commit()
+    try:
+        product.name = name
+        product.price = price
+        db.session.commit()
+    except AssertionError:
+        abort(400, description='Bad data.')
 
     data = {'result': 'Successfully Updated.'}
     return jsonify(data)
