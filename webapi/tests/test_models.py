@@ -1,6 +1,5 @@
 import pytest
 
-from webapi.database import db
 from webapi.models import Product
 
 
