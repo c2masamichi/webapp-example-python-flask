@@ -1,38 +1,39 @@
 import pytest
 
+from webapi.database import db
 from webapi.models import Product
 
 
 @pytest.mark.parametrize(
-    ('name', 'price', 'message'),
+    ('name', 'price'),
     (
-        ('aa', 1000, 'Bad data'),
-        ('a' * 21, 1000, 'Bad data'),
-        ('house', 1000000001, 'Bad data'),
-        ('minus', -1, 'Bad data'),
-        ('A 01 %', 100, 'Bad data'),
+        ('aa', 1000),
+        ('a' * 21, 1000),
+        ('house', 1000000001),
+        ('minus', -1),
+        ('A 01 %', 100),
     ),
 )
-def test_create_validate(app, name, price, message):
+def test_create_validate(app, name, price):
     with app.app_context():
-        result = Product().create(name, price)
-        assert result.code == 400
-        assert message in result.description
+        with pytest.raises(AssertionError):
+            Product(name=name, price=price)
 
 
 @pytest.mark.parametrize(
-    ('name', 'price', 'message'),
+    ('name', 'price'),
     (
-        ('aa', 1000, 'Bad data'),
-        ('a' * 21, 1000, 'Bad data'),
-        ('house', 1000000001, 'Bad data'),
-        ('minus', -1, 'Bad data'),
-        ('A 01 %', 100, 'Bad data'),
+        ('aa', 1000),
+        ('a' * 21, 1000),
+        ('house', 1000000001),
+        ('minus', -1),
+        ('A 01 %', 100),
     ),
 )
-def test_update_validate(app, name, price, message):
+def test_update_validate(app, name, price):
     with app.app_context():
-        product_id = 2
-        result = Product().update(product_id, name, price)
-        assert result.code == 400
-        assert message in result.description
+        with pytest.raises(AssertionError):
+            product_id = 2
+            product = Product.query.get(product_id)
+            product.name = name
+            product.price = price
