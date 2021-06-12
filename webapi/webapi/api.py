@@ -3,6 +3,7 @@ from flask import jsonify
 from flask import request
 from werkzeug.exceptions import abort
 
+from webapi.database import db
 from webapi.models import Product
 
 bp = Blueprint('api', __name__, url_prefix='/api/v1')
@@ -15,18 +16,15 @@ def get_products():
     Returns:
         str: json
     """
-    result = Product().fetch_all()
-    if result.code != 200:
-        abort(result.code, description=result.description)
-
+    result = Product.query.all()
     data = {
         'result': [
             {
-                'id': product['id'],
-                'name': product['name'],
-                'price': product['price'],
+                'id': product.id,
+                'name': product.name,
+                'price': product.price,
             }
-            for product in result.value
+            for product in result
         ]
     }
     return jsonify(data)
@@ -42,13 +40,13 @@ def get_product(product_id):
     Returns:
         str: json
     """
-    result = fetch_product_wrapper(product_id)
-    product = result.value
+    product = Product.query.get_or_404(product_id)
+
     data = {
         'result': {
-            'id': product['id'],
-            'name': product['name'],
-            'price': product['price'],
+            'id': product.id,
+            'name': product.name,
+            'price': product.price,
         }
     }
     return jsonify(data)
@@ -74,9 +72,12 @@ def create_product():
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    result = Product().create(name, price)
-    if result.code != 200:
-        abort(result.code, description=result.description)
+    try:
+        product = Product(name=name, price=price)
+        db.session.add(product)
+        db.session.commit()
+    except AssertionError:
+        abort(400, description='Bad data.')
 
     data = {'result': 'Successfully Created.'}
     return jsonify(data)
@@ -103,11 +104,14 @@ def update_product(product_id):
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    fetch_product_wrapper(product_id)
+    product = Product.query.get_or_404(product_id)
 
-    result = Product().update(product_id, name, price)
-    if result.code != 200:
-        abort(result.code, description=result.description)
+    try:
+        product.name = name
+        product.price = price
+        db.session.commit()
+    except AssertionError:
+        abort(400, description='Bad data.')
 
     data = {'result': 'Successfully Updated.'}
     return jsonify(data)
@@ -123,28 +127,9 @@ def delete_product(product_id):
     Returns:
         str: json
     """
-    fetch_product_wrapper(product_id)
+    product = Product.query.get_or_404(product_id)
 
-    result = Product().delete(product_id)
-    if result.code != 200:
-        abort(result.code, description=result.description)
-
+    db.session.delete(product)
+    db.session.commit()
     data = {'result': 'Successfully Deleted.'}
     return jsonify(data)
-
-
-def fetch_product_wrapper(product_id):
-    """Fetch product.
-
-    Args:
-        product_id (int): id of product to fetch
-
-    Returns:
-        dict: product info
-    """
-    result = Product().fetch(product_id)
-    if result.code != 200:
-        abort(result.code, description=result.description)
-    if not result.value:
-        abort(404, description='product {0}'.format(product_id))
-    return result

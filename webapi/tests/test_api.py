@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from webapi.db import get_db
+from webapi.models import Product
 
 PATH_PREFIX = '/api/v1'
 
@@ -53,12 +53,9 @@ def test_create_product(client, app):
     assert response.status_code == 200
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM product WHERE id = 3')
-            product = cursor.fetchone()
-        assert product['name'] == post_data['name']
-        assert product['price'] == post_data['price']
+        product = Product.query.get(3)
+        assert product.name == post_data['name']
+        assert product.price == post_data['price']
 
 
 def test_create_product_validate01(client):
@@ -116,15 +113,9 @@ def test_update_product(client, app):
     assert response.status_code == 200
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM product WHERE id = %s',
-                (product_id,)
-            )
-            product = cursor.fetchone()
-        assert product['name'] == post_data['name']
-        assert product['price'] == post_data['price']
+        product = Product.query.get(product_id)
+        assert product.name == post_data['name']
+        assert product.price == post_data['price']
 
 
 def test_update_product_exists_required(client):
@@ -191,13 +182,7 @@ def test_delete_product(client, app):
     assert response.status_code == 200
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM product WHERE id = %s',
-                (product_id,)
-            )
-            product = cursor.fetchone()
+        product = Product.query.get(product_id)
         assert product is None
 
 

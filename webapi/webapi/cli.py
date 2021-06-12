@@ -1,8 +1,8 @@
 import click
 from flask.cli import with_appcontext
 
-from webapi.db import init_db
-from webapi.db import load_data
+from webapi.database import init_db
+from webapi.utils import load_data
 
 
 @click.command('init-db')
