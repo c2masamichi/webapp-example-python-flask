@@ -40,9 +40,7 @@ def get_product(product_id):
     Returns:
         str: json
     """
-    product = Product.query.get(product_id)
-    if product is None:
-        abort(404, description='product {0}'.format(product_id))
+    product = Product.query.get_or_404(product_id)
 
     data = {
         'result': {
@@ -103,9 +101,7 @@ def update_product(product_id):
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    product = Product.query.get(product_id)
-    if product is None:
-        abort(404, description='product {0}'.format(product_id))
+    product = Product.query.get_or_404(product_id)
 
     product.name = name
     product.price = price
@@ -125,9 +121,7 @@ def delete_product(product_id):
     Returns:
         str: json
     """
-    product = Product.query.get(product_id)
-    if product is None:
-        abort(404, description='product {0}'.format(product_id))
+    product = Product.query.get_or_404(product_id)
 
     db.session.delete(product)
     db.session.commit()
