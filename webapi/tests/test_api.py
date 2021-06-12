@@ -114,8 +114,8 @@ def test_update_product(client, app):
 
     with app.app_context():
         product = Product.query.get(product_id)
-        assert product['name'] == post_data['name']
-        assert product['price'] == post_data['price']
+        assert product.name == post_data['name']
+        assert product.price == post_data['price']
 
 
 def test_update_product_exists_required(client):

@@ -103,11 +103,13 @@ def update_product(product_id):
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    fetch_product_wrapper(product_id)
+    product = Product.query.get(product_id)
+    if product is None:
+        abort(404, description='product {0}'.format(product_id))
 
-    result = Product().update(product_id, name, price)
-    if result.code != 200:
-        abort(result.code, description=result.description)
+    product.name = name
+    product.price = price
+    db.session.commit()
 
     data = {'result': 'Successfully Updated.'}
     return jsonify(data)
@@ -131,20 +133,3 @@ def delete_product(product_id):
     db.session.commit()
     data = {'result': 'Successfully Deleted.'}
     return jsonify(data)
-
-
-def fetch_product_wrapper(product_id):
-    """Fetch product.
-
-    Args:
-        product_id (int): id of product to fetch
-
-    Returns:
-        dict: product info
-    """
-    result = Product().fetch(product_id)
-    if result.code != 200:
-        abort(result.code, description=result.description)
-    if not result.value:
-        abort(404, description='product {0}'.format(product_id))
-    return result
