@@ -41,9 +41,12 @@ def test_get_product_exists_required(client):
 
 
 def test_create_product(client, app):
+    product_id = 3
+    name = 'meet'
+    price = 1000
     post_data = {
-        'name': 'meet',
-        'price': 1000,
+        'name': name,
+        'price': price,
     }
     path = '{0}/products'.format(PATH_PREFIX)
     response = client.post(
@@ -52,10 +55,17 @@ def test_create_product(client, app):
     )
     assert response.status_code == 200
 
+    data = response.get_json()
+    assert 'result' in data
+    result = data['result']
+    assert result['id'] == product_id
+    assert result['name'] == name
+    assert result['price'] == price
+
     with app.app_context():
         product = Product.query.get(3)
-        assert product.name == post_data['name']
-        assert product.price == post_data['price']
+        assert product.name == name
+        assert product.price == price
 
 
 def test_create_product_validate01(client):
@@ -101,9 +111,11 @@ def test_create_product_validate03(client):
 
 def test_update_product(client, app):
     product_id = 2
+    name = 'rice'
+    price = 900
     post_data = {
-        'name': 'rice',
-        'price': 900,
+        'name': name,
+        'price': price,
     }
     path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.put(
@@ -112,10 +124,17 @@ def test_update_product(client, app):
     )
     assert response.status_code == 200
 
+    data = response.get_json()
+    assert 'result' in data
+    result = data['result']
+    assert result['id'] == product_id
+    assert result['name'] == name
+    assert result['price'] == price
+
     with app.app_context():
         product = Product.query.get(product_id)
-        assert product.name == post_data['name']
-        assert product.price == post_data['price']
+        assert product.name == name
+        assert product.price == price
 
 
 def test_update_product_exists_required(client):
@@ -177,9 +196,18 @@ def test_update_product_validate03(client):
 
 def test_delete_product(client, app):
     product_id = 2
+    name = 'fish'
+    price = 200
     path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.delete(path)
     assert response.status_code == 200
+
+    data = response.get_json()
+    assert 'result' in data
+    result = data['result']
+    assert result['id'] == product_id
+    assert result['name'] == name
+    assert result['price'] == price
 
     with app.app_context():
         product = Product.query.get(product_id)

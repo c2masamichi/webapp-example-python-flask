@@ -79,7 +79,14 @@ def create_product():
     except AssertionError:
         abort(400, description='Bad data.')
 
-    data = {'result': 'Successfully Created.'}
+    data = {
+        'message': 'Successfully Created.',
+        'result': {
+            'id': product.id,
+            'name': product.name,
+            'price': product.price,
+        }
+    }
     return jsonify(data)
 
 
@@ -113,7 +120,14 @@ def update_product(product_id):
     except AssertionError:
         abort(400, description='Bad data.')
 
-    data = {'result': 'Successfully Updated.'}
+    data = {
+        'message': 'Successfully Updated.',
+        'result': {
+            'id': product.id,
+            'name': product.name,
+            'price': product.price,
+        }
+    }
     return jsonify(data)
 
 
@@ -128,8 +142,17 @@ def delete_product(product_id):
         str: json
     """
     product = Product.query.get_or_404(product_id)
+    deleted_product = {
+        'id': product.id,
+        'name': product.name,
+        'price': product.price,
+    }
 
     db.session.delete(product)
     db.session.commit()
-    data = {'result': 'Successfully Deleted.'}
+
+    data = {
+        'message': 'Successfully Deleted.',
+        'result': deleted_product
+    }
     return jsonify(data)
