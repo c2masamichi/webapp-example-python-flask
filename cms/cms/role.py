@@ -1,4 +1,5 @@
 from enum import IntEnum
+from operator import itemgetter
 
 
 class Privilege(IntEnum):
