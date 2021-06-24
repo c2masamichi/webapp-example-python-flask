@@ -8,7 +8,7 @@ from werkzeug.exceptions import abort
 from cms.auth import admin_required
 from cms.auth import login_required
 from cms.models import User
-from cms.models import make_sorted_roles
+from cms.role import make_sorted_roles
 from cms.utils import flash_error, flash_success
 
 bp = Blueprint('user', __name__, url_prefix='/admin/auth/user')
