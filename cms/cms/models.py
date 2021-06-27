@@ -10,7 +10,7 @@ from cms.role import ROLE_PRIV
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(db.String(20), unique=True, nullable=False)
-    username = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(200), unique=True, nullable=False)
     entries = db.relationship('Entry', backref='user', lazy=True)
 
