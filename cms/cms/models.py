@@ -23,3 +23,14 @@ class Entry(db.Model):
         default=datetime.now)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    @validates('title')
+    def validate_title(self, key, entry):
+        max_length = 100
+        assert len(entry) <= max_length
+        return entry
+
+    @validates('body')
+    def validate_body(self, key, entry):
+        max_length = 10000
+        assert len(entry) <= max_length
+        return entry
