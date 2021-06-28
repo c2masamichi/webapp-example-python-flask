@@ -12,17 +12,17 @@ class Product(db.Model):
 
     @validates('name')
     def validate_name(self, key, product):
-        name_len_min = 3
-        name_len_max = 20
+        min_length = 3
+        max_length = 20
         pattern = r'[0-9a-zA-Z ]*'
 
-        assert name_len_min <= len(product) <= name_len_max
+        assert min_length <= len(product) <= max_length
         assert re.fullmatch(pattern, product) is not None
         return product
 
     @validates('price')
     def validate_price(self, key, product):
-        price_min = 0
-        price_max = 1000000000
-        assert price_min <= product <= price_max
+        min_num = 0
+        max_num = 1000000000
+        assert min_num <= product <= max_num
         return product
