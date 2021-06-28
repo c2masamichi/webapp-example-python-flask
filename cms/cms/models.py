@@ -16,18 +16,18 @@ class User(db.Model):
 
 
     @validates('role')
-    def validate_role(self, key, user):
-        assert user in ROLE_PRIV
-        return user
+    def validate_role(self, key, role):
+        assert role in ROLE_PRIV
+        return role
 
     @validates('name')
-    def validate_name(self, key, user):
+    def validate_name(self, key, name):
         max_length = 20
         pattern = r'[0-9a-zA-Z-_]*'
 
-        assert len(user) <= max_length
-        assert re.fullmatch(pattern, user) is not None
-        return user
+        assert len(name) <= max_length
+        assert re.fullmatch(pattern, name) is not None
+        return name
 
 
 class Entry(db.Model):
@@ -39,13 +39,13 @@ class Entry(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     @validates('title')
-    def validate_title(self, key, entry):
+    def validate_title(self, key, title):
         max_length = 100
-        assert len(entry) <= max_length
-        return entry
+        assert len(title) <= max_length
+        return title
 
     @validates('body')
-    def validate_body(self, key, entry):
+    def validate_body(self, key, body):
         max_length = 10000
-        assert len(entry) <= max_length
-        return entry
+        assert len(body) <= max_length
+        return body
