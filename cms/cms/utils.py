@@ -9,15 +9,18 @@ from cms.models import User
 
 
 def load_data():
-    file_path = 'tests/data/user.json'
-    rows = load_json_file(file_path)
+    file_path_list = [
+        'tests/data/user.json',
+        'tests/data/entry.json',
+    ]
+
+    rows = load_json_file(file_path_list[0])
     for row in rows:
         p = User(**row)
         db.session.add(p)
     db.session.commit()
 
-    file_path = 'tests/data/entry.json'
-    rows = load_json_file(file_path)
+    rows = load_json_file(file_path_list[1])
     for row in rows:
         p = Entry(**row)
         db.session.add(p)
