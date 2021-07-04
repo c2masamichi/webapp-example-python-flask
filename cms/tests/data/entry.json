@@ -1,0 +1,23 @@
+[
+    {
+      "id": 1,
+      "title": "Test Title 1",
+      "body": "This body is test.",
+      "created": "2019-01-01 00:00:00",
+      "author_id": 1
+    },
+    {
+      "id": 2,
+      "title": "Test Title 2",
+      "body": "Test Test Test Test",
+      "created": "2019-01-01 12:30:45",
+      "author_id": 2
+    },
+    {
+      "id": 3,
+      "title": "Test Title 3",
+      "body": "Test Test Test Test",
+      "created": "2019-01-02 08:20:01",
+      "author_id": 3
+    }
+]
