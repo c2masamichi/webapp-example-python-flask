@@ -9,11 +9,10 @@ from cms.role import ROLE_PRIV
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    role = db.Column(db.String(20), unique=True, nullable=False)
+    role = db.Column(db.String(20), nullable=False)
     name = db.Column(db.String(20), unique=True, nullable=False)
-    password = db.Column(db.String(200), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
     entries = db.relationship('Entry', backref='user', lazy=True)
-
 
     @validates('role')
     def validate_role(self, key, role):
@@ -32,9 +31,9 @@ class User(db.Model):
 
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), unique=True, nullable=False)
-    body = db.Column(db.String(10000), unique=True, nullable=False)
-    created = db.Column(db.DataTime, nullable=False,
+    title = db.Column(db.String(100), nullable=False)
+    body = db.Column(db.String(10000), nullable=False)
+    created = db.Column(db.DateTime, nullable=False,
         default=datetime.now)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
