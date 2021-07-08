@@ -1,6 +1,6 @@
 import pytest
 
-from cms.db import get_db
+from cms.database import db
 
 
 def test_index(client):
