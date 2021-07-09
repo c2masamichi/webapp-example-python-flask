@@ -22,10 +22,8 @@ def index():
     Returns:
         str: template
     """
-    result = Entry().fetch_all()
-    if not result.succeeded:
-        abort(500)
-    return render_template('blog/index.html', entries=result.value)
+    result = Entry.query.all()
+    return render_template('blog/index.html', entries=result)
 
 
 @bp.route('/entry/<int:entry_id>')
