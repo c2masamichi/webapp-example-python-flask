@@ -36,7 +36,7 @@ def get_entry(entry_id):
     Returns:
         str: template
     """
-    entry = fetch_entry_wrapper(entry_id)
+    entry = Entry.query.get_or_404(entry_id)
     return render_template('blog/detail.html', entry=entry)
 
 
