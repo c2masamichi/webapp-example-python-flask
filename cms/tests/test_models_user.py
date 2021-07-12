@@ -37,10 +37,7 @@ def test_create(app):
     (
         ('aaa', 'user-a_01', 'ef-gh_5678'),
         ('author', 'a' * 21, 'ef-gh_5678'),
-        ('author', 'user-a_01', 'a' * 31),
         ('author', 'user-a_01%', 'ef-gh_5678'),
-        ('author', 'user-a_01', 'ef-gh_5678%'),
-        ('author', 'user-author01', 'efgh5678'),
     ),
 )
 def test_create_validate(app, role, name, password):
