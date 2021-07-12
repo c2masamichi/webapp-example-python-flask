@@ -166,6 +166,8 @@ def test_update(client, auth, app):
     (
         ('', b'Username is required.'),
         ('user-admin01', b'already registered'),
+        ('a' * 21, b'Bad data'),
+        ('user-a_01%', b'Bad data'),
     ),
 )
 def test_update_validate(client, auth, username, message):

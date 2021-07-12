@@ -62,7 +62,6 @@ def test_update(app):
         ('aaa', 'user-a_01'),
         ('author', 'a' * 21),
         ('author', 'user-a_01%'),
-        ('author', 'user-author01'),
     ),
 )
 def test_update_validate(app, role, name):
