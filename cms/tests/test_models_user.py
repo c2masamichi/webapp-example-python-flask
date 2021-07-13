@@ -26,7 +26,7 @@ def test_create(app):
         role = 'administrator'
         name = 'added-user_01'
         password = 'ab-cd_1234'
-        user = User.create(role=role, name=name, password=password)
+        user = User(role=role, name=name, password=password)
         db.session.add(user)
         db.session.commit()
         assert user.id == 4
@@ -43,7 +43,7 @@ def test_create(app):
 def test_create_validate(app, role, name, password):
     with app.app_context():
         with pytest.raises(AssertionError):
-            User.create(role=role, name=name, password=password)
+            User(role=role, name=name, password=password)
 
 
 def test_update(app):
