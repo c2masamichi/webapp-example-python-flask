@@ -1,5 +1,7 @@
 import pytest
 
+from werkzeug.security import generate_password_hash
+
 from cms.database import db
 from cms.models import User
 
@@ -26,7 +28,10 @@ def test_create(app):
         role = 'administrator'
         name = 'added-user_01'
         password = 'ab-cd_1234'
-        user = User(role=role, name=name, password=password)
+        user = User(
+            role=role, name=name,
+            password=generate_password_hash(password)
+        )
         db.session.add(user)
         db.session.commit()
         assert user.id == 4
@@ -43,7 +48,10 @@ def test_create(app):
 def test_create_validate(app, role, name, password):
     with app.app_context():
         with pytest.raises(AssertionError):
-            User(role=role, name=name, password=password)
+            User(
+                role=role, name=name,
+                password=generate_password_hash(password)
+            )
 
 
 def test_update(app):
