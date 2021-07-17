@@ -13,6 +13,7 @@ def auth_user(name, password):
     """
 
     user = User.query.filter_by(name=name).first()
-    if check_password_hash(user['password'], password):
+    if (user is None or
+            not check_password_hash(user.password, password)):
         return None
     return user
