@@ -3,6 +3,15 @@ import pytest
 from cms.user_wrappers import auth_user
 
 
+def test_auth(app):
+    with app.app_context():
+        name = 'user-admin01'
+        password = 'testpass'
+        user = auth_user(name, password)
+        assert user.id == 1
+        assert user.name == name
+
+
 @pytest.mark.parametrize(
     ('name', 'password'),
     (
