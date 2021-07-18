@@ -9,7 +9,7 @@ def auth_user(name, password):
         name (str): user's name
         password (str): user's password
     Returns:
-        user: User instance
+        User: Authenticated user
     """
 
     user = User.query.filter_by(name=name).first()
