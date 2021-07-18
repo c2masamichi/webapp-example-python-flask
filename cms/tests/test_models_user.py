@@ -62,6 +62,7 @@ def test_update(app):
         user = User.query.get(user_id)
         user.role = role
         user.name = name
+        db.session.commit()
 
 
 @pytest.mark.parametrize(
