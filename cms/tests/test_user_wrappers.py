@@ -38,3 +38,40 @@ def test_change_password(app):
 
         user = auth_user(name, new_password)
         assert user is not None
+
+
+def test_change_own_password(app):
+    with app.app_context():
+        user_id = 1
+        name = 'user-admin01'
+        old_password = 'testpass'
+        new_password = 'updated-pass_01'
+        succeeded, message = change_password(
+            user_id, new_password, old_password)
+        assert succeeded
+        assert 'Password Changed.' in message
+
+        user = auth_user(name, old_password)
+        assert user is None
+
+        user = auth_user(name, new_password)
+        assert user is not None
+
+
+def test_change_password_validate01(app):
+    pass
+
+
+def test_change_password_validate02(app):
+    pass
+
+
+@pytest.mark.parametrize(
+    ('new_password', 'err_msg'),
+    (
+        ('a' * 31, 'Bad data'),
+        ('ef-gh_5678%', 'Bad data'),
+    ),
+)
+def test_change_password_validate03(app, new_password, err_msg):
+    pass
