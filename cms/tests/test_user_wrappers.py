@@ -59,11 +59,25 @@ def test_change_own_password(app):
 
 
 def test_change_password_validate01(app):
-    pass
+    with app.app_context():
+        user_id = 1
+        new_password = 'updated-pass_01'
+        # Default: old_required=True
+        succeeded, message = change_password(
+            user_id, new_password)
+        assert not succeeded
+        assert 'Incorrect password.' in message
 
 
 def test_change_password_validate02(app):
-    pass
+    with app.app_context():
+        user_id = 1
+        old_password = 'aaaa'
+        new_password = 'updated-pass_01'
+        succeeded, message = change_password(
+            user_id, new_password, old_password)
+        assert not succeeded
+        assert 'Incorrect password.' in message
 
 
 @pytest.mark.parametrize(
