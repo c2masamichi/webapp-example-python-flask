@@ -88,4 +88,9 @@ def test_change_password_validate02(app):
     ),
 )
 def test_change_password_validate03(app, new_password, err_msg):
-    pass
+    with app.app_context():
+        user_id = 2
+        succeeded, message = change_password(
+            user_id, new_password, old_required=False)
+        assert not succeeded
+        assert err_msg in message

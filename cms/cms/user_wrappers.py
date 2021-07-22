@@ -1,3 +1,5 @@
+import re
+
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
@@ -37,6 +39,9 @@ def change_password(
     if old_required and old_password is None:
         return False, default_err_msg
 
+    if not validate_password(new_password):
+        return False, 'Bad data.'
+
     user = User.query.get(user_id)
     if user is None:
         return False, 'Update failed.'
@@ -48,3 +53,19 @@ def change_password(
     user.password = generate_password_hash(new_password)
     db.session.commit()
     return True, 'Password Changed.'
+
+
+def validate_password(password):
+    """Validate password for creation or update.
+    Args:
+        password(str): user's password
+    Returns:
+        bool: True if password is ok
+    """
+    max_length = 30
+    if len(password) > max_length:
+        return False
+    pattern = r'[0-9a-zA-Z-_]*'
+    if re.fullmatch(pattern, password) is None:
+        return False
+    return True
