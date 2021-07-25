@@ -14,7 +14,6 @@ from cms.role import Privilege
 from cms.role import ROLE_PRIV
 from cms.user_wrappers import auth_user
 from cms.user_wrappers import change_password
-from cms.user_wrappers import validate_password
 from cms.utils import flash_error, flash_success
 
 bp = Blueprint('auth', __name__)
@@ -120,11 +119,11 @@ def change_my_password():
         old_password = request.form['old_password']
         new_password = request.form['new_password']
 
-        result = User().change_password(
-            g.user['id'], new_password, old_password)
-        if result.succeeded:
-            flash_success(result.description)
+        succeeded, message = change_password(
+            g.user.id, new_password, old_password)
+        if succeeded:
+            flash_success(message)
         else:
-            flash_error(result.description)
+            flash_error(message)
 
     return render_template('auth/chpasswd.html', user=g.user)
