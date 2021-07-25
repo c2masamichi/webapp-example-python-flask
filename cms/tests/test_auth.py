@@ -30,8 +30,7 @@ def test_login_validate(client, username, password):
         '/admin/login',
         data={'username': username, 'password': password}
     )
-    message = b'Incorrect username or password.'
-    assert message in response.data
+    assert b'Incorrect username or password.' in response.data
 
 
 def test_logout(client, auth):
