@@ -9,9 +9,11 @@ from cms.models import User
 
 def auth_user(name, password):
     """Auth user.
+
     Args:
         name (str): user's name
         password (str): user's password
+
     Returns:
         User: Authenticated user
     """
@@ -26,11 +28,13 @@ def auth_user(name, password):
 def change_password(
         user_id, new_password, old_password=None, old_required=True):
     """Change password.
+
     Args:
         user_id (int): id of user to change
         new_password (str): password after change
         old_password (str): current password
         old_required (bool): True if current password must be checked
+
     Returns:
         succeeded (bool): True if password successfully changed
         message (str): description of result
@@ -57,8 +61,10 @@ def change_password(
 
 def validate_password(password):
     """Validate password for creation or update.
+
     Args:
         password(str): user's password
+
     Returns:
         bool: True if password is ok
     """
