@@ -4,11 +4,13 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
+from sqlalchemy import desc
 from werkzeug.exceptions import abort
 
 from cms.auth import login_required
 from cms.database import db
 from cms.models import Entry
+from cms.models import User
 from cms.role import Privilege
 from cms.role import ROLE_PRIV
 from cms.utils import flash_error, flash_success
@@ -49,7 +51,11 @@ def edit_top():
     Returns:
         str: template
     """
-    entries = Entry.query.all()
+    entries = db.session.query(
+            Entry.id, Entry.title, Entry.created, Entry.author_id, User.name).\
+        outerjoin(User, Entry.author_id==User.id).\
+        order_by(desc(Entry.created)).\
+        all()
 
     can_update_all_enrty = False
     if ROLE_PRIV[g.user.role] >= Privilege.EDITOR:
