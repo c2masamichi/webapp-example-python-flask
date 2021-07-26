@@ -25,7 +25,9 @@ def index():
     Returns:
         str: template
     """
-    entries = Entry.query.all()
+    entries = db.session.query(Entry).\
+        order_by(desc(Entry.created)).\
+        all()
     return render_template('blog/index.html', entries=entries)
 
 
