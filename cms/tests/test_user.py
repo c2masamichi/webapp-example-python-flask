@@ -1,7 +1,7 @@
 import pytest
 from werkzeug.security import check_password_hash
 
-from cms.db import get_db
+from cms.models import User
 
 
 @pytest.mark.parametrize(
@@ -104,13 +104,7 @@ def test_create(client, auth, app):
     assert 'http://localhost/admin/auth/user/' == response.headers['Location']
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM user WHERE username = %s',
-                (username,)
-            )
-            user = cursor.fetchone()
+        user = User.query.filter_by(name=username)
         assert user is not None
 
 
@@ -150,15 +144,9 @@ def test_update(client, auth, app):
     assert response.headers['Location'] == 'http://localhost{0}'.format(path)
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM user WHERE id = %s',
-                (user_id,)
-            )
-            user = cursor.fetchone()
-        assert user['role'] == role
-        assert user['username'] == username
+        user = User.query.get(user_id)
+        assert user.role == role
+        assert user.name == username
 
 
 @pytest.mark.parametrize(
@@ -191,14 +179,8 @@ def test_chpasswd(client, auth, app):
     assert response.status_code == 200
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM user WHERE id = %s',
-                (user_id,)
-            )
-            user = cursor.fetchone()
-        assert check_password_hash(user['password'], new_password)
+        user = User.query.get(user_id)
+        assert check_password_hash(user.password, new_password)
 
 
 @pytest.mark.parametrize(
@@ -228,11 +210,5 @@ def test_delete(client, auth, app):
     assert response.headers['Location'] == 'http://localhost/admin/auth/user/'
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM user WHERE id = %s',
-                (user_id,)
-            )
-            user = cursor.fetchone()
+        user = User.query.get(user_id)
         assert user is None
