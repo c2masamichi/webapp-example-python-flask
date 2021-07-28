@@ -89,7 +89,7 @@ def create():
             flash_error('Title is required.')
         else:
             try:
-                entry = Entry(title=title, body=body, author_id=g.user.id,)
+                entry = Entry(title=title, body=body, author_id=g.user.id)
                 db.session.add(entry)
                 db.session.commit()
             except AssertionError:
