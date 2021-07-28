@@ -17,7 +17,7 @@
     <tbody>
       {% for user in users %}
         <tr>
-          <td>{{ user['username'] }}</td>
+          <td>{{ user['name'] }}</td>
           <td>{{ user['role'] }}</td>
           <td>
             <a class="btn waves-effect waves-light light-blue lighten-1" href="{{ url_for('user.update', user_id=user['id']) }}">update</a>

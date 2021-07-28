@@ -104,7 +104,7 @@ def test_create(client, auth, app):
     assert 'http://localhost/admin/auth/user/' == response.headers['Location']
 
     with app.app_context():
-        user = User.query.filter_by(name=username)
+        user = User.query.filter_by(name=username).first()
         assert user is not None
 
 

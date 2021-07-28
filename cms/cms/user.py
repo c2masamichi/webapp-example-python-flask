@@ -4,11 +4,15 @@ from flask import render_template
 from flask import request
 from flask import url_for
 from werkzeug.exceptions import abort
+from werkzeug.security import generate_password_hash
 
 from cms.auth import admin_required
 from cms.auth import login_required
+from cms.database import db
 from cms.models import User
 from cms.role import make_sorted_roles
+from cms.user_wrappers import change_password
+from cms.user_wrappers import validate_password
 from cms.utils import flash_error, flash_success
 
 bp = Blueprint('user', __name__, url_prefix='/admin/auth/user')
@@ -25,10 +29,10 @@ def index():
     Returns:
         str: template
     """
-    result = User().fetch_all()
-    if not result.succeeded:
-        abort(500)
-    return render_template('user/index.html', users=result.value)
+    users = db.session.query(User).\
+        order_by(User.name).\
+        all()
+    return render_template('user/index.html', users=users)
 
 
 @bp.route('/add/', methods=['GET', 'POST'])
@@ -55,15 +59,26 @@ def create():
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
+        elif not validate_password(password):
+            error = 'Bad data.'
+        elif User.query.filter_by(name=username).first() is not None:
+            error = 'User {0} is already registered.'.format(username)
 
         if error:
             flash_error(error)
         else:
-            result = User().create(role, username, password)
-            if result.succeeded:
-                flash_success(result.description)
+            try:
+                user = User(
+                    role=role, name=username,
+                    password=generate_password_hash(password)
+                )
+                db.session.add(user)
+                db.session.commit()
+            except AssertionError:
+                flash_error('Bad data.')
+            else:
+                flash_success('Creation succeeded.')
                 return redirect(url_for('user.index'))
-            flash_error(result.description)
 
     return render_template('user/create.html', roles=roles)
 
@@ -82,21 +97,31 @@ def update(user_id):
     Returns:
         str: template
     """
-    user = fetch_user_wrapper(user_id)
+    user = User.query.get_or_404(user_id)
 
     if request.method == 'POST':
         role = request.form['role']
         username = request.form['username']
 
+        error = ''
         if not username:
-            flash_error('Username is required.')
+            error = 'Username is required.'
+        elif User.query.filter_by(name=username).first() is not None:
+            error = 'User {0} is already registered.'.format(username)
+
+        if error:
+            flash_error(error)
         else:
-            result = User().update(user_id, role, username)
-            if result.succeeded:
-                flash_success(result.description)
+            try:
+                user.role = role
+                user.name = username
+                db.session.commit()
+            except AssertionError:
+                flash_error('Bad data.')
+            else:
+                flash_success('Update succeeded.')
                 return redirect(
                     url_for('user.update', user_id=user_id))
-            flash_error(result.description)
 
     return render_template('user/update.html', user=user, roles=roles)
 
@@ -104,7 +129,7 @@ def update(user_id):
 @bp.route('/<int:user_id>/password/', methods=['POST'])
 @login_required
 @admin_required
-def change_password(user_id):
+def change_user_password(user_id):
     """Change password.
 
     Args:
@@ -114,15 +139,15 @@ def change_password(user_id):
     Returns:
         str: template
     """
-    user = fetch_user_wrapper(user_id)
+    user = User.query.get_or_404(user_id)
 
     new_password = request.form['new_password']
-    result = User().change_password(
+    succeeded, message = change_password(
         user_id, new_password, old_required=False)
-    if result.succeeded:
-        flash_success(result.description)
+    if succeeded:
+        flash_success(message)
     else:
-        flash_error(result.description)
+        flash_error(message)
 
     return render_template('user/update.html', user=user)
 
@@ -139,29 +164,9 @@ def delete(user_id):
     Returns:
         str: template
     """
-    user = fetch_user_wrapper(user_id)
-    result = User().delete(user_id)
-    if result.succeeded:
-        flash_success(result.description)
-        return redirect(url_for('user.index'))
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
 
-    flash_error(result.description)
-    return render_template('user/update.html', user=user)
-
-
-def fetch_user_wrapper(user_id):
-    """Fetch user.
-
-    Args:
-        user_id (int): id of user to fetch
-
-    Returns:
-        dict: user info
-    """
-    result = User().fetch(user_id)
-    if not result.succeeded:
-        abort(500)
-    user = result.value
-    if user is None:
-        abort(404)
-    return user
+    flash_success('Deletion succeeded.')
+    return redirect(url_for('user.index'))
