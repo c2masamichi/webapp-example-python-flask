@@ -13,6 +13,7 @@ CONFIGS = {
     'testing': 'config-testing.py',
 }
 
+
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     config_name = CONFIGS[os.getenv('FLASK_ENV', 'production')]

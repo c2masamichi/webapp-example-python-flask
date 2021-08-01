@@ -33,8 +33,8 @@ class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     body = db.Column(db.String(10000), nullable=False)
-    created = db.Column(db.DateTime, nullable=False,
-        default=datetime.now)
+    created = db.Column(
+        db.DateTime, nullable=False, default=datetime.now)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     @validates('title')

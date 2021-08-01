@@ -55,7 +55,7 @@ def edit_top():
     """
     entries = db.session.query(
             Entry.id, Entry.title, Entry.created, Entry.author_id, User.name).\
-        outerjoin(User, Entry.author_id==User.id).\
+        outerjoin(User, Entry.author_id == User.id).\
         order_by(desc(Entry.created)).\
         all()
 

@@ -3,7 +3,6 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-from werkzeug.exceptions import abort
 from werkzeug.security import generate_password_hash
 
 from cms.auth import admin_required
