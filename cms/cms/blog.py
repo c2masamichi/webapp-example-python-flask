@@ -1,4 +1,5 @@
 from flask import Blueprint
+from flask import current_app
 from flask import g
 from flask import redirect
 from flask import render_template
@@ -25,9 +26,13 @@ def index():
     Returns:
         str: template
     """
-    entries = db.session.query(Entry).\
-        order_by(desc(Entry.created)).\
-        all()
+    try:
+        entries = db.session.query(Entry).\
+            order_by(desc(Entry.created)).\
+            all()
+    except Exception as e:
+        current_app.logger.error('fetching entries: {0}'.format(e))
+        abort(500)
     return render_template('blog/index.html', entries=entries)
 
 
