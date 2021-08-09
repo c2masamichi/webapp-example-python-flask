@@ -4,10 +4,13 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
+from sqlalchemy import desc
 from werkzeug.exceptions import abort
 
 from cms.auth import login_required
+from cms.database import db
 from cms.models import Entry
+from cms.models import User
 from cms.role import Privilege
 from cms.role import ROLE_PRIV
 from cms.utils import flash_error, flash_success
@@ -22,10 +25,10 @@ def index():
     Returns:
         str: template
     """
-    result = Entry().fetch_all()
-    if not result.succeeded:
-        abort(500)
-    return render_template('blog/index.html', entries=result.value)
+    entries = db.session.query(Entry).\
+        order_by(desc(Entry.created)).\
+        all()
+    return render_template('blog/index.html', entries=entries)
 
 
 @bp.route('/entry/<int:entry_id>')
@@ -38,7 +41,7 @@ def get_entry(entry_id):
     Returns:
         str: template
     """
-    entry = fetch_entry_wrapper(entry_id)
+    entry = Entry.query.get_or_404(entry_id)
     return render_template('blog/detail.html', entry=entry)
 
 
@@ -50,16 +53,18 @@ def edit_top():
     Returns:
         str: template
     """
-    result = Entry().fetch_all()
-    if not result.succeeded:
-        abort(500)
+    entries = db.session.query(
+            Entry.id, Entry.title, Entry.created, Entry.author_id, User.name).\
+        outerjoin(User, Entry.author_id == User.id).\
+        order_by(desc(Entry.created)).\
+        all()
 
     can_update_all_enrty = False
-    if ROLE_PRIV[g.user['role']] >= Privilege.EDITOR:
+    if ROLE_PRIV[g.user.role] >= Privilege.EDITOR:
         can_update_all_enrty = True
 
     return render_template(
-        'blog/edit_top.html', entries=result.value,
+        'blog/edit_top.html', entries=entries,
         can_update_all_enrty=can_update_all_enrty
     )
 
@@ -83,11 +88,15 @@ def create():
         if not title:
             flash_error('Title is required.')
         else:
-            result = Entry().create(g.user['id'], title, body)
-            if result.succeeded:
-                flash_success(result.description)
+            try:
+                entry = Entry(title=title, body=body, author_id=g.user.id)
+                db.session.add(entry)
+                db.session.commit()
+            except AssertionError:
+                flash_error('Bad data.')
+            else:
+                flash_success('Creation succeeded.')
                 return redirect(url_for('blog.edit_top'))
-            flash_error(result.description)
 
     return render_template('blog/create.html')
 
@@ -105,10 +114,10 @@ def update(entry_id):
     Returns:
         str: template
     """
-    entry = fetch_entry_wrapper(entry_id)
+    entry = Entry.query.get_or_404(entry_id)
 
-    if (ROLE_PRIV[g.user['role']] < Privilege.EDITOR and
-            entry['author_id'] != g.user['id']):
+    if (ROLE_PRIV[g.user.role] < Privilege.EDITOR and
+            entry.author_id != g.user.id):
         abort(403)
 
     if request.method == 'POST':
@@ -118,11 +127,15 @@ def update(entry_id):
         if not title:
             flash_error('Title is required.')
         else:
-            result = Entry().update(entry_id, title, body)
-            if result.succeeded:
-                flash_success(result.description)
+            try:
+                entry.title = title
+                entry.body = body
+                db.session.commit()
+            except AssertionError:
+                flash_error('Bad data.')
+            else:
+                flash_success('Update succeeded.')
                 return redirect(url_for('blog.update', entry_id=entry_id))
-            flash_error(result.description)
 
     return render_template('blog/update.html', entry=entry)
 
@@ -138,33 +151,13 @@ def delete(entry_id):
     Returns:
         str: template
     """
-    entry = fetch_entry_wrapper(entry_id)
-    if (ROLE_PRIV[g.user['role']] < Privilege.EDITOR and
-            entry['author_id'] != g.user['id']):
+    entry = Entry.query.get_or_404(entry_id)
+    if (ROLE_PRIV[g.user.role] < Privilege.EDITOR and
+            entry.author_id != g.user.id):
         abort(403)
 
-    result = Entry().delete(entry_id)
-    if result.succeeded:
-        flash_success(result.description)
-        return redirect(url_for('blog.edit_top'))
+    db.session.delete(entry)
+    db.session.commit()
 
-    flash_error(result.description)
-    return render_template('blog/update.html', entry=entry)
-
-
-def fetch_entry_wrapper(entry_id):
-    """Fetch entry.
-
-    Args:
-        entry_id (int): id of entry to fetch
-
-    Returns:
-        dict: entry info
-    """
-    result = Entry().fetch(entry_id)
-    if not result.succeeded:
-        abort(500)
-    entry = result.value
-    if entry is None:
-        abort(404)
-    return entry
+    flash_success('Deletion succeeded.')
+    return redirect(url_for('blog.edit_top'))

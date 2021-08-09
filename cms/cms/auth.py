@@ -12,6 +12,8 @@ from werkzeug.exceptions import abort
 from cms.models import User
 from cms.role import Privilege
 from cms.role import ROLE_PRIV
+from cms.user_wrappers import auth_user
+from cms.user_wrappers import change_password
 from cms.utils import flash_error, flash_success
 
 bp = Blueprint('auth', __name__)
@@ -31,7 +33,7 @@ def login_required(view):
 def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if ROLE_PRIV[g.user['role']] < Privilege.ADMINISTRATOR:
+        if ROLE_PRIV[g.user.role] < Privilege.ADMINISTRATOR:
             abort(403)
 
         return view(**kwargs)
@@ -46,10 +48,10 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        result = User().fetch(user_id)
-        if not result.succeeded:
+        user = User.query.get(user_id)
+        if user is None:
             abort(500)
-        g.user = result.value
+        g.user = user
 
 
 @bp.route('/admin/login', methods=['GET', 'POST'])
@@ -57,23 +59,23 @@ def login():
     """Log in by username and password.
 
     Args:
-        username (str): user's name
+        name (str): user's name
         password (str): user's password
 
     Returns:
         str: template
     """
     if request.method == 'POST':
-        username = request.form['username']
+        name = request.form['username']
         password = request.form['password']
 
-        result = User().auth(username, password)
-        if result.succeeded:
+        user = auth_user(name, password)
+        if user is not None:
             session.clear()
-            session['user_id'] = result.value['id']
+            session['user_id'] = user.id
             return redirect(url_for('auth.admin_top'))
 
-        flash_error(result.description)
+        flash_error('Incorrect username or password.')
 
     return render_template('auth/login.html')
 
@@ -117,11 +119,11 @@ def change_my_password():
         old_password = request.form['old_password']
         new_password = request.form['new_password']
 
-        result = User().change_password(
-            g.user['id'], new_password, old_password)
-        if result.succeeded:
-            flash_success(result.description)
+        succeeded, message = change_password(
+            g.user.id, new_password, old_password)
+        if succeeded:
+            flash_success(message)
         else:
-            flash_error(result.description)
+            flash_error(message)
 
     return render_template('auth/chpasswd.html', user=g.user)

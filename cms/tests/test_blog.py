@@ -1,6 +1,6 @@
 import pytest
 
-from cms.db import get_db
+from cms.models import Entry
 
 
 def test_index(client):
@@ -85,13 +85,11 @@ def test_create(client, auth, app):
     assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM entry WHERE id = 4')
-            entry = cursor.fetchone()
-        assert entry['author_id'] == 1
-        assert entry['title'] == title
-        assert entry['body'] == body
+        entry_id = 4
+        entry = Entry.query.get(entry_id)
+        assert entry.author_id == 1
+        assert entry.title == title
+        assert entry.body == body
 
 
 def test_update(client, auth, app):
@@ -110,15 +108,9 @@ def test_update(client, auth, app):
     assert response.headers['Location'] == 'http://localhost{0}'.format(path)
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM entry WHERE id = %s',
-                (entry_id,)
-            )
-            entry = cursor.fetchone()
-        assert entry['title'] == title
-        assert entry['body'] == body
+        entry = Entry.query.get(entry_id)
+        assert entry.title == title
+        assert entry.body == body
 
 
 @pytest.mark.parametrize(
@@ -145,13 +137,7 @@ def test_delete(client, auth, app):
     assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute(
-                'SELECT * FROM entry WHERE id = %s',
-                (entry_id,)
-            )
-            entry = cursor.fetchone()
+        entry = Entry.query.get(entry_id)
         assert entry is None
 
 

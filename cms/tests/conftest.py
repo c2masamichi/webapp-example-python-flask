@@ -1,8 +1,8 @@
 import pytest
 
 from cms import create_app
-from cms.db import load_data
-from cms.db import init_db
+from cms.database import init_db
+from cms.utils import load_data
 
 
 @pytest.fixture

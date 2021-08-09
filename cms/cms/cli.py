@@ -1,8 +1,8 @@
 import click
 from flask.cli import with_appcontext
 
-from cms.db import init_db
-from cms.db import load_data
+from cms.database import init_db
+from cms.utils import load_data
 from cms.models import User
 
 

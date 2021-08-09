@@ -3,7 +3,7 @@ from flask import g
 from flask import session
 from werkzeug.security import check_password_hash
 
-from cms.db import get_db
+from cms.models import User
 
 
 def test_login(client, auth):
@@ -15,7 +15,7 @@ def test_login(client, auth):
     with client:
         client.get('/')
         assert session['user_id'] == 1
-        assert g.user['username'] == 'user-admin01'
+        assert g.user.name == 'user-admin01'
 
 
 @pytest.mark.parametrize(
@@ -30,8 +30,7 @@ def test_login_validate(client, username, password):
         '/admin/login',
         data={'username': username, 'password': password}
     )
-    message = b'Incorrect username or password.'
-    assert message in response.data
+    assert b'Incorrect username or password.' in response.data
 
 
 def test_logout(client, auth):
@@ -88,11 +87,8 @@ def test_chpasswd(client, auth, app):
     assert response.status_code == 200
 
     with app.app_context():
-        db = get_db()
-        with db.cursor() as cursor:
-            cursor.execute('SELECT * FROM user WHERE id = 1')
-            user = cursor.fetchone()
-        assert check_password_hash(user['password'], new_password)
+        user = User.query.get(1)
+        assert check_password_hash(user.password, new_password)
 
 
 def test_chpasswd_validate(client, auth, app):

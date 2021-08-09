@@ -1,0 +1,20 @@
+[
+    {
+      "id": 1,
+      "role": "administrator",
+      "name": "user-admin01",
+      "password": "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20"
+    },
+    {
+      "id": 2,
+      "role": "editor",
+      "name": "user-editor01",
+      "password": "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20"
+    },
+    {
+      "id": 3,
+      "role": "author",
+      "name": "user-author01",
+      "password": "pbkdf2:sha256:150000$uruHRLDK$e7291b6efdd7439668e47fbd509e9fadad0cd7511073fb47d9846161c9605e20"
+    }
+]
