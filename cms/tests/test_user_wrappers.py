@@ -83,6 +83,7 @@ def test_change_password_validate02(app):
 @pytest.mark.parametrize(
     ('new_password', 'err_msg'),
     (
+        ('a' * 7, 'Bad data'),
         ('a' * 31, 'Bad data'),
         ('ef-gh_5678%', 'Bad data'),
     ),

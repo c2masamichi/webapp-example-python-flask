@@ -68,8 +68,9 @@ def validate_password(password):
     Returns:
         bool: True if password is ok
     """
+    min_length = 8
     max_length = 30
-    if len(password) > max_length:
+    if len(password) > max_length or len(password) < min_length:
         return False
     pattern = r'[0-9a-zA-Z-_]*'
     if re.fullmatch(pattern, password) is None:

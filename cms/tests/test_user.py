@@ -95,7 +95,7 @@ def test_create(client, auth, app):
 
     role = 'administrator'
     username = 'added-user_01'
-    password = 'ab-cd_1234'
+    password = 'ab-c_123'
     response = client.post(
         path,
         data={'role': role, 'username': username, 'password': password}
@@ -117,6 +117,7 @@ def test_create(client, auth, app):
         ('a' * 3, 'ef-gh_5678', b'Bad data'),
         ('a' * 21, 'ef-gh_5678', b'Bad data'),
         ('user-a_01%', 'ef-gh_5678', b'Bad data'),
+        ('user-a_01', 'a' * 7, b'Bad data'),
         ('user-a_01', 'a' * 31, b'Bad data'),
         ('user-a_01', 'ef-gh_5678%', b'Bad data'),
     ),
@@ -171,7 +172,7 @@ def test_update_validate(client, auth, username, message):
 
 def test_chpasswd(client, auth, app):
     user_id = 2
-    new_password = 'updated-pass_01'
+    new_password = 'ab-c_123'
     path = '/admin/auth/user/{0}/password/'.format(user_id)
     auth.login()
     response = client.post(
@@ -188,6 +189,7 @@ def test_chpasswd(client, auth, app):
 @pytest.mark.parametrize(
     ('new_password', 'message'),
     (
+        ('a' * 7, b'Bad data'),
         ('a' * 31, b'Bad data'),
         ('ef-gh_5678%', b'Bad data'),
     ),
