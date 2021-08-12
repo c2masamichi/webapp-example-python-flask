@@ -21,10 +21,11 @@ class User(db.Model):
 
     @validates('name')
     def validate_name(self, key, name):
+        min_length = 4
         max_length = 20
         pattern = r'[0-9a-zA-Z-_]*'
 
-        assert len(name) <= max_length
+        assert min_length <= len(name) <= max_length
         assert re.fullmatch(pattern, name) is not None
         return name
 

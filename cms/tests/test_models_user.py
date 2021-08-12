@@ -41,6 +41,7 @@ def test_create(app):
     ('role', 'name', 'password'),
     (
         ('aaa', 'user-a_01', 'ef-gh_5678'),
+        ('author', 'a' * 3, 'ef-gh_5678'),
         ('author', 'a' * 21, 'ef-gh_5678'),
         ('author', 'user-a_01%', 'ef-gh_5678'),
     ),
@@ -69,6 +70,7 @@ def test_update(app):
     ('role', 'name'),
     (
         ('aaa', 'user-a_01'),
+        ('author', 'a' * 3),
         ('author', 'a' * 21),
         ('author', 'user-a_01%'),
     ),

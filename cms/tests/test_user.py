@@ -114,6 +114,7 @@ def test_create(client, auth, app):
         ('', '', b'Username is required.'),
         ('aabbccdd', '', b'Password is required.'),
         ('user-admin01', 'testpass', b'already registered'),
+        ('a' * 3, 'ef-gh_5678', b'Bad data'),
         ('a' * 21, 'ef-gh_5678', b'Bad data'),
         ('user-a_01%', 'ef-gh_5678', b'Bad data'),
         ('user-a_01', 'a' * 31, b'Bad data'),
@@ -154,6 +155,7 @@ def test_update(client, auth, app):
     (
         ('', b'Username is required.'),
         ('user-admin01', b'already registered'),
+        ('a' * 3, b'Bad data'),
         ('a' * 21, b'Bad data'),
         ('user-a_01%', b'Bad data'),
     ),
