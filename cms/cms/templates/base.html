@@ -9,20 +9,33 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <nav>
-    <div class="nav-wrapper light-blue darken-1">
-      <a href="{{ url_for('index') }}" class="brand-logo">Home</a>
-      {% if g.user %}
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="{{ url_for('auth.admin_top') }}">Admin page</a></li>
-        <li><a href="{{ url_for('auth.change_my_password') }}">change password</a></li>
-        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-      </ul>
-      {% else %}
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-      </ul>
-      {% endif %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a href="{{ url_for('index') }}" class="navbar-brand">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        {% if g.user %}
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.admin_top') }}">Admin page</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.change_my_password') }}">change password</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+          </li>
+        </ul>
+        {% else %}
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+          </li>
+        </ul>
+        {% endif %}
+      </div>
     </div>
   </nav>
   <div class="container">
