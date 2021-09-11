@@ -14,8 +14,5 @@
         <a class="btn waves-effect waves-light light-blue lighten-1" href="{{ url_for('blog.update', entry_id=entry['id']) }}">update</a>
       {% endif %}
     </div>
-    {% if not loop.last %}
-      <div class="divider"></div>
-    {% endif %}
   {% endfor %}
 {% endblock %}
