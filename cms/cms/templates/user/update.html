@@ -23,7 +23,7 @@
           <label for="username">Username</label>
         </div>
       </div>
-      <button type="submit" class="btn waves-effect waves-light blue darken-1">Update user</button>
+      <button type="submit" class="btn btn-primary">Update user</button>
     </form>
   </div>
 
@@ -37,7 +37,7 @@
           <label for="password">Password</label>
         </div>
       </div>
-      <button type="submit" class="btn waves-effect waves-light blue darken-1">Update password</button>
+      <button type="submit" class="btn btn-primary">Update password</button>
     </form>
   </div>
 
@@ -45,7 +45,7 @@
 
   <div class="row">
     <form action="{{ url_for('user.delete', user_id=user['id']) }}" method="post" class="col s12 user">
-      <button type="submit" class="btn waves-effect waves-light red" onclick="return confirm('Are you sure?');">Delete user</button>
+      <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete user</button>
     </form>
   </div>
 {% endblock %}
