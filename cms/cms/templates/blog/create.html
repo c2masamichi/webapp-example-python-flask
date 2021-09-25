@@ -5,21 +5,17 @@
 {% endblock %}
 
 {% block content %}
-  <div class="row">
-    <form method="post" class="col s12 entry">
-      <div class="row">
-        <div class="input-field col s12">
-          <input type="text" name="title" id="title" class="validate" value="{{ request.form['title'] }}" required>
-          <label for="title">Title</label>
-        </div>
+  <form method="post">
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" name="title" id="title" class="form-control" value="{{ request.form['title'] }}" required>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <textarea name="body" id="body" class="materialize-textarea validate" required>{{ request.form['body'] }}</textarea>
+        <label for="body">Body</label>
       </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <textarea name="body" id="body" class="materialize-textarea validate" required>{{ request.form['body'] }}</textarea>
-          <label for="body">Body</label>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary">Create</button>
-    </form>
-  </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
 {% endblock %}
