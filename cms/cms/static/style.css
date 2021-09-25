@@ -24,15 +24,6 @@
   white-space: pre-line;
 }
 
-.entry input, .entry textarea {
-  min-width: 18em;
-}
-
-.content textarea {
-  min-height: 12em;
-  resize: both;
-}
-
 table.user {
   margin-top: 0.5em;
   margin-bottom: 0.5em;

@@ -11,9 +11,9 @@
       <input type="text" name="title" id="title" class="form-control" value="{{ request.form['title'] }}" required>
     </div>
     <div class="row">
-      <div class="input-field col s12">
-        <textarea name="body" id="body" class="materialize-textarea validate" required>{{ request.form['body'] }}</textarea>
-        <label for="body">Body</label>
+      <div class="mb-3">
+        <label for="body" class="form-label">Body</label>
+        <textarea name="body" id="body" class="form-control" rows="5" required>{{ request.form['body'] }}</textarea>
       </div>
     </div>
     <button type="submit" class="btn btn-primary">Create</button>
