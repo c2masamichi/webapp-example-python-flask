@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block content %}
-  <a class="btn waves-effect waves-light light-blue lighten-1" href="{{ url_for('user.create') }}">create</a>
-  <table class="user highlight">
+  <a class="btn btn-info" href="{{ url_for('user.create') }}">create</a>
+  <table class="table table-striped">
     <thead>
       <tr>
         <th>Username</th>
@@ -20,7 +20,7 @@
           <td>{{ user['name'] }}</td>
           <td>{{ user['role'] }}</td>
           <td>
-            <a class="btn waves-effect waves-light light-blue lighten-1" href="{{ url_for('user.update', user_id=user['id']) }}">update</a>
+            <a class="btn btn-info" href="{{ url_for('user.update', user_id=user['id']) }}">update</a>
           </td>
         </tr>
       {% endfor %}

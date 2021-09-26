@@ -1,3 +1,10 @@
+#entries .entry {
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 1px solid #c0c0c0;
+}
+
 .flash {
   color: white;
   padding: 0.25em 0.5em;
@@ -15,18 +22,4 @@
 
 .entry .body {
   white-space: pre-line;
-}
-
-.entry input, .entry textarea {
-  min-width: 18em;
-}
-
-.content textarea {
-  min-height: 12em;
-  resize: both;
-}
-
-table.user {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
 }

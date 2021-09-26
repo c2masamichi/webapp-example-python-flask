@@ -5,17 +5,16 @@
 {% endblock %}
 
 {% block content %}
-  <a class="btn waves-effect waves-light light-blue lighten-1" href="{{ url_for('blog.create') }}">create</a>
+  <a class="btn btn-info" href="{{ url_for('blog.create') }}">create</a>
   {% for entry in entries %}
+  <div id="entries">
     <div class="section entry">
       <h2>{{ entry['title'] }}</h1>
       <div class="about">created on {{ entry['created'].strftime('%Y-%m-%d') }} by {{ entry['name'] }}</div>
       {% if can_update_all_enrty or g.user['id'] == entry['author_id'] %}
-        <a class="btn waves-effect waves-light light-blue lighten-1" href="{{ url_for('blog.update', entry_id=entry['id']) }}">update</a>
+        <a class="btn btn-info" href="{{ url_for('blog.update', entry_id=entry['id']) }}">update</a>
       {% endif %}
     </div>
-    {% if not loop.last %}
-      <div class="divider"></div>
-    {% endif %}
+  </div>
   {% endfor %}
 {% endblock %}
