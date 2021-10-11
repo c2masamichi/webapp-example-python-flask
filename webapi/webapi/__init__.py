@@ -24,12 +24,13 @@ def create_app():
         sys.exit(1)
 
     app.config.from_mapping(
-        SQLALCHEMY_DATABASE_URI='mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(
+        SQLALCHEMY_DATABASE_URI='mysql+pymysql://{0}:{1}@{2}:{3}/{4}?charset={5}'.format(
             app.config['DB_USER'],
             app.config['DB_PASSWORD'],
             app.config['DB_HOST'],
             app.config['DB_PORT'],
             app.config['DATABASE'],
+            'utf8mb4',
         ),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
