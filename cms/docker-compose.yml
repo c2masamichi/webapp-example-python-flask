@@ -6,6 +6,8 @@ services:
       - .:/code
     depends_on:
       - db
+    entrypoint: [ "dockerize", "--wait", "tcp://db:3306", "--timeout", "20s" ]
+    command: ["flask", "run"]
   db:
     image: "mysql:5.7"
     volumes:
