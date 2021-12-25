@@ -1,9 +1,9 @@
 version: '3'
 services:
-  web:
-    build: .
+  app:
+    build: ./app
     volumes:
-      - .:/code
+      - ./app:/code
     depends_on:
       - db
     entrypoint: [ "dockerize", "--wait", "tcp://db:3306", "--timeout", "20s" ]
