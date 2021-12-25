@@ -39,6 +39,7 @@ $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p flask_webap
 
 ```
 $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p flask_webapi_test up -d
+$ cd app/
 $ docker exec -it flask_webapi_test_app_1 pytest
 ```
 
