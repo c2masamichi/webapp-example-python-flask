@@ -5,7 +5,7 @@
 ### Build
 
 ```
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p flask_webapi_dev build
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -p flask_webapi_dev build
 ```
 
 ### Run App
@@ -32,7 +32,7 @@ $ docker-compose -p flask_webapi_dev down
 ### Build
 
 ```
-docker-compose -f docker-compose.yml -f docker-compose.test.yml -p flask_webapi_test build
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p flask_webapi_test build
 ```
 
 ### Run Test
