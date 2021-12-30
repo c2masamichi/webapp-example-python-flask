@@ -45,6 +45,7 @@ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p flask_cms_tes
 
 ```
 $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -p flask_cms_test up -d
+$ cd app/
 $ docker exec -it flask_cms_test_app_1 pytest
 ```
 
