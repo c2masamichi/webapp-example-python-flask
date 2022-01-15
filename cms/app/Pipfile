@@ -10,7 +10,8 @@ pytest = "*"
 
 [packages]
 flask = "*"
-flask-sqlalchemy = '*'
+flask-sqlalchemy = "*"
+flask-paginate = "*"
 pymysql = "*"
 
 [requires]
