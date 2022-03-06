@@ -19,7 +19,7 @@ def test_get_entry(client):
 
 
 def test_get_entry_exists_required(client):
-    response = client.get('/entry/10')
+    response = client.get('/entry/100')
     assert response.status_code == 404
 
 
@@ -52,8 +52,8 @@ def test_login_required_post(client, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/admin/blog/entry/10/change',
-        '/admin/blog/entry/10/delete',
+        '/admin/blog/entry/100/change',
+        '/admin/blog/entry/100/delete',
     )
 )
 def test_exists_required_post(client, auth, path):
@@ -85,7 +85,7 @@ def test_create(client, auth, app):
     assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
 
     with app.app_context():
-        entry_id = 4
+        entry_id = 13
         entry = Entry.query.get(entry_id)
         assert entry.author_id == 1
         assert entry.title == title
