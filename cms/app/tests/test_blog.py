@@ -6,8 +6,8 @@ from cms.models import Entry
 def test_index(client):
     response = client.get('/')
     assert response.status_code == 200
-    assert b'Test Title 1' in response.data
-    assert b'2019-01-01' in response.data
+    assert b'Test Title 12' in response.data
+    assert b'2022-02-10' in response.data
 
 
 def test_get_entry(client):
