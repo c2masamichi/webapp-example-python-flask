@@ -9,6 +9,9 @@ def test_index(client):
     assert b'Test Title 12' in response.data
     assert b'2022-02-10' in response.data
 
+    # test for pagination
+    assert b'2019-01-01' not in response.data
+
 
 def test_get_entry(client):
     response = client.get('/entry/1')
