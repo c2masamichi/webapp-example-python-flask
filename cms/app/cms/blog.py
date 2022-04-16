@@ -4,6 +4,8 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
+from flask_paginate import Pagination
+from flask_paginate import get_page_parameter
 from sqlalchemy import desc
 from werkzeug.exceptions import abort
 
@@ -25,10 +27,25 @@ def index():
     Returns:
         str: template
     """
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    limit = 5
+
     entries = db.session.query(Entry).\
         order_by(desc(Entry.created)).\
         all()
-    return render_template('blog/index.html', entries=entries)
+    entries_showed = entries[(page - 1) * limit: page * limit]
+    pagination = Pagination(
+        page=page,
+        per_page=limit,
+        total=len(entries),
+        record_name='entries',
+        css_framework='bootstrap5'
+    )
+
+    return render_template(
+        'blog/index.html', entries=entries_showed,
+        pagination=pagination
+    )
 
 
 @bp.route('/entry/<int:entry_id>')

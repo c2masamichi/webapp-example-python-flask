@@ -6,20 +6,31 @@ from cms.models import Entry
 def test_index(client):
     response = client.get('/')
     assert response.status_code == 200
-    assert b'Test Title 1' in response.data
-    assert b'2019-01-01' in response.data
+    assert b'Test Title 12' in response.data
+    assert b'2022-02-10' in response.data
+
+    # test for pagination
+    assert b'Test Title 01' not in response.data
+    assert b'2019-01-01' not in response.data
+
+
+def test_index_page(client):
+    response = client.get('/?page=2')
+    assert response.status_code == 200
+    assert b'Test Title 07' in response.data
+    assert b'Test Title 08' not in response.data
 
 
 def test_get_entry(client):
     response = client.get('/entry/1')
     assert response.status_code == 200
-    assert b'Test Title 1' in response.data
+    assert b'Test Title 01' in response.data
     assert b'2019-01-01' in response.data
     assert b'This body is test.' in response.data
 
 
 def test_get_entry_exists_required(client):
-    response = client.get('/entry/10')
+    response = client.get('/entry/100')
     assert response.status_code == 404
 
 
@@ -52,8 +63,8 @@ def test_login_required_post(client, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/admin/blog/entry/10/change',
-        '/admin/blog/entry/10/delete',
+        '/admin/blog/entry/100/change',
+        '/admin/blog/entry/100/delete',
     )
 )
 def test_exists_required_post(client, auth, path):
@@ -65,7 +76,7 @@ def test_edit_top(client, auth):
     auth.login()
     response = client.get('/admin/blog/entry/')
     assert response.status_code == 200
-    assert b'Test Title 2' in response.data
+    assert b'Test Title 02' in response.data
     assert b'2019-01-01' in response.data
     assert b'user-editor01' in response.data
 
@@ -85,7 +96,7 @@ def test_create(client, auth, app):
     assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
 
     with app.app_context():
-        entry_id = 4
+        entry_id = 13
         entry = Entry.query.get(entry_id)
         assert entry.author_id == 1
         assert entry.title == title
