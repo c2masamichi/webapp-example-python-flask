@@ -16,7 +16,7 @@ def test_index(client):
 def test_get_entry(client):
     response = client.get('/entry/1')
     assert response.status_code == 200
-    assert b'Test Title 1' in response.data
+    assert b'Test Title 01' in response.data
     assert b'2019-01-01' in response.data
     assert b'This body is test.' in response.data
 
@@ -68,7 +68,7 @@ def test_edit_top(client, auth):
     auth.login()
     response = client.get('/admin/blog/entry/')
     assert response.status_code == 200
-    assert b'Test Title 2' in response.data
+    assert b'Test Title 02' in response.data
     assert b'2019-01-01' in response.data
     assert b'user-editor01' in response.data
 
