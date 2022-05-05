@@ -14,14 +14,14 @@ def test_index(client):
     assert b'2019-01-01' not in response.data
 
 
-def test_index_page(client):
+def test_index_page2(client):
     response = client.get('/?page=2')
     assert response.status_code == 200
     assert b'Test Title 07' in response.data
     assert b'Test Title 08' not in response.data
 
 
-def test_get_entry(client):
+def test_detail(client):
     response = client.get('/entry/1')
     assert response.status_code == 200
     assert b'Test Title 01' in response.data
@@ -29,7 +29,7 @@ def test_get_entry(client):
     assert b'This body is test.' in response.data
 
 
-def test_get_entry_exists_required(client):
+def test_detail_exists_required(client):
     response = client.get('/entry/100')
     assert response.status_code == 404
 
