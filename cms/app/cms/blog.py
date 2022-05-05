@@ -49,7 +49,7 @@ def index():
 
 
 @bp.route('/entry/<int:entry_id>')
-def get_entry(entry_id):
+def detail(entry_id):
     """Show entry.
 
     Args:
