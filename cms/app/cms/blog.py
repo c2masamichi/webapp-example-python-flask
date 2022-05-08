@@ -33,7 +33,6 @@ def index():
     entries = db.session.query(Entry).\
         order_by(desc(Entry.created)).\
         all()
-    entries_showed = entries[(page - 1) * limit: page * limit]
     pagination = Pagination(
         page=page,
         per_page=limit,
@@ -42,6 +41,7 @@ def index():
         css_framework='bootstrap5'
     )
 
+    entries_showed = entries[(page - 1) * limit: page * limit]
     return render_template(
         'blog/index.html', entries=entries_showed,
         pagination=pagination
