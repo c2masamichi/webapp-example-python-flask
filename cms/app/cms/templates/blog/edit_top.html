@@ -6,6 +6,8 @@
 
 {% block content %}
   <a class="btn btn-info" href="{{ url_for('blog.create') }}">create</a>
+  {{ pagination.info }}
+  {{ pagination.links }}
   {% for entry in entries %}
   <div id="entries">
     <div class="section entry">
@@ -17,4 +19,5 @@
     </div>
   </div>
   {% endfor %}
+  {{ pagination.links }}
 {% endblock %}
