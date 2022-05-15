@@ -76,9 +76,21 @@ def test_edit_top(client, auth):
     auth.login()
     response = client.get('/admin/blog/entry/')
     assert response.status_code == 200
-    assert b'Test Title 02' in response.data
-    assert b'2019-01-01' in response.data
+    assert b'Test Title 12' in response.data
+    assert b'2022-02-10' in response.data
     assert b'user-editor01' in response.data
+
+    # test for pagination
+    assert b'Test Title 01' not in response.data
+    assert b'2019-01-01' not in response.data
+
+
+def test_edit_top_page2(client, auth):
+    auth.login()
+    response = client.get('/admin/blog/entry/?page=2')
+    assert response.status_code == 200
+    assert b'Test Title 07' in response.data
+    assert b'Test Title 08' not in response.data
 
 
 def test_create(client, auth, app):

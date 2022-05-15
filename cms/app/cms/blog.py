@@ -33,7 +33,6 @@ def index():
     entries = db.session.query(Entry).\
         order_by(desc(Entry.created)).\
         all()
-    entries_showed = entries[(page - 1) * limit: page * limit]
     pagination = Pagination(
         page=page,
         per_page=limit,
@@ -41,6 +40,7 @@ def index():
         record_name='entries',
         css_framework='bootstrap5'
     )
+    entries_showed = entries[(page - 1) * limit: page * limit]
 
     return render_template(
         'blog/index.html', entries=entries_showed,
@@ -70,18 +70,30 @@ def edit_top():
     Returns:
         str: template
     """
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    limit = 5
+
     entries = db.session.query(
             Entry.id, Entry.title, Entry.created, Entry.author_id, User.name).\
         outerjoin(User, Entry.author_id == User.id).\
         order_by(desc(Entry.created)).\
         all()
+    pagination = Pagination(
+        page=page,
+        per_page=limit,
+        total=len(entries),
+        record_name='entries',
+        css_framework='bootstrap5'
+    )
+    entries_showed = entries[(page - 1) * limit: page * limit]
 
     can_update_all_enrty = False
     if ROLE_PRIV[g.user.role] >= Privilege.EDITOR:
         can_update_all_enrty = True
 
     return render_template(
-        'blog/edit_top.html', entries=entries,
+        'blog/edit_top.html', entries=entries_showed,
+        pagination=pagination,
         can_update_all_enrty=can_update_all_enrty
     )
 
