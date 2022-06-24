@@ -10,7 +10,7 @@ def test_login(client, auth):
     assert client.get('/admin/login').status_code == 200
 
     response = auth.login()
-    assert response.headers['Location'] == 'http://localhost/admin/'
+    assert response.headers['Location'] == '/admin/'
 
     with client:
         client.get('/')
@@ -50,7 +50,7 @@ def test_logout(client, auth):
 )
 def test_login_required_get(client, path):
     response = client.get(path)
-    assert response.headers['Location'] == 'http://localhost/admin/login'
+    assert response.headers['Location'] == '/admin/login'
 
 
 def test_admin_top(client, auth):

@@ -44,7 +44,7 @@ def test_detail_exists_required(client):
 )
 def test_login_required_get(client, path):
     response = client.get(path)
-    assert response.headers['Location'] == 'http://localhost/admin/login'
+    assert response.headers['Location'] == '/admin/login'
 
 
 @pytest.mark.parametrize(
@@ -57,7 +57,7 @@ def test_login_required_get(client, path):
 )
 def test_login_required_post(client, path):
     response = client.post(path)
-    assert response.headers['Location'] == 'http://localhost/admin/login'
+    assert response.headers['Location'] == '/admin/login'
 
 
 @pytest.mark.parametrize(
@@ -105,7 +105,7 @@ def test_create(client, auth, app):
         data={'title': title, 'body': body}
     )
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
+    assert response.headers['Location'] == '/admin/blog/entry/'
 
     with app.app_context():
         entry_id = 13
@@ -128,7 +128,7 @@ def test_update(client, auth, app):
         data={'title': title, 'body': body}
     )
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost{0}'.format(path)
+    assert response.headers['Location'] == '{0}'.format(path)
 
     with app.app_context():
         entry = Entry.query.get(entry_id)
@@ -157,7 +157,7 @@ def test_delete(client, auth, app):
     auth.login()
     response = client.post('/admin/blog/entry/{0}/delete'.format(entry_id))
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/admin/blog/entry/'
+    assert response.headers['Location'] == '/admin/blog/entry/'
 
     with app.app_context():
         entry = Entry.query.get(entry_id)
