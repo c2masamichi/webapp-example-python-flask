@@ -14,7 +14,7 @@ from cms.models import User
 )
 def test_login_required_get(client, path):
     response = client.get(path)
-    assert response.headers['Location'] == 'http://localhost/admin/login'
+    assert response.headers['Location'] == '/admin/login'
 
 
 @pytest.mark.parametrize(
@@ -28,7 +28,7 @@ def test_login_required_get(client, path):
 )
 def test_login_required_post(client, path):
     response = client.post(path)
-    assert response.headers['Location'] == 'http://localhost/admin/login'
+    assert response.headers['Location'] == '/admin/login'
 
 
 @pytest.mark.parametrize(
@@ -101,7 +101,7 @@ def test_create(client, auth, app):
         data={'role': role, 'username': username, 'password': password}
     )
     assert response.status_code == 302
-    assert 'http://localhost/admin/auth/user/' == response.headers['Location']
+    assert response.headers['Location'] == '/admin/auth/user/'
 
     with app.app_context():
         user = User.query.filter_by(name=username).first()
@@ -143,7 +143,7 @@ def test_update(client, auth, app):
     assert client.get(path).status_code == 200
     response = client.post(path, data={'role': role, 'username': username})
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost{0}'.format(path)
+    assert response.headers['Location'] == '{0}'.format(path)
 
     with app.app_context():
         user = User.query.get(user_id)
@@ -211,7 +211,7 @@ def test_delete(client, auth, app):
     auth.login()
     response = client.post(path)
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/admin/auth/user/'
+    assert response.headers['Location'] == '/admin/auth/user/'
 
     with app.app_context():
         user = User.query.get(user_id)
