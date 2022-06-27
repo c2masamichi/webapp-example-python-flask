@@ -12,13 +12,13 @@ $ docker-compose build
 
 ```
 $ docker-compose up -d
-$ docker exec -it cms_app_1 flask init-db
+$ docker exec -it webapi_app_1 flask init-db
 ```
 
 load test data
 
 ```
-$ docker exec -it cms_app_1 flask load-data
+$ docker exec -it webapi_app_1 flask load-data
 ```
 
 ### Run Test
@@ -26,15 +26,15 @@ $ docker exec -it cms_app_1 flask load-data
 ```
 $ docker-compose up -d
 $ cd app/
-$ docker exec -it cms_app_1 pytest
+$ docker exec -it webapi_app_1 pytest
 ```
 
 Run with coverage report
 
 ```
-$ docker exec -it cms_app_1 coverage run -m pytest
-$ docker exec -it cms_app_1 coverage report
-$ docker exec -it cms_app_1 coverage html
+$ docker exec -it webapi_app_1 coverage run -m pytest
+$ docker exec -it webapi_app_1 coverage report
+$ docker exec -it webapi_app_1 coverage html
 ```
 
 ### Clear
