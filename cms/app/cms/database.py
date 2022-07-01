@@ -1,8 +1,5 @@
-import time
-
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import OperationalError
 
 
 db = SQLAlchemy()

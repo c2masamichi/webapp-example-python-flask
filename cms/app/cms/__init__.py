@@ -10,7 +10,6 @@ from cms.models import User
 CONFIGS = {
     'production': 'config-production.py',
     'development': 'config-development.py',
-    'testing': 'config-testing.py',
 }
 
 

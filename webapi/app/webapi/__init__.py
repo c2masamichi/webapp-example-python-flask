@@ -9,7 +9,6 @@ from webapi.models import Product
 CONFIGS = {
     'production': 'config-production.py',
     'development': 'config-development.py',
-    'testing': 'config-testing.py',
 }
 
 def create_app():
