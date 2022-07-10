@@ -5,40 +5,40 @@
 ### Build
 
 ```
-$ docker-compose build
+$ docker-compose -p flask_webapi build
 ```
 
 ### Run App
 
 ```
-$ docker-compose up -d
-$ docker exec -it webapi_app_1 flask init-db
+$ docker-compose -p flask_webapi up -d
+$ docker exec -it flask_webapi_app_1 flask init-db
 ```
 
 load test data
 
 ```
-$ docker exec -it webapi_app_1 flask load-data
+$ docker exec -it flask_webapi_app_1 flask load-data
 ```
 
 ### Run Test
 
 ```
-$ docker-compose up -d
+$ docker-compose -p flask_webapi up -d
 $ cd app/
-$ docker exec -it webapi_app_1 pytest
+$ docker exec -it flask_webapi_app_1 pytest
 ```
 
 Run with coverage report
 
 ```
-$ docker exec -it webapi_app_1 coverage run -m pytest
-$ docker exec -it webapi_app_1 coverage report
-$ docker exec -it webapi_app_1 coverage html
+$ docker exec -it flask_webapi_app_1 coverage run -m pytest
+$ docker exec -it flask_webapi_app_1 coverage report
+$ docker exec -it flask_webapi_app_1 coverage html
 ```
 
 ### Clear
 
 ```
-$ docker-compose down
+$ docker-compose -p flask_webapi down
 ```
