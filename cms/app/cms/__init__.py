@@ -38,7 +38,10 @@ def create_app():
 
     from cms import error_handler as eh
 
+    app.register_error_handler(400, eh.bad_request)
+    app.register_error_handler(403, eh.forbidden)
     app.register_error_handler(404, eh.not_found)
+    app.register_error_handler(500, eh.internal_server_error)
 
     from cms.database import init_app
     from cms.cli import add_cli
