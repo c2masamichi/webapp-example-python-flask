@@ -38,7 +38,6 @@ def create_app():
 
     from cms import error_handler as eh
 
-    app.register_error_handler(400, eh.bad_request)
     app.register_error_handler(403, eh.forbidden)
     app.register_error_handler(404, eh.not_found)
 
