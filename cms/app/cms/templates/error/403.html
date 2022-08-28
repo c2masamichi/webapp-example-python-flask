@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}403 Forbidden{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <div>You don't have the permission to access the requested resource. It is either read-protected or not readable by the server.</div>
+{% endblock %}
