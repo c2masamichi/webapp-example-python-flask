@@ -22,6 +22,7 @@ def test_get_product(client):
     product_id = 1
     name = 'book'
     price = 600
+
     path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.get(path)
     assert response.status_code == 200
@@ -45,6 +46,7 @@ def test_create_product(client, app):
     product_id = 3
     name = 'meet'
     price = 1000
+
     post_data = {
         'name': name,
         'price': price,
@@ -79,6 +81,7 @@ def test_create_product_validate_content_type(client):
         path, data=json.dumps(post_data),
     )
     assert response.status_code == 400
+
     data = response.get_json()
     assert 'Content-Type must be application/json.' in data['error']
 
@@ -86,8 +89,12 @@ def test_create_product_validate_content_type(client):
 @pytest.mark.parametrize(
     'post_data',
     (
-        {'name': 'meat'},
-        {'price': 1000},
+        {
+            'name': 'meat'
+        },
+        {
+            'price': 1000
+        },
     )
 )
 def test_create_product_validate_required_key(client, post_data):
@@ -97,6 +104,7 @@ def test_create_product_validate_required_key(client, post_data):
         content_type='application/json'
     )
     assert response.status_code == 400
+
     data = response.get_json()
     assert 'The key "name" and "price" are required.' in data['error']
 
@@ -121,6 +129,7 @@ def test_create_product_validate_assertion_error(client, post_data):
         content_type='application/json'
     )
     assert response.status_code == 400
+
     data = response.get_json()
     assert 'Bad data' in data['error']
 
@@ -129,6 +138,7 @@ def test_update_product(client, app):
     product_id = 2
     name = 'rice'
     price = 900
+
     post_data = {
         'name': name,
         'price': price,
@@ -178,6 +188,7 @@ def test_update_product_validate_content_type(client):
         path, data=json.dumps(post_data),
     )
     assert response.status_code == 400
+
     data = response.get_json()
     assert 'Content-Type must be application/json.' in data['error']
 
@@ -185,8 +196,12 @@ def test_update_product_validate_content_type(client):
 @pytest.mark.parametrize(
     'post_data',
     (
-        {'name': 'meat'},
-        {'price': 1000},
+        {
+            'name': 'meat'
+        },
+        {
+            'price': 1000
+        },
     )
 )
 def test_update_product_validate_required_key(client, post_data):
@@ -197,6 +212,7 @@ def test_update_product_validate_required_key(client, post_data):
         content_type='application/json'
     )
     assert response.status_code == 400
+
     data = response.get_json()
     assert 'The key "name" and "price" are required.' in data['error']
 
@@ -222,6 +238,7 @@ def test_update_product_validate_assertion_error(client, post_data):
         content_type='application/json'
     )
     assert response.status_code == 400
+
     data = response.get_json()
     assert 'Bad data' in data['error']
 
@@ -230,6 +247,7 @@ def test_delete_product(client, app):
     product_id = 2
     name = 'fish'
     price = 200
+
     path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.delete(path)
     assert response.status_code == 200
