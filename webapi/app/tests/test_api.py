@@ -70,8 +70,14 @@ def test_create_product(client, app):
 
 
 def test_create_product_validate_content_type(client):
+    post_data = {
+        'name': 'meet',
+        'price': 1000,
+    }
     path = '{0}/products'.format(PATH_PREFIX)
-    response = client.post(path, data=json.dumps({'data': 'wrong data'}))
+    response = client.post(
+        path, data=json.dumps(post_data),
+    )
     assert response.status_code == 400
     data = response.get_json()
     assert 'Content-Type must be application/json.' in data['error']
@@ -95,11 +101,20 @@ def test_create_product_validate_required_key(client, post_data):
     assert 'The key "name" and "price" are required.' in data['error']
 
 
-def test_create_product_validate_assertion_error(client):
-    post_data = {
-        'name': 'minus',
-        'price': -1,
-    }
+@pytest.mark.parametrize(
+    'post_data',
+    (
+        {
+            'name': 'aa',
+            'price': 1000,
+        },
+        {
+            'name': 'minus',
+            'price': -1,
+        },
+    )
+)
+def test_create_product_validate_assertion_error(client, post_data):
     path = '{0}/products'.format(PATH_PREFIX)
     response = client.post(
         path, data=json.dumps(post_data),
@@ -154,8 +169,14 @@ def test_update_product_exists_required(client):
 
 def test_update_product_validate_content_type(client):
     product_id = 2
+    post_data = {
+        'name': 'rice',
+        'price': 900,
+    }
     path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
-    response = client.put(path, data=json.dumps({'data': 'wrong data'}))
+    response = client.put(
+        path, data=json.dumps(post_data),
+    )
     assert response.status_code == 400
     data = response.get_json()
     assert 'Content-Type must be application/json.' in data['error']
@@ -180,12 +201,21 @@ def test_update_product_validate_required_key(client, post_data):
     assert 'The key "name" and "price" are required.' in data['error']
 
 
-def test_update_product_validate_assertion_error(client):
+@pytest.mark.parametrize(
+    'post_data',
+    (
+        {
+            'name': 'aa',
+            'price': 1000,
+        },
+        {
+            'name': 'minus',
+            'price': -1,
+        },
+    )
+)
+def test_update_product_validate_assertion_error(client, post_data):
     product_id = 2
-    post_data = {
-        'name': 'minus',
-        'price': -1,
-    }
     path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.put(
         path, data=json.dumps(post_data),
