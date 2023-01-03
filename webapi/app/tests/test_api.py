@@ -35,7 +35,8 @@ def test_get_product(client):
 
 
 def test_get_product_exists_required(client):
-    path = '{0}/products/10'.format(PATH_PREFIX)
+    product_id = 10  # not exist
+    path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.get(path)
     assert response.status_code == 404
 
@@ -138,11 +139,12 @@ def test_update_product(client, app):
 
 
 def test_update_product_exists_required(client):
+    product_id = 10  # not exist
     post_data = {
         'name': 'rice',
         'price': 900,
     }
-    path = '{0}/products/10'.format(PATH_PREFIX)
+    path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.put(
         path, data=json.dumps(post_data),
         content_type='application/json'
@@ -215,6 +217,7 @@ def test_delete_product(client, app):
 
 
 def test_delete_product_exists_required(client):
-    path = '{0}/products/10'.format(PATH_PREFIX)
+    product_id = 10  # not exist
+    path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.delete(path)
     assert response.status_code == 404
