@@ -69,7 +69,7 @@ def test_create_product(client, app):
         assert product.price == price
 
 
-def test_create_product_validate01(client):
+def test_create_product_validate_content_type(client):
     path = '{0}/products'.format(PATH_PREFIX)
     response = client.post(path, data=json.dumps({'data': 'wrong data'}))
     assert response.status_code == 400
@@ -84,7 +84,7 @@ def test_create_product_validate01(client):
         {'price': 1000},
     )
 )
-def test_create_product_validate02(client, post_data):
+def test_create_product_validate_required_key(client, post_data):
     path = '{0}/products'.format(PATH_PREFIX)
     response = client.post(
         path, data=json.dumps(post_data),
@@ -95,7 +95,7 @@ def test_create_product_validate02(client, post_data):
     assert 'The key "name" and "price" are required.' in data['error']
 
 
-def test_create_product_validate03(client):
+def test_create_product_validate_assertion_error(client):
     post_data = {
         'name': 'minus',
         'price': -1,
@@ -152,7 +152,7 @@ def test_update_product_exists_required(client):
     assert response.status_code == 404
 
 
-def test_update_product_validate01(client):
+def test_update_product_validate_content_type(client):
     product_id = 2
     path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.put(path, data=json.dumps({'data': 'wrong data'}))
@@ -168,7 +168,7 @@ def test_update_product_validate01(client):
         {'price': 1000},
     )
 )
-def test_update_product_validate02(client, post_data):
+def test_update_product_validate_required_key(client, post_data):
     product_id = 2
     path = '{0}/products/{1}'.format(PATH_PREFIX, product_id)
     response = client.put(
@@ -180,7 +180,7 @@ def test_update_product_validate02(client, post_data):
     assert 'The key "name" and "price" are required.' in data['error']
 
 
-def test_update_product_validate03(client):
+def test_update_product_validate_assertion_error(client):
     product_id = 2
     post_data = {
         'name': 'minus',
