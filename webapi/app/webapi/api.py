@@ -69,6 +69,7 @@ def create_product():
     data = request.get_json()
     name = data.get('name')
     price = data.get('price')
+
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
@@ -108,6 +109,7 @@ def update_product(product_id):
     data = request.get_json()
     name = data.get('name')
     price = data.get('price')
+
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
