@@ -7,7 +7,7 @@ services:
       - db
     entrypoint: [ "dockerize", "--wait", "tcp://db:3306", "--timeout", "20s" ]
     environment:
-      FLASK_ENV: development
+      CONFIG_FILE: development
     ports:
       - "15000:5000"
     volumes:
