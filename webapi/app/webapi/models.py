@@ -23,6 +23,6 @@ class Product(db.Model):
     @validates('price')
     def validate_price(self, key, price):
         min_num = 0
-        max_num = 1000000000
+        max_num = 1000000000  # 10^9
         assert min_num <= price <= max_num
         return price
