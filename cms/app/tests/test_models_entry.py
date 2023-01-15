@@ -27,7 +27,7 @@ def test_create_validate(app, title, body):
 def test_update_validate(app, title, body):
     entry_id = 1
     with app.app_context():
+        entry = Entry.query.get(entry_id)
         with pytest.raises(AssertionError):
-            entry = Entry.query.get(entry_id)
             entry.title = title
             entry.body = body
