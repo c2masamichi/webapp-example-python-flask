@@ -15,7 +15,7 @@ CONFIGS = {
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
-    config_name = CONFIGS[os.getenv('FLASK_ENV', 'production')]
+    config_name = CONFIGS[os.getenv('CONFIG_FILE', 'production')]
 
     try:
         app.config.from_pyfile(config_name)

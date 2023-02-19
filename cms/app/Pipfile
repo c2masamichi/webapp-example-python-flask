@@ -10,9 +10,9 @@ pytest = "*"
 
 [packages]
 flask = "2.2.2"
-flask-sqlalchemy = "*"
-flask-paginate = "*"
-pymysql = "*"
+flask-sqlalchemy = "3.0.2"
+flask-paginate = "2022.1.8"
+pymysql = "1.0.2"
 
 [requires]
 python_version = "3.9"

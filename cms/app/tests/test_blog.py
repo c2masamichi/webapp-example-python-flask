@@ -30,8 +30,9 @@ def test_detail(client):
 
 
 def test_detail_exists_required(client):
-    response = client.get('/entry/100')
-    assert response.status_code == 404
+    entry_id = 100  # not exist
+    path = '/entry/{0}'.format(entry_id)
+    assert client.get(path).status_code == 404
 
 
 @pytest.mark.parametrize(
@@ -63,11 +64,14 @@ def test_login_required_post(client, path):
 @pytest.mark.parametrize(
     'path',
     (
-        '/admin/blog/entry/100/change',
-        '/admin/blog/entry/100/delete',
+        '/admin/blog/entry/{0}/change',
+        '/admin/blog/entry/{0}/delete',
     )
 )
 def test_exists_required_post(client, auth, path):
+    entry_id = 100  # not exist
+    path = path.format(entry_id)
+
     auth.login()
     assert client.post(path).status_code == 404
 

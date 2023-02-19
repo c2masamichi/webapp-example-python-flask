@@ -11,9 +11,9 @@ from cms.models import Entry
     ),
 )
 def test_create_validate(app, title, body):
+    author_id = 1
     with app.app_context():
         with pytest.raises(AssertionError):
-            author_id = 1
             Entry(title=title, body=body, author_id=author_id)
 
 
@@ -25,9 +25,9 @@ def test_create_validate(app, title, body):
     ),
 )
 def test_update_validate(app, title, body):
+    entry_id = 1
     with app.app_context():
+        entry = Entry.query.get(entry_id)
         with pytest.raises(AssertionError):
-            entry_id = 1
-            entry = Entry.query.get(entry_id)
             entry.title = title
             entry.body = body
