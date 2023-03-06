@@ -111,10 +111,11 @@ def test_create(client, auth, app):
     assert response.status_code == 302
     assert response.headers['Location'] == '/admin/blog/entry/'
 
+    entry_id = 13
+    author_id = 1
     with app.app_context():
-        entry_id = 13
         entry = Entry.query.get(entry_id)
-        assert entry.author_id == 1
+        assert entry.author_id == author_id
         assert entry.title == title
         assert entry.body == body
 
