@@ -1,5 +1,6 @@
 import pytest
 
+from webapi.database import db
 from webapi.models import Product
 
 
@@ -33,6 +34,6 @@ def test_update_validate(app, name, price):
     with app.app_context():
         with pytest.raises(AssertionError):
             product_id = 2
-            product = Product.query.get(product_id)
+            product = db.session.get(Product, product_id)
             product.name = name
             product.price = price
