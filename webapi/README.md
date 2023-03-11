@@ -21,6 +21,8 @@ load test data
 $ docker exec -it flask_webapi_app_1 flask load-data
 ```
 
+http://localhost:15000/api/v1/products
+
 ### Run Test
 
 ```
