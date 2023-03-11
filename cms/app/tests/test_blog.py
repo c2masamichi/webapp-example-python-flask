@@ -3,22 +3,28 @@ import pytest
 from cms.models import Entry
 
 
-def test_index(client):
+def test_index_page1(client):
     response = client.get('/')
     assert response.status_code == 200
+
+    # default: page=1
+    # page=1:12-08, page=2:07-03, page=3:02-01
     assert b'Test Title 12' in response.data
     assert b'2022-02-10' in response.data
 
-    # test for pagination
-    assert b'Test Title 01' not in response.data
-    assert b'2019-01-01' not in response.data
+    assert b'Test Title 08' in response.data
+    assert b'Test Title 07' not in response.data
 
 
 def test_index_page2(client):
     response = client.get('/?page=2')
     assert response.status_code == 200
-    assert b'Test Title 07' in response.data
+
+    # page=1:12-08, page=2:07-03, page=3:02-01
     assert b'Test Title 08' not in response.data
+    assert b'Test Title 07' in response.data
+    assert b'Test Title 03' in response.data
+    assert b'Test Title 02' not in response.data
 
 
 def test_detail(client):
@@ -76,25 +82,31 @@ def test_exists_required_post(client, auth, path):
     assert client.post(path).status_code == 404
 
 
-def test_edit_top(client, auth):
+def test_edit_top_page1(client, auth):
     auth.login()
     response = client.get('/admin/blog/entry/')
     assert response.status_code == 200
+
+    # default: page=1
+    # page=1:12-08, page=2:07-03, page=3:02-01
     assert b'Test Title 12' in response.data
     assert b'2022-02-10' in response.data
     assert b'user-editor01' in response.data
 
-    # test for pagination
-    assert b'Test Title 01' not in response.data
-    assert b'2019-01-01' not in response.data
+    assert b'Test Title 08' in response.data
+    assert b'Test Title 07' not in response.data
 
 
 def test_edit_top_page2(client, auth):
     auth.login()
     response = client.get('/admin/blog/entry/?page=2')
     assert response.status_code == 200
-    assert b'Test Title 07' in response.data
+
+    # page=1:12-08, page=2:07-03, page=3:02-01
     assert b'Test Title 08' not in response.data
+    assert b'Test Title 07' in response.data
+    assert b'Test Title 03' in response.data
+    assert b'Test Title 02' not in response.data
 
 
 def test_create(client, auth, app):
@@ -111,10 +123,11 @@ def test_create(client, auth, app):
     assert response.status_code == 302
     assert response.headers['Location'] == '/admin/blog/entry/'
 
+    entry_id = 13
+    author_id = 1
     with app.app_context():
-        entry_id = 13
         entry = Entry.query.get(entry_id)
-        assert entry.author_id == 1
+        assert entry.author_id == author_id
         assert entry.title == title
         assert entry.body == body
 
