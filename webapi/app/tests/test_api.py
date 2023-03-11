@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from webapi.database import db
 from webapi.models import Product
 
 PATH_PREFIX = '/api/v1'
@@ -66,7 +67,7 @@ def test_create_product(client, app):
     assert result['price'] == price
 
     with app.app_context():
-        product = Product.query.get(3)
+        product = db.session.get(Product, product_id)
         assert product.name == name
         assert product.price == price
 
@@ -158,7 +159,7 @@ def test_update_product(client, app):
     assert result['price'] == price
 
     with app.app_context():
-        product = Product.query.get(product_id)
+        product = db.session.get(Product, product_id)
         assert product.name == name
         assert product.price == price
 
@@ -260,7 +261,7 @@ def test_delete_product(client, app):
     assert result['price'] == price
 
     with app.app_context():
-        product = Product.query.get(product_id)
+        product = db.session.get(Product, product_id)
         assert product is None
 
 
