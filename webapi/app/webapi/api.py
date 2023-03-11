@@ -40,7 +40,7 @@ def get_product(product_id):
     Returns:
         str: json
     """
-    product = Product.query.get_or_404(product_id)
+    product = db.get_or_404(Product, product_id)
 
     data = {
         'result': {
@@ -113,7 +113,7 @@ def update_product(product_id):
     if name is None or price is None:
         abort(400, description='The key "name" and "price" are required.')
 
-    product = Product.query.get_or_404(product_id)
+    product = db.get_or_404(Product, product_id)
 
     try:
         product.name = name
@@ -143,7 +143,7 @@ def delete_product(product_id):
     Returns:
         str: json
     """
-    product = Product.query.get_or_404(product_id)
+    product = db.get_or_404(Product, product_id)
     deleted_product = {
         'id': product.id,
         'name': product.name,
