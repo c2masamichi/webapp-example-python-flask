@@ -1,5 +1,6 @@
 import pytest
 
+from cms.database import db
 from cms.models import Entry
 
 
@@ -27,7 +28,7 @@ def test_create_validate(app, title, body):
 def test_update_validate(app, title, body):
     entry_id = 1
     with app.app_context():
-        entry = Entry.query.get(entry_id)
+        entry = db.session.get(Entry, entry_id)
         with pytest.raises(AssertionError):
             entry.title = title
             entry.body = body
