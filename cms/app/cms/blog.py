@@ -30,9 +30,9 @@ def index():
     page = request.args.get(get_page_parameter(), type=int, default=1)
     limit = 5
 
-    entries = db.session.query(Entry).\
-        order_by(desc(Entry.created)).\
-        all()
+    entries = db.session.execute(db.select(Entry).\
+        order_by(desc(Entry.created))).\
+        scalars().all()
     pagination = Pagination(
         page=page,
         per_page=limit,
@@ -58,7 +58,7 @@ def detail(entry_id):
     Returns:
         str: template
     """
-    entry = Entry.query.get_or_404(entry_id)
+    entry = db.get_or_404(Entry, entry_id)
     return render_template('blog/detail.html', entry=entry)
 
 
@@ -143,7 +143,7 @@ def update(entry_id):
     Returns:
         str: template
     """
-    entry = Entry.query.get_or_404(entry_id)
+    entry = db.get_or_404(Entry, entry_id)
 
     if (ROLE_PRIV[g.user.role] < Privilege.EDITOR and
             entry.author_id != g.user.id):
