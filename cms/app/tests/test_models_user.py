@@ -81,8 +81,8 @@ def test_update(app):
 def test_update_validate(app, role, name):
     user_id = 2
     with app.app_context():
+        user = db.session.get(User, user_id)
         with pytest.raises(AssertionError):
-            user = User.query.get(user_id)
             user.role = role
             user.name = name
 
