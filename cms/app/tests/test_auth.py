@@ -3,6 +3,7 @@ from flask import g
 from flask import session
 from werkzeug.security import check_password_hash
 
+from cms.database import db
 from cms.models import User
 
 
@@ -86,8 +87,9 @@ def test_chpasswd(client, auth, app):
     )
     assert response.status_code == 200
 
+    user_id = 1
     with app.app_context():
-        user = User.query.get(1)
+        user = db.session.get(User, user_id)
         assert check_password_hash(user.password, new_password)
 
 
