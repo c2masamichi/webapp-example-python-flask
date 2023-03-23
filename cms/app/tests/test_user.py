@@ -1,6 +1,7 @@
 import pytest
 from werkzeug.security import check_password_hash
 
+from cms.database import db
 from cms.models import User
 
 
@@ -146,7 +147,7 @@ def test_update(client, auth, app):
     assert response.headers['Location'] == '{0}'.format(path)
 
     with app.app_context():
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         assert user.role == role
         assert user.name == username
 
@@ -182,7 +183,7 @@ def test_chpasswd(client, auth, app):
     assert response.status_code == 200
 
     with app.app_context():
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         assert check_password_hash(user.password, new_password)
 
 
@@ -214,5 +215,5 @@ def test_delete(client, auth, app):
     assert response.headers['Location'] == '/admin/auth/user/'
 
     with app.app_context():
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         assert user is None
