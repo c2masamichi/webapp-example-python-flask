@@ -46,7 +46,7 @@ def change_password(
     if not validate_password(new_password):
         return False, 'Bad data.'
 
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     if user is None:
         return False, 'Update failed.'
 

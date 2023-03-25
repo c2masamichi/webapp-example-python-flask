@@ -9,6 +9,7 @@ from flask import session
 from flask import url_for
 from werkzeug.exceptions import abort
 
+from cms.database import db
 from cms.models import User
 from cms.role import Privilege
 from cms.role import ROLE_PRIV
@@ -48,7 +49,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         if user is None:
             abort(500)
         g.user = user

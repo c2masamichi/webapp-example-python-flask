@@ -1,5 +1,6 @@
 import pytest
 
+from cms.database import db
 from cms.models import Entry
 
 
@@ -126,7 +127,7 @@ def test_create(client, auth, app):
     entry_id = 13
     author_id = 1
     with app.app_context():
-        entry = Entry.query.get(entry_id)
+        entry = db.session.get(Entry, entry_id)
         assert entry.author_id == author_id
         assert entry.title == title
         assert entry.body == body
@@ -148,7 +149,7 @@ def test_update(client, auth, app):
     assert response.headers['Location'] == '{0}'.format(path)
 
     with app.app_context():
-        entry = Entry.query.get(entry_id)
+        entry = db.session.get(Entry, entry_id)
         assert entry.title == title
         assert entry.body == body
 
@@ -177,7 +178,7 @@ def test_delete(client, auth, app):
     assert response.headers['Location'] == '/admin/blog/entry/'
 
     with app.app_context():
-        entry = Entry.query.get(entry_id)
+        entry = db.session.get(Entry, entry_id)
         assert entry is None
 
 

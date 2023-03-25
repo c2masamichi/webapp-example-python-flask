@@ -58,7 +58,7 @@ def detail(entry_id):
     Returns:
         str: template
     """
-    entry = Entry.query.get_or_404(entry_id)
+    entry = db.get_or_404(Entry, entry_id)
     return render_template('blog/detail.html', entry=entry)
 
 
@@ -143,7 +143,7 @@ def update(entry_id):
     Returns:
         str: template
     """
-    entry = Entry.query.get_or_404(entry_id)
+    entry = db.get_or_404(Entry, entry_id)
 
     if (ROLE_PRIV[g.user.role] < Privilege.EDITOR and
             entry.author_id != g.user.id):
@@ -180,7 +180,7 @@ def delete(entry_id):
     Returns:
         str: template
     """
-    entry = Entry.query.get_or_404(entry_id)
+    entry = db.get_or_404(Entry, entry_id)
     if (ROLE_PRIV[g.user.role] < Privilege.EDITOR and
             entry.author_id != g.user.id):
         abort(403)

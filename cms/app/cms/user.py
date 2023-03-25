@@ -96,7 +96,7 @@ def update(user_id):
     Returns:
         str: template
     """
-    user = User.query.get_or_404(user_id)
+    user = db.get_or_404(User, user_id)
 
     if request.method == 'POST':
         role = request.form['role']
@@ -138,7 +138,7 @@ def change_user_password(user_id):
     Returns:
         str: template
     """
-    user = User.query.get_or_404(user_id)
+    user = db.get_or_404(User, user_id)
 
     new_password = request.form['new_password']
     succeeded, message = change_password(
@@ -163,7 +163,7 @@ def delete(user_id):
     Returns:
         str: template
     """
-    user = User.query.get_or_404(user_id)
+    user = db.get_or_404(User, user_id)
     db.session.delete(user)
     db.session.commit()
 
