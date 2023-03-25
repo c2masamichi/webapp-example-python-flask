@@ -30,9 +30,9 @@ def index():
     page = request.args.get(get_page_parameter(), type=int, default=1)
     limit = 5
 
-    entries = db.session.execute(db.select(Entry).\
-        order_by(desc(Entry.created))).\
-        scalars().all()
+    entries = db.session.query(Entry).\
+        order_by(desc(Entry.created)).\
+        all()
     pagination = Pagination(
         page=page,
         per_page=limit,
