@@ -20,7 +20,7 @@ def test_auth(app):
         ('user-admin01', 'aaaa')
     ),
 )
-def test_auth_user_validate(app, name, password):
+def test_auth_user_incorrect_name_or_password(app, name, password):
     with app.app_context():
         user = auth_user(name, password)
         assert user is None
