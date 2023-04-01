@@ -188,14 +188,14 @@ def test_chpasswd(client, auth, app):
 
 
 @pytest.mark.parametrize(
-    ('new_password', 'message'),
+    'new_password',
     (
-        ('a' * 7, b'Bad data'),
-        ('a' * 31, b'Bad data'),
-        ('ef-gh_5678%', b'Bad data'),
+        'a' * 7,
+        'a' * 31,
+        'ef-gh_5678%',
     ),
 )
-def test_chpasswd_validate(client, auth, new_password, message):
+def test_chpasswd_validate(client, auth, new_password):
     user_id = 2
     path = '/admin/auth/user/{0}/password/'.format(user_id)
     auth.login()
@@ -203,7 +203,7 @@ def test_chpasswd_validate(client, auth, new_password, message):
         path,
         data={'new_password': new_password}
     )
-    assert message in response.data
+    assert b'Bad data' in response.data
 
 
 def test_delete(client, auth, app):

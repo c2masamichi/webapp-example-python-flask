@@ -81,20 +81,20 @@ def test_change_password_validate_incorrect_password(app):
 
 
 @pytest.mark.parametrize(
-    ('new_password', 'err_msg'),
+    'new_password',
     (
-        ('a' * 7, 'Bad data'),
-        ('a' * 31, 'Bad data'),
-        ('ef-gh_5678%', 'Bad data'),
+        'a' * 7,
+        'a' * 31,
+        'ef-gh_5678%',
     ),
 )
-def test_change_password_validate_new_password(app, new_password, err_msg):
+def test_change_password_validate_new_password(app, new_password):
     with app.app_context():
         user_id = 2
         succeeded, message = change_password(
             user_id, new_password, old_required=False)
         assert not succeeded
-        assert err_msg in message
+        assert 'Bad data' in message
 
 
 def test_change_password_validate04(app):
