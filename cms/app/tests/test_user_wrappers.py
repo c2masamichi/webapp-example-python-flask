@@ -20,7 +20,7 @@ def test_auth(app):
         ('user-admin01', 'aaaa')
     ),
 )
-def test_auth_user_validate(app, name, password):
+def test_auth_user_incorrect_name_or_password(app, name, password):
     with app.app_context():
         user = auth_user(name, password)
         assert user is None
@@ -58,21 +58,21 @@ def test_change_own_password(app):
         assert user is not None
 
 
-def test_change_password_validate01(app):
+def test_change_password_validate_missing_old_password(app):
     with app.app_context():
         user_id = 1
         new_password = 'updated-pass_01'
         # Default: old_required=True
         succeeded, message = change_password(
-            user_id, new_password)
+            user_id, new_password)  # missing old password
         assert not succeeded
         assert 'Incorrect password.' in message
 
 
-def test_change_password_validate02(app):
+def test_change_password_validate_incorrect_password(app):
     with app.app_context():
         user_id = 1
-        old_password = 'aaaa'
+        old_password = 'aaaa'  # incorrect password
         new_password = 'updated-pass_01'
         succeeded, message = change_password(
             user_id, new_password, old_password)
@@ -81,20 +81,20 @@ def test_change_password_validate02(app):
 
 
 @pytest.mark.parametrize(
-    ('new_password', 'err_msg'),
+    'new_password',
     (
-        ('a' * 7, 'Bad data'),
-        ('a' * 31, 'Bad data'),
-        ('ef-gh_5678%', 'Bad data'),
+        'a' * 7,
+        'a' * 31,
+        'ef-gh_5678%',
     ),
 )
-def test_change_password_validate03(app, new_password, err_msg):
+def test_change_password_validate_new_password(app, new_password):
     with app.app_context():
         user_id = 2
         succeeded, message = change_password(
             user_id, new_password, old_required=False)
         assert not succeeded
-        assert err_msg in message
+        assert 'Bad data' in message
 
 
 def test_change_password_validate04(app):
