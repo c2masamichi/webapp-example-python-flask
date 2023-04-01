@@ -58,21 +58,21 @@ def test_change_own_password(app):
         assert user is not None
 
 
-def test_change_password_validate01(app):
+def test_change_password_validate_missing_old_password(app):
     with app.app_context():
         user_id = 1
         new_password = 'updated-pass_01'
         # Default: old_required=True
         succeeded, message = change_password(
-            user_id, new_password)
+            user_id, new_password)  # missing old password
         assert not succeeded
         assert 'Incorrect password.' in message
 
 
-def test_change_password_validate02(app):
+def test_change_password_validate_incorrect_password(app):
     with app.app_context():
         user_id = 1
-        old_password = 'aaaa'
+        old_password = 'aaaa'  # incorrect password
         new_password = 'updated-pass_01'
         succeeded, message = change_password(
             user_id, new_password, old_password)
@@ -88,7 +88,7 @@ def test_change_password_validate02(app):
         ('ef-gh_5678%', 'Bad data'),
     ),
 )
-def test_change_password_validate03(app, new_password, err_msg):
+def test_change_password_validate_new_password(app, new_password, err_msg):
     with app.app_context():
         user_id = 2
         succeeded, message = change_password(
