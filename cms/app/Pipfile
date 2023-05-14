@@ -9,7 +9,7 @@ pylint = "*"
 pytest = "*"
 
 [packages]
-flask = "2.2.3"
+flask = "2.2.5"
 flask-sqlalchemy = "3.0.2"
 flask-paginate = "2022.1.8"
 pymysql = "1.0.2"
