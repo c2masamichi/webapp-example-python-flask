@@ -18,7 +18,7 @@ services:
       MYSQL_DATABASE: dev_db
       MYSQL_USER: dev_user
       MYSQL_PASSWORD: dev_pass
-    image: "mysql:5.7"
+    image: "mysql:8.0"
     ports:
       - "13306:3306"
     volumes:
