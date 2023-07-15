@@ -10,10 +10,10 @@ pytest = "*"
 
 [packages]
 flask = "2.3.2"
-flask-sqlalchemy = "3.0.3"
+flask-sqlalchemy = "3.0.5"
 flask-paginate = "2022.1.8"
-pymysql = "1.0.3"
-cryptography = "40.0.2"
+pymysql = "1.1.0"
+cryptography = "41.0.2"
 
 [requires]
 python_version = "3.11"
